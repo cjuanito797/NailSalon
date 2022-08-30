@@ -15,6 +15,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     state = models.CharField(max_length=2)
     zipcode = models.CharField(max_length=5, validators=[MinLengthValidator(5)])
     city = models.CharField(max_length=20)
+    phoneNumber = models.CharField(max_length=10, validators=[MinLengthValidator(10)])
     isTechnician = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     bio = models.TextField(blank=True)
@@ -31,6 +32,7 @@ class Technician(models.Model):
                                 default=None)
     bio = models.TextField(blank=True)
     pay_rate = models.DecimalField(decimal_places=2, max_digits=4)
+    weeklyAvailability = models.
 
 class Customer(models.Model):
     user = models.OneToOneField('Account.User',
@@ -42,3 +44,5 @@ class Customer(models.Model):
 
     bio = models.TextField(blank=True)
 
+class Appointment(models.Model):
+    phoneNumber = models.CharField(max_length=10, validators=[MinLengthValidator(10)])
