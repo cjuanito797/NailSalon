@@ -32,7 +32,21 @@ class Technician(models.Model):
                                 default=None)
     bio = models.TextField(blank=True)
     pay_rate = models.DecimalField(decimal_places=2, max_digits=4)
-    weeklyAvailability = models.
+    techSchedule = models.OneToOneField("Account.Schedule",
+                                        related_name='schedule',
+                                        on_delete=models.CASCADE,
+                                        default=None,
+                                        blank=True,
+                                        null=True)
+
+class Schedule(models.Model):
+    monday = models.BooleanField(default=False)
+    tuesday = models.BooleanField(default=False)
+    wednesday = models.BooleanField(default=False)
+    thursday = models.BooleanField(default=False)
+    friday = models.BooleanField(default=False)
+    saturday = models.BooleanField(default=False)
+    sunday = models.BooleanField(default=False)
 
 class Customer(models.Model):
     user = models.OneToOneField('Account.User',
