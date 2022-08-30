@@ -37,6 +37,7 @@ class Customer(models.Model):
                                 related_name='customer',
                                 on_delete=models.CASCADE,
                                 default=None)
+
     # add the appointment history here:
 
     bio = models.TextField(blank=True)
