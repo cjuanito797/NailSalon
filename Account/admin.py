@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
-from .models import User, Technician, Customer
+from .models import User, Technician, Customer, Schedule
 from .forms import RegistrationForm
 
 
@@ -42,4 +42,8 @@ class TechAdmin (admin.ModelAdmin):
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ['user']
+
+@admin.register(Schedule)
+class ScheduleAdmin(admin.ModelAdmin):
+    list_display = ['monday']
 
