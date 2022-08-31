@@ -34,59 +34,8 @@ class Technician (models.Model):
                                  default=None)
     bio = models.TextField (blank=True)
     pay_rate = models.DecimalField (decimal_places=2, max_digits=4)
-    techSchedule = models.OneToOneField ("Account.Schedule",
-                                         related_name='schedule',
-                                         on_delete=models.CASCADE,
-                                         default=None,
-                                         blank=True,
-                                         null=True)
-    timeSlots = models.OneToOneField("Account.weeklyTimeSlots",
-                                     related_name='time slots',
-                                     on_delete=models.CASCADE,
-                                     default=None,
-                                     blank=True,
-                                     null=True)
 
 
-class Schedule (models.Model):
-    technician = models.EmailField (_ ('email'), unique=True)
-
-    monday = models.BooleanField (default=False)
-    monday_in = models.TimeField ( )
-    monday_out = models.TimeField ( )
-
-    tuesday = models.BooleanField (default=False)
-    tuesday_in = models.TimeField ( )
-    tuesday_out = models.TimeField ( )
-
-    wednesday = models.BooleanField (default=False)
-    wednesday_in = models.TimeField ( )
-    wednesday_out = models.TimeField ( )
-
-    thursday = models.BooleanField (default=False)
-    thursday_in = models.TimeField ( )
-    thursday_out = models.TimeField ( )
-
-    friday = models.BooleanField (default=False)
-    friday_in = models.TimeField ( )
-    friday_out = models.TimeField ( )
-
-    saturday = models.BooleanField (default=False)
-    saturday_in = models.TimeField ( )
-    saturday_out = models.TimeField ( )
-
-    sunday = models.BooleanField (default=False)
-    sunday_in = models.TimeField ( )
-    sunday_out = models.TimeField ( )
-
-    def __str__(self):
-        return self.technician + '\'s schedule'
-
-
-class weeklyTimeSlots(models.Model):
-
-    tech = models.EmailField (_ ('email'), unique=True)
-    monday_9am = models.BooleanField(default=False)
 
 class Customer (models.Model):
     user = models.OneToOneField ('Account.User',
