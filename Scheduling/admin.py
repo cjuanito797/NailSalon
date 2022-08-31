@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import weeklySchedule, timeSlots
+from .models import TechnicianSchedule, timeSlots
 # Register your models here.
 
-@admin.register(weeklySchedule)
-class weeklyScheduleAdmin (admin.ModelAdmin):
+@admin.register(TechnicianSchedule)
+class scheduleAdmin (admin.ModelAdmin):
     list_display = ['tech']
 
 @admin.register (timeSlots)

@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .managers import CustomUserManger
 
-from Scheduling.models import weeklySchedule
+from Scheduling.models import TechnicianSchedule
 
 # Create your models here.
 
@@ -37,9 +37,7 @@ class Technician (models.Model):
     pay_rate = models.DecimalField (decimal_places=2, max_digits=4)
 
     age = models.PositiveIntegerField(default=0)
-    techSchedule = models.OneToOneField("Scheduling.weeklySchedule",
-                                        on_delete=models.CASCADE,
-                                        default=False)
+
 
 
 
