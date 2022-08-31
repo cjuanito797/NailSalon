@@ -27,6 +27,8 @@ SECRET_KEY = "django-insecure-d4!6d0)!)(5!__6li(6b(sc9=d^xrnu*gns$^^6pzf#9s=9p+(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+TIME_INPUT_FORMATS = ('%I:%M %p',)
+
 ALLOWED_HOSTS = []
 
 
@@ -109,6 +111,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+TIME_INPUT_FORMATS = ('%I:%M %p',)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

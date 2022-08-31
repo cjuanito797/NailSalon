@@ -45,5 +45,5 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(Schedule)
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ['monday']
+    list_display = ['technician']
 
