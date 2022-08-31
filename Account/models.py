@@ -43,6 +43,8 @@ class Technician (models.Model):
 
 
 class Schedule (models.Model):
+    technician = models.EmailField (_ ('email'), unique=True)
+
     monday = models.BooleanField (default=False)
     monday_in = models.TimeField ( )
     monday_out = models.TimeField ( )
