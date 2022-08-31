@@ -40,6 +40,12 @@ class Technician (models.Model):
                                          default=None,
                                          blank=True,
                                          null=True)
+    timeSlots = models.OneToOneField("Account.weeklyTimeSlots",
+                                     related_name='time slots',
+                                     on_delete=models.CASCADE,
+                                     default=None,
+                                     blank=True,
+                                     null=True)
 
 
 class Schedule (models.Model):
@@ -73,6 +79,14 @@ class Schedule (models.Model):
     sunday_in = models.TimeField ( )
     sunday_out = models.TimeField ( )
 
+    def __str__(self):
+        return self.technician + '\'s schedule'
+
+
+class weeklyTimeSlots(models.Model):
+
+    tech = models.EmailField (_ ('email'), unique=True)
+    monday_9am = models.BooleanField(default=False)
 
 class Customer (models.Model):
     user = models.OneToOneField ('Account.User',
