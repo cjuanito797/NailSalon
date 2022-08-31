@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
-from .models import User, Technician, Customer
+from .models import User, Customer, Technician
 from .forms import RegistrationForm
 
 
@@ -34,14 +34,19 @@ class CustomUserAdmin (UserAdmin):
 
 admin.site.register (User, CustomUserAdmin)
 
-
+"""
 @admin.register (Technician)
 class TechAdmin (admin.ModelAdmin):
     list_display = ['user']
+
+"""
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ['user']
 
+@admin.register (Technician)
+class TechAdmin (admin.ModelAdmin):
+    list_display = ['user']
 
 
