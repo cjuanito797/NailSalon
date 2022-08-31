@@ -38,6 +38,9 @@ class Technician (models.Model):
 
     age = models.PositiveIntegerField(default=0)
 
+    schedule = models.OneToOneField("Scheduling.TechnicianSchedule",
+                                    on_delete=models.CASCADE,
+                                    default=False)
 
 
 

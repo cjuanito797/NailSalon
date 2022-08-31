@@ -27,6 +27,7 @@ class TechnicianSchedule (models.Model):
                                           on_delete=models.CASCADE,
                                           default=False)
 
+
     wednesday_availability = models.BooleanField (default=False)
     wednesday_time_In = models.TimeField ( )
     wednesday_time_Out = models.TimeField ( )
@@ -72,15 +73,6 @@ class TechnicianSchedule (models.Model):
                                            on_delete=models.CASCADE,
                                            default=False)
 
-    tuesday_availability = models.BooleanField (default=False)
-    tuesday_time_In = models.TimeField ( )
-    tuesday_time_Out = models.TimeField ( )
-
-    tuesday_timeSlots = models.ForeignKey ("Scheduling.timeSlots",
-                                           related_name="tuesdayTimeSlots",
-                                           on_delete=models.CASCADE,
-                                           default=False)
-
     def __str__(self):
         return self.tech + "\'s schedule"
 
@@ -90,3 +82,6 @@ class timeSlots (models.Model):
     dayOfWeek = models.CharField(blank=False, max_length=9)
     _9_00_am = models.BooleanField (default=False)
     _9_15am = models.BooleanField (default=False)
+
+    def __str__(self):
+        return self.tech + "\'s" + " " + self.dayOfWeek + " Availability"
