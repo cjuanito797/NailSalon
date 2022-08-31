@@ -12,7 +12,16 @@
 {{ tech.user.email }}
     {% if tech.schedule.monday_availability %}
         <p>Tech is available today on monday, below is their available time slots</p>
-        {{}}
+        <table>
+        <thead>
+            <tr>
+                <td>Hours</td>
+                <td>Tech</td>
+                <td>Available</td>
+            </tr>
+        </thead>
+        <tr><td>9am</td></tr>
+        </table>
     {% endif %}
 {% endfor %}
 </body>
