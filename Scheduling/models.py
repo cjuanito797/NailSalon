@@ -82,6 +82,44 @@ class timeSlots (models.Model):
     dayOfWeek = models.CharField(blank=False, max_length=9)
     _9_00_am = models.BooleanField (default=False)
     _9_15am = models.BooleanField (default=False)
+    _9_30am = models.BooleanField(default=False)
+    _9_45am = models.BooleanField(default=False)
+
+    _10_00_am = models.BooleanField (default=False)
+    _10_15am = models.BooleanField (default=False)
+    _10_30am = models.BooleanField (default=False)
+    _10_45am = models.BooleanField (default=False)
+
+    _11_00_am = models.BooleanField (default=False)
+    _11_15am = models.BooleanField (default=False)
+    _11_30am = models.BooleanField (default=False)
+    _11_45am = models.BooleanField (default=False)
+
+    _12_00_pm = models.BooleanField (default=False)
+    _12_15am = models.BooleanField (default=False)
+    _12_30am = models.BooleanField (default=False)
+    _12_45am = models.BooleanField (default=False)
+
+    _1_00_pm = models.BooleanField (default=False)
+    _1_15pm = models.BooleanField (default=False)
+    _1_30pm = models.BooleanField (default=False)
+    _1_45pm = models.BooleanField (default=False)
+
+    _2_00_pm = models.BooleanField (default=False)
+    _2_15pm = models.BooleanField (default=False)
+    _2_30pm = models.BooleanField (default=False)
+    _2_45pm = models.BooleanField (default=False)
+
+    _3_00_pm = models.BooleanField (default=False)
+    _3_15pm = models.BooleanField (default=False)
+    _3_30pm = models.BooleanField (default=False)
+    _3_45pm = models.BooleanField (default=False)
+
+    _4_00_pm = models.BooleanField (default=False)
+    _4_15pm = models.BooleanField (default=False)
+    _4_30pm = models.BooleanField (default=False)
+    _4_45pm = models.BooleanField (default=False)
+
 
     def __str__(self):
         return self.tech + "\'s" + " " + self.dayOfWeek + " Availability"
