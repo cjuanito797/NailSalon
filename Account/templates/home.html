@@ -3,13 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+
+</style>
 </head>
 <body>
 <h1>Currently Under Construction</h1>
 <h2>Here is a list of our technicians and their availability for today and their hours</h2>
-{% for tech in techs %}
-{{ tech.user.email }}
+<table>
 
-{% endfor %}
+
+    <tr>
+        <th>Available Technicians</th>
+        {% for tech in techs %}
+            <th>{{ tech.user.first_name }} {{ tech.user.last_name }}</th>
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <th>9:00am<BR></th>
+        {% for tech in techs %}
+            {% if tech.schedule.getTodaysTimeSlots.nine_00_am %}<td bgcolor="green">Available</td>{% else %}<td bgcolor="#ff4500">Not Available</td>{% endif %}
+
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>9:15am</th>
+        {% for tech in techs %}
+          {% if tech.schedule.getTodaysTimeSlots.nine_15am %}<td bgcolor="green">Available</td>{% else %}<td bgcolor="#ff4500">Not Available</td>{% endif %}
+        {% endfor %}
+    </tr>
+
+    <tr>
+        <th>9:30am<BR></th>
+         {% for tech in techs %}
+             {% if tech.schedule.getTodaysTimeSlots.nine_30am %}<td bgcolor="green">Available</td>{% else %}<td bgcolor="#ff4500">Not Available</td>{% endif %}
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>9:45am</th>
+         {% for tech in techs %}
+            {% if tech.schedule.getTodaysTimeSlots.nine_45am %}<td bgcolor="green">Available</td>{% else %}<td bgcolor="#ff4500">Not Available</td>{% endif %}
+        {% endfor %}
+    </tr>
+    <tr>
+        <th>10:00am</th>
+    </tr>
+
+    <tr>
+        <th>10:15am</th>
+    </tr>
+
+    <tr>
+        <th>10:30am</th>
+    </tr>
+
+    <tr>
+        <th>10:45am</th>
+    </tr>
+
+    <tr>
+        <th>11:00am</th>
+    </tr>
+
+    <tr>
+        <th>11:15am</th>
+    </tr>
+
+    <tr>
+        <th>11:30am</th>
+    </tr>
+
+    <tr>
+        <th>11:45am</th>
+    </tr>
+
+    <tr>
+        <th>12:00pm</th>
+    </tr>
+
+    <tr></tr>
+
+
+
+
+</table>
 </body>
 </html>
