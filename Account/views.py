@@ -34,6 +34,7 @@ def home(request):
 
 
 
+
     return render (request, "home.html", {"techs": techs, "dayOfWeek" : dayOfWeek})
 
 
