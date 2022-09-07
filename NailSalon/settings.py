@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'Account.apps.AccountConfig',
     'Scheduling.apps.SchedulingConfig',
     'django_behave',
+    'Appointments.apps.AppointmentsConfig',
 ]
 
 MIDDLEWARE = [
