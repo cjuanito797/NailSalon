@@ -1,8 +1,25 @@
 from django.db import models
+class Category(models.Model):
+    name = models.CharField(max_length=200,
+                            db_index=True)
+    slug = models.SlugField(max_length=200,
+                            unique=True)
 
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'category'
+        verbose_name_plural = 'categories'
+
+    def __str__(self):
+        return self.name
 
 # Create your models here.
 class Service (models.Model):
+    category = models.ForeignKey(Category,
+                                 on_delete=models.CASCADE,
+                                 related_name='products',
+                                 blank=True,
+                                 default=None)
     name = models.CharField (max_length=50, db_index=True, blank=False)
     description = models.TextField (max_length=150, blank=False)
     slug = models.SlugField (max_length=50, db_index=True)
