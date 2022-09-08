@@ -9,4 +9,4 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Appointment)
 class AppointmentModel(admin.ModelAdmin):
-    list_display = ['customer']
+    list_display = ['customer', 'start_time', 'end_time', 'date']

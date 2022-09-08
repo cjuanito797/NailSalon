@@ -7,6 +7,9 @@ from .models import Technician
 
 # Create your views here.
 def home(request):
+    return render(request, "home.html")
+
+def availableTechs(request):
     # print all available technicians for that day.
     curr_date = date.today ( )
     dayOfWeek = calendar.day_name[curr_date.weekday ( )]
@@ -35,8 +38,8 @@ def home(request):
 
 
 
-    return render (request, "home.html", {"techs": techs, "dayOfWeek" : dayOfWeek})
+    return render (request, "availableTechs.html", {"techs": techs, "dayOfWeek" : dayOfWeek})
 
 
 def mainRegister(request):
-    return render (request, "home.html")
+    return render (request, "availableTechs.html")
