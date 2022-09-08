@@ -16,8 +16,10 @@ class Category(models.Model):
 # Create your models here.
 class Service (models.Model):
     category = models.ForeignKey(Category,
+                                 on_delete=models.CASCADE,
                                  related_name='products',
-                                 on_delete=models.CASCADE)
+                                 blank=True,
+                                 default=None)
     name = models.CharField (max_length=50, db_index=True, blank=False)
     description = models.TextField (max_length=150, blank=False)
     slug = models.SlugField (max_length=50, db_index=True)
