@@ -59,6 +59,6 @@ class Appointment (models.Model):
     def getTotalDuration(self):
         x = 0
         for service in services:
-            x += 1
+            x += service.duration
         self.totalDuration = x
         return self.totalDuration
