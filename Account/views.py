@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from datetime import date
 import calendar
-
+from .forms import RegistrationForm
+from django.shortcuts import redirect
 from .models import Technician
-
+from django.urls import reverse
+from django.views.generic import FormView
 
 # Create your views here.
 def home(request):
@@ -38,5 +40,16 @@ def home(request):
     return render (request, "home.html", {"techs": techs, "dayOfWeek" : dayOfWeek})
 
 
-def mainRegister(request):
-    return render (request, "registration/registration.html")
+class registration_view(FormView):
+    def post(self, request):
+        form = RegistrationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect(reverse('account:home'))
+        return render(request, 'registration/registration.html', {'form': form})
+
+    def get(self, request):
+        form = RegistrationForm()
+        return render(request, 'registration/registration.html', {'form': form})
