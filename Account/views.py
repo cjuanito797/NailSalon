@@ -39,4 +39,4 @@ def home(request):
 
 
 def mainRegister(request):
-    return render (request, "home.html")
+    return render (request, "registration/registration.html")
