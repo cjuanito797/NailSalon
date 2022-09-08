@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from datetime import date
 import calendar
 
+from .forms import LoginForm
 from .models import Technician
 
 
@@ -11,8 +14,8 @@ def home(request):
 
 def availableTechs(request):
     # print all available technicians for that day.
-    curr_date = date.today ( )
-    dayOfWeek = calendar.day_name[curr_date.weekday ( )]
+    curr_date = date.today()
+    dayOfWeek = calendar.day_name[curr_date.weekday()]
 
     if dayOfWeek == 'Monday':
         techs = Technician.objects.filter(schedule__monday_availability=True)
@@ -35,11 +38,33 @@ def availableTechs(request):
     else:
         techs = Technician.objects.filter(schedule__sunday_availability=True)
 
+    return render(request, "home.html", {"techs": techs, "dayOfWeek": dayOfWeek})
 
 
+
+
+
+def user_login(request):
+    form = LoginForm(request.POST)
+    if form.is_valid():
+
+        cd = form.cleaned_data
+        user = authenticate(request,
+                            username=cd['email'],
+                            password=cd['password'])
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return render(redirect('account:home'))
+            else:
+                return HttpResponse('Disabled Account')
+        else:
+            return HttpResponse('Invalid Login')
+    else:
+        form = LoginForm()
+    return render(request, 'registration/LoginForm.html', {'form': form})
 
     return render (request, "availableTechs.html", {"techs": techs, "dayOfWeek" : dayOfWeek})
 
 
-def mainRegister(request):
-    return render (request, "availableTechs.html")
+
