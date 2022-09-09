@@ -13,7 +13,10 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def home(request):
-    return render (request, "home.html")
+    return render (request, "base.html")
+
+def contactUs(request):
+    return render(request, "Home/contactUs.html")
 
 
 def availableTechs(request):
@@ -70,7 +73,7 @@ def user_login(request):
 def customerView(request):
     this_user = User.objects.get (pk=request.user.id)
 
-    return render (request, 'account/base.html',
+    return render (request, 'account/customerView.html',
                    {'this_user': this_user})
 
 
