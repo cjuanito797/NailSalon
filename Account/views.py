@@ -65,3 +65,17 @@ def user_login(request):
     return render(request, 'registration/LoginForm.html', {'form': form})
 
     return render (request, "availableTechs.html", {"techs": techs, "dayOfWeek" : dayOfWeek})
+
+class registration_view(FormView):
+    def post(self, request):
+        form = RegistrationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect(reverse('account:home'))
+        return render(request, 'registration/registration.html', {'form': form})
+
+    def get(self, request):
+        form = RegistrationForm()
+        return render(request, 'registration/registration.html', {'form': form})
