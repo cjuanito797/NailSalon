@@ -55,7 +55,7 @@ def user_login(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return render(redirect('account:home'))
+                return render(redirect ('account:availableTechs'))
             else:
                 return HttpResponse('Disabled Account')
         else:
