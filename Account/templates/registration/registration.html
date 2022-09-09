@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register Below</title>
-</head>
-<body>
+{% load static %}
+{% block title %}
+    <title>Signup!</title>
+{% endblock %}
 
-</body>
-</html>
+{% block content %}
+
+    <h1 class="fs-2 text-center">Create Your Account Below</h1>
+
+        <form class="w-50 py-3 mx-auto d-flex flex-column align-items-center" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-floating mb-3 w-100">
+                {{ field }}
+                {{ field.label_tag }}
+                </div>
+            {% endfor %}
+            <input class="btn btn-primary rounded-pill m-auto text-light" type="submit" value="Join Now">
+        </form>
+
+{% endblock %}
