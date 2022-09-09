@@ -72,3 +72,18 @@ def customerView(request):
 
     return render (request, 'account/base.html',
                    {'this_user': this_user})
+
+
+class registration_view(FormView):
+    def post(self, request):
+        form = RegistrationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect(reverse('account:home'))
+        return render(request, 'registration/registration.html', {'form': form})
+
+    def get(self, request):
+        form = RegistrationForm()
+        return render(request, 'registration/registration.html', {'form': form})
