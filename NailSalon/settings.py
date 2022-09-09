@@ -59,7 +59,7 @@ ROOT_URLCONF = "NailSalon.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR / 'templates')]
+        "DIRS": [BASE_DIR / 'templates']
         ,
         "APP_DIRS": True,
         "OPTIONS": {
@@ -117,7 +117,7 @@ TIME_INPUT_FORMATS = ('%I:%M %p',)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
-LOGIN_REDIRECT_URL = '../availableTechs/'
+LOGIN_REDIRECT_URL = '../customerView'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = '/'
 

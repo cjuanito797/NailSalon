@@ -6,7 +6,8 @@ from . import views
 app_name = 'account'
 
 urlpatterns = [
+    re_path (r'^customerView/$', views.customerView, name='customerView'),
     path("", views.home, name="home"),
-    path("login/", views.user_login, name="user_login"),
+    path("login/", auth_views.LoginView.as_view(), name="user_login"),
     path("availableTechs/", views.availableTechs, name="availableTechs")
 ]
