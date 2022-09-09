@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
 
-{% block title %}<title>Log In</title> {% endblock %}
+{% block head %}
 
+    {% block title %}<title>Log In</title> {% endblock %}
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+
+
+{% endblock %}
 {% block navigation %}
     <header class="navbar">
         <div class="container">
@@ -41,26 +50,46 @@
 {% endblock %}
 
 {% block mainbody %}
-    <!-- Hero content: will be in the middle -->
+
     <div class="hero-body">
         <div class="container has-text-centered">
-            <p class="title">
-                Login Below
-            </p>
+            <div class="column is-8 is-offset-2">
 
-            <div class="w-50 container p-5 pb-3 border border-4 border-secondary rounded-3">
-                <form class="px-5 py-3 mx-auto d-flex flex-column align-items-center"
-                      action="{% url 'account:user_login' %}" method="post">
-                    {% csrf_token %}
-                    {% for field in form %}
-                        <div id="login-form">
-                            {{ field.label_tag }}
-                            {{ field }}
+
+                <h3 class="title has-text-white">Login</h3>
+                <hr class="login-hr">
+                <p class="subtitle has-text-white">Sign in to rejuvinate yourself.</p>
+
+                <div class="box">
+                    <div class="box">
+                        <img src="https://designcuts.b-cdn.net/wp-content/uploads/2021/06/prew01-3.jpg" style="width: 50%;">
+                    </div>
+                    <div class="title has-text-grey is-5">Please enter your email and password.</div>
+                    <form class="px-5 py-3 mx-auto d-flex flex-column align-items-center" action="/login/"
+                          method="post">
+                        <input type="hidden" name="csrfmiddlewaretoken"
+                               value="n6VKEp4pBqEzwKZ69jbSinmxzGZ3RC2Wgw2ERPW96Zf1C6dE50qlaEaEJT16Y0E5">
+                        {% csrf_token %}
+
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" type="email" placeholder="Email" autofocus=""
+                                       name="username" autofocus autocapitalize="none" autocomplete="username"
+                                       maxlength="254" required id="id_username">
+                            </div>
                         </div>
-                    {% endfor %}
-                    <input type="hidden" name="next" value="{{ next }}"/>
-                    <p><input class="btn btn-primary rounded-pill m-auto text-ligh" type="submit" value="Log-in"></p>
-                </form>
+
+                        <div class="field">
+                            <div class="control">
+                                <input class="input is-large" placeholder="Password" type="password" name="password"
+                                       autocomplete="current-password" required id="id_password">
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="next" value=""/>
+                        <button class="button is-block is-danger is-large is-fullwidth"  type="submit">Login</button>
+                    </form>
+                </div>
             </div>
 
 
