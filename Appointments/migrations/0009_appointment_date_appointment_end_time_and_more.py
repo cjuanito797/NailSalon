@@ -35,4 +35,12 @@ class Migration(migrations.Migration):
             field=models.DecimalField(decimal_places=2, default=0.0, max_digits=10),
             preserve_default=False,
         ),
+<<<<<<< HEAD
     ]
+=======
+<<<<<<< HEAD
+    ]
+=======
+    ]
+>>>>>>> 528aa387078ca6a132ffa581ee78b5c1a0a13164
+>>>>>>> Registration

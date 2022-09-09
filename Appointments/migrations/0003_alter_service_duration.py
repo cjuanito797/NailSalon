@@ -13,4 +13,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="service", name="duration", field=models.TimeField(),
         ),
+<<<<<<< HEAD
     ]
+=======
+<<<<<<< HEAD
+    ]
+=======
+    ]
+>>>>>>> 528aa387078ca6a132ffa581ee78b5c1a0a13164
+>>>>>>> Registration

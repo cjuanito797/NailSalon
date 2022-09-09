@@ -15,4 +15,12 @@ class Migration(migrations.Migration):
             name="duration",
             field=models.DurationField(blank=True),
         ),
+<<<<<<< HEAD
     ]
+=======
+<<<<<<< HEAD
+    ]
+=======
+    ]
+>>>>>>> 528aa387078ca6a132ffa581ee78b5c1a0a13164
+>>>>>>> Registration
