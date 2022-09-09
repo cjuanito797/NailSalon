@@ -8,10 +8,13 @@ from django.views.generic import FormView
 from django.http import HttpResponse
 from .forms import RegistrationForm, LoginForm
 from .models import Technician
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 def home(request):
     return render(request, "home.html")
+
 
 def availableTechs(request):
     # print all available technicians for that day.
@@ -42,8 +45,6 @@ def availableTechs(request):
     return render(request, "home.html", {"techs": techs, "dayOfWeek": dayOfWeek})
 
 
-
-
 def user_login(request):
     form = LoginForm(request.POST)
     if form.is_valid():
@@ -55,16 +56,23 @@ def user_login(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return render(redirect ('account:availableTechs'))
+                return render(redirect ('account:customerView'))
             else:
                 return HttpResponse('Disabled Account')
         else:
             return HttpResponse('Invalid Login')
     else:
         form = LoginForm()
-    return render(request, 'registration/LoginForm.html', {'form': form})
+    return render(request, 'registration/login.html', {'form': form})
 
-    return render (request, "availableTechs.html", {"techs": techs, "dayOfWeek" : dayOfWeek})
+
+@login_required
+def customerView(request):
+    this_user = User.objects.get (pk=request.user.id)
+
+    return render (request, 'account/base.html',
+                   {'this_user': this_user})
+
 
 class registration_view(FormView):
     def post(self, request):
