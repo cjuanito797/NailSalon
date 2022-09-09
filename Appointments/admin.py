@@ -14,5 +14,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Appointment)
 class AppointmentModel(admin.ModelAdmin):
+<<<<<<< HEAD
     list_display = ['customer', 'start_time', 'end_time', 'date']
 
+=======
+    list_display = ['customer', 'start_time', 'end_time', 'date']
+>>>>>>> 528aa387078ca6a132ffa581ee78b5c1a0a13164
