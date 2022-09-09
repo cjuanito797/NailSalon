@@ -31,4 +31,4 @@ class Migration(migrations.Migration):
             ],
             options={"ordering": ("name",), "index_together": {("id", "slug")},},
         ),
-    ]
+]
