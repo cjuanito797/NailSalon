@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.views.generic import FormView
 from django.http import HttpResponse
 from .forms import RegistrationForm, LoginForm
-from .models import Technician
+from .models import Technician, User
 from django.contrib.auth.decorators import login_required
 
 
@@ -42,7 +42,7 @@ def availableTechs(request):
     else:
         techs = Technician.objects.filter(schedule__sunday_availability=True)
 
-    return render(request, "home.html", {"techs": techs, "dayOfWeek": dayOfWeek})
+    return render(request, "availableTechs.html", {"techs": techs, "dayOfWeek": dayOfWeek})
 
 
 def user_login(request):
@@ -56,14 +56,14 @@ def user_login(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return render(redirect ('account:customerView'))
+                return render (redirect ('account:customerView'))
             else:
                 return HttpResponse('Disabled Account')
         else:
             return HttpResponse('Invalid Login')
     else:
         form = LoginForm()
-    return render(request, 'registration/login.html', {'form': form})
+    return render (request, 'registration/login.html', {'form': form})
 
 
 @login_required
