@@ -7,7 +7,6 @@
 
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
 
 
@@ -35,12 +34,10 @@
                     <a class="navbar-item is-active" href="{% url 'account:user_login' %}">
                         Login
                     </a>
-                    <span class="navbar-item">
-              <a class="button is-success is-inverted">
 
-                <span>Sign Up</span>
-              </a>
-            </span>
+                    <a class="navbar-item" href="{% url 'account:user_registration' %}">
+                        SignUp
+                    </a>
                 </div>
             </div>
         </div>
@@ -62,8 +59,10 @@
 
                 <div class="box">
                     <div class="box">
-                        <img src="https://designcuts.b-cdn.net/wp-content/uploads/2021/06/prew01-3.jpg" style="width: 50%;">
+                        <img src="https://designcuts.b-cdn.net/wp-content/uploads/2021/06/prew01-3.jpg"
+                             style="width: 50%;">
                     </div>
+
                     <div class="title has-text-grey is-5">Please enter your email and password.</div>
                     <form class="px-5 py-3 mx-auto d-flex flex-column align-items-center" action="/login/"
                           method="post">
@@ -73,7 +72,7 @@
 
                         <div class="field">
                             <div class="control">
-                                <input class="input is-large" type="email" placeholder="Email" autofocus=""
+                                <input class="input is-medium " type="email" placeholder="Email" autofocus=""
                                        name="username" autofocus autocapitalize="none" autocomplete="username"
                                        maxlength="254" required id="id_username">
                             </div>
@@ -81,14 +80,19 @@
 
                         <div class="field">
                             <div class="control">
-                                <input class="input is-large" placeholder="Password" type="password" name="password"
+                                <input class="input is-medium is-fullwidth" placeholder="Password" type="password" name="password"
                                        autocomplete="current-password" required id="id_password">
                             </div>
                         </div>
 
                         <input type="hidden" name="next" value=""/>
-                        <button class="button is-block is-danger is-large is-fullwidth"  type="submit">Login</button>
+                        <button class="button is-block is-primary is-large is-fullwidth" type="submit">Login</button>
                     </form>
+                    <p class="has-text-grey">
+                        <a href="{% url 'account:user_registration' %}">Sign Up</a> &nbsp;·&nbsp;
+                        <a href="">Forgot Password</a> &nbsp;·&nbsp;
+                        <a href="">Need Help?</a>
+                    </p>
                 </div>
             </div>
 

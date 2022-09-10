@@ -84,7 +84,7 @@ class registration_view(FormView):
         if form.is_valid():
             form.save()
 
-            return redirect(reverse('account:home'))
+            return redirect(reverse('account:user_login'))
         return render(request, 'registration/registration.html', {'form': form})
 
     def get(self, request):
