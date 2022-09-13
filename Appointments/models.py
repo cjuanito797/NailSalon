@@ -1,4 +1,5 @@
 from django.db import models
+from Account.models import Technician
 class Category(models.Model):
     name = models.CharField(max_length=200,
                             db_index=True)
@@ -62,3 +63,15 @@ class Appointment (models.Model):
             x += service.duration
         self.totalDuration = x
         return self.totalDuration
+
+class Sale(models.Model):
+    service = models.ForeignKey(Service,
+                                on_delete=models.CASCADE,
+                                related_name='service')
+    technician = models.ForeignKey(Technician,
+                                on_delete=models.CASCADE,
+                                related_name='technician')
+    appointment = models.ForeignKey(Appointment,
+                                on_delete=models.CASCADE,
+                                related_name='appointment')
+                                
