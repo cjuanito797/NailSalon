@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.views.generic import FormView
 from django.http import HttpResponse
 from .forms import RegistrationForm, LoginForm
-from .models import Technician, User
+from .models import Technician, User, Customer
 from django.contrib.auth.decorators import login_required
 
 
@@ -15,8 +15,9 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     return render (request, "base.html")
 
+
 def contactUs(request):
-    return render(request, "Home/contactUs.html")
+    return render (request, "Home/contactUs.html")
 
 
 def availableTechs(request):
@@ -77,16 +78,23 @@ def customerView(request):
                    {'this_user': this_user})
 
 
-class registration_view(FormView):
+class registration_view (FormView):
     def post(self, request):
-        form = RegistrationForm(request.POST)
+        form = RegistrationForm (request.POST)
 
-        if form.is_valid():
-            form.save()
+        if form.is_valid ( ):
+            # create a customer object and attatch it to the newly created user
+            new_user = form.save (commit=False)
+            form.save ( )
 
-            return redirect(reverse('account:user_login'))
-        return render(request, 'registration/registration.html', {'form': form})
+            new_customer = Customer.objects.create (user=new_user, bio='')
+            new_customer.save ( )
+
+            return redirect (reverse ('account:user_login'))
+        return render (request, 'registration/registration.html', {'form': form})
 
     def get(self, request):
-        form = RegistrationForm()
-        return render(request, 'registration/registration.html', {'form': form})
+        form = RegistrationForm ( )
+        return render (request, 'registration/registration.html', {'form': form})
+
+# Begin to add all of the CRUD operations on the Account Side
