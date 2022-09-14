@@ -80,8 +80,8 @@ class TechnicianSchedule (models.Model):
     def getTodaysTimeSlots(self):
         # return the correct time slots dependent on the day of the week.
         curr_date = date.today ( )
-        dayOfWeek = calendar.day_name[curr_date.weekday ( )]
-
+        dayOfWeek = calendar.day_name[curr_date.weekday ( )].lower()
+        print(dayOfWeek)
         if dayOfWeek == 'Monday':
             return self.monday_timeSlots
 
