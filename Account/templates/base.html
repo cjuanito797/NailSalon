@@ -13,12 +13,10 @@
     <body>
 
     {% block content %}
-        <section class="hero is-primary is-fullheight" style="background-color: lightcoral">
+        <section class="hero is-primary is-fullheight has-text-black" style="background-color: #f2efe8; text-decoration-color: black">
         <!-- Hero head: will stick at the top -->
         <div class="hero-head">
             {% block navigation %}
-
-
                 <nav class="navbar" role="navigation" aria-label="main navigation">
                     <div class="navbar-brand">
                         <a class="navbar-item" href="{% url 'account:home' %}">
@@ -35,7 +33,7 @@
 
                     <div id="navbarBasicExample" class="navbar-menu">
                         <div class="navbar-start">
-                            <a class="navbar-item">
+                            <a class="navbar-item" href="{% url 'account:gallery' %}">
                                 Gallery
                             </a>
 
@@ -49,7 +47,7 @@
 
 
                             <div class="navbar-item has-dropdown is-hoverable">
-                                <a class="navbar-link">
+                                <a class="navbar-link has-text-black">
                                     More
                                 </a>
 
@@ -100,9 +98,9 @@
         </div>
         {% block mainbody %}
             <!-- Hero content: will be in the middle -->
-            <div class="hero-body">
-                <div class="container has-text-centered">
-                    <p class="title">
+            <div class="hero-body is-align-items-stretch">
+                <div class="container has-text-centered has-text-black">
+                    <p class="title has-text-black">
                         About Us
                     </p>
 

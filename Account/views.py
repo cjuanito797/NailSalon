@@ -13,7 +13,10 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def home(request):
-    return render (request, "base.html")
+    if request.user.is_authenticated:
+        return redirect(reverse('account:customerView'))
+    else:
+        return render (request, "base.html")
 
 
 def contactUs(request):
@@ -69,6 +72,8 @@ def user_login(request):
         form = LoginForm ( )
     return render (request, 'registration/login.html', {'form': form})
 
+def gallery(request):
+    return render(request, 'Home/gallery.html')
 
 @login_required
 def customerView(request):
