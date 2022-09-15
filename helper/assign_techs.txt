@@ -1,0 +1,36 @@
+Purpose: 
+    -   Split appointment into sale(s)
+    -   Auto-assign technicians for each Sale based on requirements
+Use:
+    -   import "helper.assign_techs"
+    -   call "Assign_techs.process(appointment_id)"
+
+Components:
+    Class Assign_techs:
+        params: none
+        -   act as main method of the script
+
+        def process:
+            params: appointment_id
+            -   process every steps in the script
+
+    Class _Process: 
+        params: appointment_id
+        -   get current day of week
+
+        def _get_available_techs_on_day:
+            params: none
+            -   retrieve timeslot of techs who work in current day
+
+        def _sort_tech_by_timeslot: (private)
+            params: all_time_slots(list), slots_search(list)
+            -   return techs info available in slots_search
+
+        def _split_appointment_to_sales:
+            params: none
+            -   get services list from appointment object 
+            using its id and current date
+            -   (create Sale objects with service list)
+        
+
+

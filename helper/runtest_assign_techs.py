@@ -1,7 +1,6 @@
-import assign_techs
-from datetime import date
+from assign_techs import Assign_techs
 
-appointment = assign_techs.process_appointment_id(4)
+appointment = Assign_techs.process(3)
 
 for i in appointment:
     print(i)

@@ -4,5 +4,6 @@ __pycache__
 local_settings.py
 .idea
 .DS_Store
+.db.sqlite3
 
 *.pyc
