@@ -42,8 +42,8 @@ class Technician (models.Model):
                                     on_delete=models.CASCADE,
                                     default=False)
 
-
-
+    def __str__(self):
+        return self.user.first_name
 class Customer (models.Model):
     user = models.OneToOneField ('Account.User',
                                  related_name='customer',

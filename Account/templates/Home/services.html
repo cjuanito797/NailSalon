@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}<title>Gallery</title>{% endblock %}
+{% block title %}<title>Our Services</title>{% endblock %}
 
 
 {% block navigation %}
@@ -22,15 +22,15 @@
 
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-                <a class="navbar-item is-active" href="{% url 'account:gallery' %}">
+                <a class="navbar-item" href="{% url 'account:gallery' %}">
                     Gallery
                 </a>
 
-                <a class="navbar-item" href="{% url 'account:services' %}">
+                <a class="navbar-item is-active" href="{% url 'account:services' %}">
                     Our Services
                 </a>
 
-                <a class="navbar-item" href="{% url 'account:aboutUs' %}">
+                <a class="navbar-item">
                     About Us
                 </a>
 
@@ -43,21 +43,19 @@
                         <a class="navbar-item">
                             About
                         </a>
-
                         <a class="navbar-item">
                             Jobs
                         </a>
-
                         <a class="navbar-item" style="color: black;">
                             Contact
                         </a>
-
                         <hr class="navbar-divider">
                         <a class="navbar-item">
                             Report an issue
                         </a>
                     </div>
                 </div>
+
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <a class="button is-success" href="{% url 'account:home' %}">
@@ -76,7 +74,6 @@
                                 Signout
                             </a>
 
-
                         {% else %}
                             <a class="button is-info" href="{% url 'account:user_registration' %}">
                                 <strong>Sign up</strong>
@@ -93,26 +90,17 @@
     </nav>
 {% endblock %}
 
-
 {% block mainbody %}
     <section class="hero is-fullheight">
         <div class="hero-head has-text-centered">
             <div class="">
                 <p class="title has-text-black">
-                    Our Gallery
+                    View Our Services below
                 </p>
             </div>
             <section class="section has-text-left">
                 <h1 class="title has-text-black">Nails</h1>
-                <div class="imageContainer" style="width: 75%; overflow-x: auto; overflow-y: hidden; white-space: nowrap;">
-                    <img src="../../static/galleryImages/a.jpg" style="width: 250px; height: 250px;">
-                    <img src="../../static/galleryImages/1.jpg" style="width: 250px; height: 250px;">
-                    <img src="../../static/galleryImages/3.jpg" style="width: 250px; height: 250px;">
-                    <img src="../../static/galleryImages/4.jpg" style="width: 250px; height: 250px;">
-                    <img src="../../static/galleryImages/5.jpg" style="width: 250px; height: 250px;">
-                    <img src="../../static/galleryImages/6.jpg" style="width: 250px; height: 250px;">
 
-                </div>
 
             </section>
 
@@ -121,11 +109,6 @@
 
             </section>
         </div>
-
-
     </section>
-
-
-
 {% endblock %}
 

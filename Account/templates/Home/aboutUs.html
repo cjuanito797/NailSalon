@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}<title>Gallery</title>{% endblock %}
+{% block title %}<title>About Us</title>{% endblock %}
 
 
 {% block navigation %}
@@ -22,7 +22,7 @@
 
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-                <a class="navbar-item is-active" href="{% url 'account:gallery' %}">
+                <a class="navbar-item" href="{% url 'account:gallery' %}">
                     Gallery
                 </a>
 
@@ -30,7 +30,7 @@
                     Our Services
                 </a>
 
-                <a class="navbar-item" href="{% url 'account:aboutUs' %}">
+                <a class="navbar-item is-active" href="{% url 'account:aboutUs' %}">
                     About Us
                 </a>
 
@@ -99,31 +99,10 @@
         <div class="hero-head has-text-centered">
             <div class="">
                 <p class="title has-text-black">
-                    Our Gallery
+                    About Us
                 </p>
             </div>
-            <section class="section has-text-left">
-                <h1 class="title has-text-black">Nails</h1>
-                <div class="imageContainer" style="width: 75%; overflow-x: auto; overflow-y: hidden; white-space: nowrap;">
-                    <img src="../../static/galleryImages/a.jpg" style="width: 250px; height: 250px;">
-                    <img src="../../static/galleryImages/1.jpg" style="width: 250px; height: 250px;">
-                    <img src="../../static/galleryImages/3.jpg" style="width: 250px; height: 250px;">
-                    <img src="../../static/galleryImages/4.jpg" style="width: 250px; height: 250px;">
-                    <img src="../../static/galleryImages/5.jpg" style="width: 250px; height: 250px;">
-                    <img src="../../static/galleryImages/6.jpg" style="width: 250px; height: 250px;">
 
-                </div>
-
-            </section>
-
-            <section class="section has-text-left">
-                <h1 class="title has-text-black">Pedicures</h1>
-
-            </section>
-        </div>
-
-
-    </section>
 
 
 

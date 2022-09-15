@@ -1,5 +1,6 @@
 from django.db import models
 from Account.models import Technician
+
 class Category(models.Model):
     name = models.CharField(max_length=200,
                             db_index=True)
