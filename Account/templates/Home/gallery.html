@@ -6,7 +6,7 @@
 
 {% block navigation %}
 
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="{% url 'account:home' %}">
                 <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
@@ -33,6 +33,30 @@
                 <a class="navbar-item" href="{% url 'account:aboutUs' %}">
                     About Us
                 </a>
+
+                {% if request.user.is_authenticated %}
+                 <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link has-text-black">
+                        My Account
+                    </a>
+
+                    <div class="navbar-dropdown" style="color: black;">
+                        <a class="navbar-item">
+                            My Appointment History
+                        </a>
+                        <a class="navbar-item">
+                            My Profile
+                        </a>
+                        <a class="navbar-item" style="color: black;">
+                            My Promotions
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Security Settings
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
 
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link has-text-black">
