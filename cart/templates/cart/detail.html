@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head %}
+ <meta charset="utf-8"/>
+    <title>{% block title %}My Cart{% endblock %}</title>
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+{% endblock %}
+
+{% block navigation %}
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{% url 'account:home' %}">
+                <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'account:gallery' %}">
+                    Gallery
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:services' %}">
+                    Our Services
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:aboutUs' %}">
+                    About Us
+                </a>
+
+                {% if request.user.is_authenticated %}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link has-text-black">
+                            My Account
+                        </a>
+
+                        <div class="navbar-dropdown" style="color: black;">
+                            <a class="navbar-item">
+                                My Appointment History
+                            </a>
+                            <a class="navbar-item">
+                                My Profile
+                            </a>
+                            <a class="navbar-item" style="color: black;">
+                                My Promotions
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item">
+                                Security Settings
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link has-text-black">
+                        More
+                    </a>
+
+                    <div class="navbar-dropdown" style="color: black;">
+                        <a class="navbar-item">
+                            About
+                        </a>
+                        <a class="navbar-item">
+                            Jobs
+                        </a>
+                        <a class="navbar-item" style="color: black;">
+                            Contact
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Report an issue
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            </div>
+
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+
+                        <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                            Book Appointment
+                        </a>
+
+                        <a class="button is-light" href="{% url 'account:customerView' %}">
+                            Sign Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </nav>
+{% endblock %}
+
+{% block mainbody %}
+
+    <h1>Your shopping cart</h1>
+    <table class="cart">
+        <thead>
+        <tr>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in cart %}
+            {% with service=item.service %}
+                <tr>
+                    <td>
+                        <a href="{{ service.get_absolute_url }}">
+                            <img src="
+                                    {% if service.image %}{{ service.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}"
+                                 alt="" width="100" height="200">
+                        </a>
+                    </td>
+                    <td>{{ service.name }}</td>
+                    <td>
+                        <form action="{% url "cart:cart_add" service.id %}" method="post">
+                            {{ item.update_quantity_form.quantity }}
+                            {{ item.update_quantity_form.update }}
+                            <input type="submit" value="Update">
+                            {% csrf_token %}
+                        </form>
+                    </td>
+                    <td><a href="{% url "cart:cart_remove" service.id %}">Remove</a></td>
+                    <td class="num">${{ item.price }}</td>
+                    <td class="num">${{ item.total_price }}</td>
+                </tr>
+            {% endwith %}
+        {% endfor %}
+        <tr class="total">
+            <td>Total</td>
+            <td colspan="4"></td>
+            <td class="num" style="color: black">${{ cart.get_total_price }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="text-right">
+        <a href="{% url "appointments:service_list" %}" class="button is-primary">Continue shopping</a>
+        <a href="{% url "appointments:service_list" %}" class="button is-primary">Checkout</a>
+
+
+    </p>
+
+{% endblock %}

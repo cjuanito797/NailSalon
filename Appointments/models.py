@@ -1,6 +1,6 @@
 from django.db import models
 from Account.models import Technician
-
+from django.urls import reverse
 class Category(models.Model):
     name = models.CharField(max_length=200,
                             db_index=True)
@@ -14,6 +14,10 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('appointments:service_list_by_category',
+                       args=[self.slug])
 
 # Create your models here.
 class Service (models.Model):
@@ -41,6 +45,9 @@ class Service (models.Model):
         This will be utilized to link to a service description page, where we list more information
         :return:
         """
+
+        return reverse('appointments:service_detail',
+                       args=[self.id, self.slug])
 
 
 class Appointment (models.Model):

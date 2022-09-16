@@ -10,10 +10,9 @@ import os.path
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path (__file__).resolve ( ).parent.parent
 
 AUTH_USER_MODEL = 'Account.User'
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -28,7 +27,6 @@ TIME_INPUT_FORMATS = ('%I:%M %p',)
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +40,7 @@ INSTALLED_APPS = [
     'Scheduling.apps.SchedulingConfig',
     'django_behave',
     'Appointments.apps.AppointmentsConfig',
+    'cart.apps.CartConfig'
 ]
 
 MIDDLEWARE = [
@@ -68,13 +67,13 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "cart.context_processors.cart"
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = "NailSalon.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -86,7 +85,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -94,11 +92,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", },
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -117,9 +114,11 @@ TIME_INPUT_FORMATS = ('%I:%M %p',)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
-LOGIN_REDIRECT_URL = '../customerView'
+LOGIN_REDIRECT_URL = '../customerView/'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = '/'
+
+CART_SESSION_ID = 'cart'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -127,3 +126,4 @@ LOGOUT_REDIRECT_URL = '/'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 TEST_RUNNER = 'django_behave'
+
