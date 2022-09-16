@@ -151,13 +151,13 @@
                 <h1 class="title has-text-black">Categories</h1>
                 <div class="container" style="width: 25%; margin-left: 0px;">
 
-                    <ul class="menu-list is-size-3 has-background-white-bis is-radiusless">
-                        <li {% if not category %}class="selected"{% endif %}>
+                    <ul class="menu-list is-size-5 is-hoverable" style="background-color: antiquewhite; border-radius: 25px; padding: 15px;">
+                        <li {% if not category %}class="is-active"{% endif %}>
                             <a href="{% url "appointments:service_list" %}">All</a>
                         </li>
                         {% for c in categories %}
-                            <li {% if category.slug == c.slug %}class="selected"{% endif %}>
-                                <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                            <li {% if category.slug == c.slug %}class="is-active"{% endif %}>
+                                <a href="{{ c.get_absolute_url }}" class="is-selected">{{ c.name }}</a>
                             </li>
                         {% endfor %}
 
@@ -165,7 +165,6 @@
                 </div>
             </section>
             <div id="main" class="product-list">
-                <h1>{% if category %}{{ category.name }}{% else %}Services{% endif %}</h1>
                 {% for service in services %}
                     <div class="item">
                         <a href="{{ service.get_absolute_url }}">
