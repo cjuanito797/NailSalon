@@ -1,6 +1,8 @@
 from django.db import models
 from Account.models import Technician
 from django.urls import reverse
+
+
 class Category(models.Model):
     name = models.CharField(max_length=200,
                             db_index=True)
@@ -18,6 +20,16 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse('appointments:service_list_by_category',
                        args=[self.slug])
+
+class subCategory(models.Model):
+    categorty = models.ForeignKey("Appointments.Category",
+                                  on_delete=models.CASCADE,
+                                  blank=False)
+    name = models.CharField(max_length=200,
+                            db_index=True)
+
+    slug = models.SlugField(max_length=200, unique=True)
+
 
 # Create your models here.
 class Service (models.Model):
