@@ -1,15 +1,11 @@
 import datetime
-import pickle
-
+from datetime import timedelta
 from django.utils import timezone
 from datetime import date
 from .models import *
 from Account.models import Technician
 
 myDates = []
-
-
-
 def buildMonthlyDays(today):
     f = open("dates.txt", "w")
 
@@ -21,35 +17,54 @@ def buildMonthlyDays(today):
 
         # only going to do this once and create time slots for each of the technicians.
         # first what we want to get all of our technicians and iterate over them.
-        f.write(str(today))
+        f.write(str(today)+'\n')
         today = today + datetime.timedelta (days=1)
 
     f.close()
 
-
-
-def buildSchedules(today):
+def buildSchedules(todaysDate):
     # so what we do is we pass in today in order to build the schedules and using our list, if today is not in the list.
     # we remove the first value from the list and we append our new date.
-    if today in myDates:
-        pass
+    f = open ("dates.txt", "r")
+    for x in f:
+        myDates.append (x)
+    f.close ( )
+
+
+
+    if (str (myDates[0]) == str (todaysDate) + '\n'):
+        myDates.clear()
     else:
-        # append to list but first remove first value from list.
+        # append to list but first remove first value from list and get the next day that should be in our sliding window.
         myDates.pop (0)
-        myDates.append (today)
+        today = date.today()
+        from datetime import timedelta
+        nextDayInWindow = today + timedelta(days=30)
+
+        myDates.append (str (nextDayInWindow) + '\n')
+
+        # so with our new myDates file we can write them to our file.
+
+        f = open ("dates.txt", "w")
+
+        for day in myDates:
+            f.write (day)
+
+        f.close ( )
 
         # perhaps we wont delete old time slots as it may helpt with data processing.
         # time slot for each technician on this new day, note that this should only be done once.
-        techs = Technician.objects.all()
+        techs = Technician.objects.all ( )
         for t in techs:
             # add a new time slot for that day
-            new_time_slot = timeSlots.objects.create(tech=t.user.email,date=today)
-            new_time_slot.save()
-        print ("Inside build schedules!")
+            new_time_slot = timeSlots.objects.create (tech=t.user.email, date=nextDayInWindow)
+            new_time_slot.save ( )
+        myDates.clear()
+
 
 def getTodaysDate(request):
-    today = date.today ( )
-    buildMonthlyDays (today)
-    buildSchedules (today)
+    todaysDate = date.today()
+    # buildMonthlyDays(todaysDate)
+    buildSchedules (todaysDate)
 
-    return {'today': today}
+    return {'todaysDate': todaysDate}
