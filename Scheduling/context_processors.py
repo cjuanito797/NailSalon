@@ -1,4 +1,6 @@
 import datetime
+import pickle
+
 from django.utils import timezone
 from datetime import date
 from .models import *
@@ -7,7 +9,10 @@ from Account.models import Technician
 myDates = []
 
 
+
 def buildMonthlyDays(today):
+    f = open("dates.txt", "w")
+
     for i in range (31):
         print (today)
         myDates.append (today)
@@ -16,7 +21,10 @@ def buildMonthlyDays(today):
 
         # only going to do this once and create time slots for each of the technicians.
         # first what we want to get all of our technicians and iterate over them.
+        f.write(str(today))
         today = today + datetime.timedelta (days=1)
+
+    f.close()
 
 
 
@@ -38,12 +46,6 @@ def buildSchedules(today):
             new_time_slot = timeSlots.objects.create(tech=t.user.email,date=today)
             new_time_slot.save()
         print ("Inside build schedules!")
-
-
-def outputSchedules(myList):
-    for day in myList:
-        print (day)
-
 
 def getTodaysDate(request):
     today = date.today ( )
