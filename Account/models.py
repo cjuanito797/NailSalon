@@ -34,13 +34,14 @@ class Technician (models.Model):
                                  on_delete=models.CASCADE,
                                  default=None)
     bio = models.TextField (blank=True)
-    pay_rate = models.DecimalField (decimal_places=2, max_digits=4)
+    #pay_rate = models.DecimalField (decimal_places=2, max_digits=4)
 
-    age = models.PositiveIntegerField(default=0)
+    #age = models.PositiveIntegerField(default=0)
 
-    schedule = models.OneToOneField("Scheduling.TechnicianSchedule",
-                                    on_delete=models.CASCADE,
-                                    default=False)
+    #schedule = models.OneToOneField("Scheduling.TechnicianSchedule",
+    #                                on_delete=models.CASCADE,
+    #                                default=False,
+    #                                blank=True)
 
 
 
