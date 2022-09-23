@@ -1,17 +1,13 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% load static %}
 
-{% block head %}
- <meta charset="utf-8"/>
-    <title>{% block title %}My Cart{% endblock %}</title>
-    <link href="{% static "css/base.css" %}" rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-{% endblock %}
+
+{% block title %}<title>Choose Technician Below</title>{% endblock %}
 
 {% block navigation %}
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="{% url 'account:home' %}">
                 <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
@@ -90,12 +86,24 @@
             </div>
 
 
-            </div>
-
-
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="buttons">
+
+                        <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
+                            <img src="../../static/shopping_bag.png" style=""/>
+                            {% with total_items=cart|length %}
+                                {% if cart|length > 0 %}
+                                        ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
+
+                                {% else %}
+                                    Empty
+                                {% endif %}
+                            {% endwith %}
+                        </a>
+
+                        &nbsp;
+                        &nbsp;
 
                         <a class="button is-success" href="{% url 'appointments:service_list' %}">
                             Book Appointment
@@ -104,62 +112,55 @@
                         <a class="button is-light" href="{% url 'account:customerView' %}">
                             Sign Out
                         </a>
+
+
                     </div>
                 </div>
             </div>
         </div>
-
-
     </nav>
 {% endblock %}
 
 {% block mainbody %}
+    <section class="section">
+    {% if messages %}
+        {% for message in messages %}
 
-    <h1>Your shopping cart</h1>
-    <table class="cart">
-        <thead>
-        <tr>
-
-        </tr>
-        </thead>
-        <tbody>
-        {% for item in cart %}
-            {% with service=item.service %}
-                <tr>
-                    <td>
-                        <a href="{{ service.get_absolute_url }}">
-                            <img src="
-                                    {% if service.image %}{{ service.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}"
-                                 alt="" width="100" height="200">
-                        </a>
-                    </td>
-                    <td>{{ service.name }}</td>
-                    <td>
-                        <form action="{% url "cart:cart_add" service.id %}" method="post">
-                            {{ item.update_quantity_form.quantity }}
-                            {{ item.update_quantity_form.update }}
-                            <input type="submit" value="Update">
-                            {% csrf_token %}
-                        </form>
-                    </td>
-                    <td><a href="{% url "cart:cart_remove" service.id %}">Remove</a></td>
-                    <td class="num">${{ item.price }}</td>
-                    <td class="num">${{ item.total_price }}</td>
-                </tr>
-            {% endwith %}
+            <artcile class="message is-danger is-size-5-desktop">
+                <div class="message-header">
+                    <p>Please Correct Error Below</p>
+                </div>
+                <div class="message-body">
+                    {{ message }}
+                </div>
+            </artcile>
         {% endfor %}
-        <tr class="total">
-            <td>Total</td>
-            <td colspan="4"></td>
-            <td class="num" style="color: black">${{ cart.get_total_price }}</td>
-        </tr>
-        </tbody>
-    </table>
-    <p class="text-right">
-        <a href="{% url "appointments:service_list" %}" class="button is-primary">Continue shopping</a>
-        <a href="{% url "appointments:appointment_create" %}" class="button is-primary">Checkout</a>
+
+    {% endif %}
+
+    </section>
+    <h1>Choose from our technicians below.</h1>
+    <form method="POST" class="post-form">
+
+    {% csrf_token %}
+    {% for tech in techs %}
+        <input type="radio" id="tech_{{ tech.id }}" name="tech" value="{{ tech.id }}">
+        <label for="tech_{{ tech.id }}"></label>
+
+        <p>{{ tech.user.first_name }} {{ tech.user.last_name }}</p>
+        <p>{{ tech.user.email }}</p>
+        <p>{{ tech.bio }}</p>
+        <p>{{ tech.age }}</p>
+
+    {% endfor %}
+
+        <p><input type="submit" name="schedule_with" value="Schedule Now!"></p>
+        <p><input type="submit" name="schedule_random" value="Random"></p>
 
 
-    </p>
+
+
+    </form>
 
 {% endblock %}
+
