@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'Scheduling.apps.SchedulingConfig',
     'django_behave',
     'Appointments.apps.AppointmentsConfig',
-    'cart.apps.CartConfig'
+    'cart.apps.CartConfig',
+    'Calendar.apps.CalendarConfig'
 ]
 
 MIDDLEWARE = [
@@ -68,7 +69,8 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "cart.context_processors.cart",
-                "Scheduling.context_processors.getTodaysDate"
+                "Scheduling.context_processors.getTodaysDate",
+                "Calendar.context_processors.buildCalendar"
             ],
         },
     },

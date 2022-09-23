@@ -42,7 +42,7 @@ class Technician (models.Model):
                                     default=False)
 
     def __str__(self):
-        return self.user.first_name
+        return self.user.email
 class Customer (models.Model):
     user = models.OneToOneField ('Account.User',
                                  related_name='customer',

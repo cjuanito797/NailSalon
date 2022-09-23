@@ -1,13 +1,15 @@
-import datetime
 from datetime import timedelta
+from datetime import datetime
 from django.utils import timezone
 from datetime import date
 from .models import *
 from Account.models import Technician
-
+from Calendar.models import calendarEntry
 myDates = []
+
+
 def buildMonthlyDays(today):
-    f = open("dates.txt", "w")
+    f = open ("dates.txt", "w")
 
     for i in range (31):
         print (today)
@@ -17,10 +19,11 @@ def buildMonthlyDays(today):
 
         # only going to do this once and create time slots for each of the technicians.
         # first what we want to get all of our technicians and iterate over them.
-        f.write(str(today)+'\n')
-        today = today + datetime.timedelta (days=1)
+        f.write (str (today) + '\n')
+        today = today + timedelta (days=1)
 
-    f.close()
+    f.close ( )
+
 
 def buildSchedules(todaysDate):
     # so what we do is we pass in today in order to build the schedules and using our list, if today is not in the list.
@@ -30,15 +33,21 @@ def buildSchedules(todaysDate):
         myDates.append (x)
     f.close ( )
 
-
     if (str (myDates[0]) == str (todaysDate) + '\n'):
-        myDates.clear()
+        # nothing to do here.
+        myDates.clear ( )
     else:
         # append to list but first remove first value from list and get the next day that should be in our sliding window.
+
+        # delete yesterday's calendar entry.
+        # convert myDates[0] (yesterdays date into actual date)
+        yesterday = datetime.strptime (myDates[0].strip ('\n'), "%Y-%m-%d").date ( )
+        calendarEntry.objects.filter (date=yesterday).delete ( )
+
         myDates.pop (0)
-        today = date.today()
+        today = date.today ( )
         from datetime import timedelta
-        nextDayInWindow = today + timedelta(days=30)
+        nextDayInWindow = today + timedelta (days=30)
 
         myDates.append (str (nextDayInWindow) + '\n')
 
@@ -59,15 +68,47 @@ def buildSchedules(todaysDate):
             new_time_slot = timeSlots.objects.create (tech=t.user.email, date=nextDayInWindow)
             new_time_slot.save ( )
 
+        # now also each time that we move the window one day to the right, we also need to create a calendar entry with
+        # all of the techs working on that day.
+        dayOfWeek = calendar.day_name[nextDayInWindow.weekday ( )].lower ( )
 
+        if dayOfWeek == 'Monday':
+            techs = Technician.objects.filter (schedule__monday_availability=True)
 
-            # now for each of the new days, what we will do is we modify the time slots based off of the technicians
-            # availability that they have set, for an abstract week.
-        myDates.clear()
+        elif dayOfWeek == 'Tuesday':
+            techs = Technician.objects.filter (schedule__tuesday_availability=True)
+
+        elif dayOfWeek == 'Wednesday':
+            techs = Technician.objects.filter (schedule__wednesday_availability=True)
+
+        elif dayOfWeek == 'Thursday':
+            techs = Technician.objects.filter (schedule__thursday_availability=True)
+
+        elif dayOfWeek == 'Friday':
+            techs = Technician.objects.filter (schedule__friday_availability=True)
+
+        elif dayOfWeek == 'Saturday':
+            techs = Technician.objects.filter (schedule__saturday_availability=True)
+
+        else:
+            techs = Technician.objects.filter (schedule__sunday_availability=True)
+
+        new_entry = calendarEntry.objects.create (date=nextDayInWindow)
+
+        for tech in techs:
+            new_entry.technicians.add (tech)
+            print ("\t" + tech.user.email)
+
+        # so now go ahead and create the calendar entries.
+        new_entry.save ( )
+
+        # now for each of the new days, what we will do is we modify the time slots based off of the technicians
+        # availability that they have set, for an abstract week.
+        myDates.clear ( )
 
 
 def getTodaysDate(request):
-    todaysDate = date.today()
+    todaysDate = date.today ( )
     # buildMonthlyDays(todaysDate)
     buildSchedules (todaysDate)
 
