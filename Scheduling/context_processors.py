@@ -31,7 +31,6 @@ def buildSchedules(todaysDate):
     f.close ( )
 
 
-
     if (str (myDates[0]) == str (todaysDate) + '\n'):
         myDates.clear()
     else:
@@ -59,6 +58,11 @@ def buildSchedules(todaysDate):
             # add a new time slot for that day
             new_time_slot = timeSlots.objects.create (tech=t.user.email, date=nextDayInWindow)
             new_time_slot.save ( )
+
+
+
+            # now for each of the new days, what we will do is we modify the time slots based off of the technicians
+            # availability that they have set, for an abstract week.
         myDates.clear()
 
 

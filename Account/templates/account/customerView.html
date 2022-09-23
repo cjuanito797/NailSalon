@@ -97,10 +97,13 @@
                                         ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
 
                                 {% else %}
-                                    Your cart is empty.
+                                    Empty
                                 {% endif %}
                             {% endwith %}
                         </a>
+
+                        &nbsp;
+                        &nbsp;
 
                         <a class="button is-success" href="{% url 'appointments:service_list' %}">
                             Book Appointment
