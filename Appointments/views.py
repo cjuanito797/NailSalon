@@ -65,9 +65,9 @@ def appointment_create(request):
 
                 else:
                     tech = Technician.objects.get(pk=myVar)
-
-
+                    # pass in tech to scheduling view, with the tech_id as the argument in the URL.
                     print(tech.user.email)
+                    return scheduleWithTech(request, tech.pk)
 
             else:
                 return render(request, "Scheduling/chooseTechnician.html", {'techs': techs})
@@ -75,3 +75,26 @@ def appointment_create(request):
 
 
         return render (request, "Scheduling/chooseTechnician.html", {'techs': techs})
+
+def scheduleWithTech(request, pk):
+    # so the pk passed in is the primary key of the tech that we are wanting to schedule with.
+    tech = Technician.objects.get(pk=pk)
+    # this is where we need to do the calculations to get the times that the technician is available depending on day
+    # that user has selected.
+
+    # need to get the dates that the technician is actually available on, if not give user to select another technician
+    # by taking them back to the previous page.
+
+    # but our backend algorithm should work to sort technicians by who is available to work on their service the closes and
+    # who actually has the most amount of time.
+
+    # so for each day that the user is in our sliding window (remember) only techs available to work on that day get
+    # a date entry.
+
+    # now if the user elects to choose a new technician, then we need to send them back to the previous page, and destroy any
+    # date we have created  here.
+
+
+
+
+    return render(request, "Scheduling/calendar.html", {"tech": tech})
