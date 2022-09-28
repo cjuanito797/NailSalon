@@ -8,7 +8,9 @@ from Calendar.models import calendarEntry
 myDates = []
 
 
-# so we want to utilize this function for whenever we are,
+# so we want to utilize this function for whenever we are, setting up the website (deployment, new  clone, etc.)  or we
+# have just added a new employee.
+
 def buildMonthlyDays(today):
     f = open ("dates.txt", "w")
 
@@ -24,7 +26,6 @@ def buildMonthlyDays(today):
         today = today + timedelta (days=1)
 
     f.close ( )
-
 
 def buildSchedules(todaysDate):
     # so what we do is we pass in today in order to build the schedules and using our list, if today is not in the list.
