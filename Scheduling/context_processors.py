@@ -8,6 +8,7 @@ from Calendar.models import calendarEntry
 myDates = []
 
 
+# so we want to utilize this function for whenever we are,
 def buildMonthlyDays(today):
     f = open ("dates.txt", "w")
 

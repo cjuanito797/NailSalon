@@ -1,10 +1,10 @@
 import time
-
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Service, Category
 from cart.forms import CartAddServiceForm
 from Account.models import Technician
 from django.contrib import messages
+from Calendar.models import calendarEntry
 
 def service_list(request, category_slug=None):
     # function that will be used to display oll of our services.
@@ -79,11 +79,23 @@ def appointment_create(request):
 def scheduleWithTech(request, pk):
     # so the pk passed in is the primary key of the tech that we are wanting to schedule with.
     tech = Technician.objects.get(pk=pk)
+    workingDays = []
     # this is where we need to do the calculations to get the times that the technician is available depending on day
     # that user has selected.
 
     # need to get the dates that the technician is actually available on, if not give user to select another technician
     # by taking them back to the previous page.
+
+    availableDates = calendarEntry.objects.all()
+
+    for day in availableDates:
+        # if tech is in day, add day to a list.
+        # print a list of all technicans working that day.
+        techs = day.technicians.all()
+        if tech in techs:
+            # add the day to a list.
+            workingDays.append(day)
+
 
     # but our backend algorithm should work to sort technicians by who is available to work on their service the closes and
     # who actually has the most amount of time.
@@ -91,10 +103,9 @@ def scheduleWithTech(request, pk):
     # so for each day that the user is in our sliding window (remember) only techs available to work on that day get
     # a date entry.
 
-    # now if the user elects to choose a new technician, then we need to send them back to the previous page, and destroy any
-    # date we have created  here.
+    # so we need to build the time slots, each time that a user has selected on a date.
 
 
 
 
-    return render(request, "Scheduling/calendar.html", {"tech": tech})
+    return render(request, "Scheduling/calendar.html", {"tech": tech, "availableDates": workingDays})
