@@ -56,7 +56,7 @@ a = [
 for i in a:
     i.save()
 #DELETE FROM Appointments_appointment;
-
+'''
 
 from Account.models import Customer
 a = [
@@ -75,19 +75,19 @@ for i in a:
 
 from Account.models import Technician
 a = [
-    Customer(user_id=6, bio=''),
-    Customer(user_id=7, bio=''),
-    Customer(user_id=8, bio=''),
-    Customer(user_id=9, bio=''),
-    Customer(user_id=10, bio=''), 
+    Technician(user_id=6, bio=''),
+    Technician(user_id=7, bio=''),
+    Technician(user_id=8, bio=''),
+    Technician(user_id=9, bio=''),
+    Technician(user_id=10, bio=''), 
 
 ]
 for i in a:
     i.save()
 #DELETE FROM Account_customer;
 
-'''
 
+'''
 from Account.models import User
 a = [
     User(email='a@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
@@ -105,3 +105,4 @@ a = [
 for i in a:
     i.save()
 #DELETE FROM Account_user;
+'''
