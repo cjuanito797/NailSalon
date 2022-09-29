@@ -1,11 +1,13 @@
-{% extends 'base.html' %}
-{% load static %}
 
+
+
+<!DOCTYPE html>
+{% extends "base.html" %}
 {% block title %}<title>About Us</title>{% endblock %}
 
-
 {% block navigation %}
- <nav class="navbar" role="navigation" aria-label="main navigation">
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="{% url 'account:home' %}">
                 <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
@@ -117,6 +119,7 @@
             </div>
         </div>
     </nav>
+
 {% endblock %}
 
 
@@ -135,5 +138,30 @@
 
 
 
+    <!-- Hero content: will be in the middle -->
+    <section class="hero is-fullheight">
+        <div class="hero-head has-text-centered">
+            <div class="">
+                <h1 class="title has-text-black">
+                    About Us
+                </h1>
+                <div class="imageContainer">
+                    <img src="../../static/galleryImages/logo.jpg" style="width: 1050px; height: 350px;">
+                    </div>
+                <p class="title has-text-black">WELCOME TO APPLE NAILS & SPA</p>
+                <p><b>Apple Nails and Spa is proud and honored to be voted top 10 by our community with The Best of Omaha for 10 years in a row for manicures & pedicures. We know how important it is to have highly trained experienced professionals that are licensed nail technicians. We also have a dedicated staff that is friendly, knowledgeable and committed to providing an an exceptional customer service experience.
+                </b>
+                </p>
+                <p><b>We have a very clean & sanitized environment, state of the art ventilation system and offer a wide variety of services using high quality products for a superior performance.
+                </b>
+                </p>
+                <p><b>We have recently installed splash guards, Brand NEW pedicure chairs, UV sanitizing lights, and an air purification system.
+                </b>
+                </p>
+                <p><b>Please call 402-991-7887 to set up an appointment. All of us at Apple Nails & Spa are so excited to see you and make you feel pampered.      
+                </b>
+                </p>
+            </div>
+    </div>
+    </section>
 {% endblock %}
-
