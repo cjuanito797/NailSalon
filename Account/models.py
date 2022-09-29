@@ -35,11 +35,11 @@ class Technician (models.Model):
                                  default=None)
     bio = models.TextField (blank=True)
 
-    age = models.PositiveIntegerField(default=0)
 
     schedule = models.OneToOneField("Scheduling.TechnicianSchedule",
-                                    on_delete=models.CASCADE,
-                                    default=False)
+                                   on_delete=models.CASCADE,
+                                    default=False,
+                                    blank=True)
 
     def __str__(self):
         return self.user.email
