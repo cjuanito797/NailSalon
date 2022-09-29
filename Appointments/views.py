@@ -66,7 +66,6 @@ def appointment_create(request):
                 else:
                     tech = Technician.objects.get(pk=myVar)
                     # pass in tech to scheduling view, with the tech_id as the argument in the URL.
-                    print(tech.user.email)
                     return scheduleWithTech(request, tech.pk)
 
             else:

@@ -126,7 +126,7 @@
                 {% if cart|length > 0 %}
                     Your cart:
                     <a href="{% url "cart:cart_detail" %}">
-                        {{ total_items }} item{{ total_items|pluralize }},
+                        {{ total_items }} services{{ total_items|pluralize }},
                         ${{ cart.get_total_price }}
                     </a>
                 {% else %}
@@ -176,7 +176,7 @@
 
                         <br>
                         <a class="button is-primary" href="{% url 'cart:cart_add' service.id %}" type="submit">
-                            Add To Cart
+                            Add Service
                         </a>
                         {% csrf_token %}
 
