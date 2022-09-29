@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from datetime import date
 import calendar
@@ -85,9 +85,13 @@ def aboutUs(request):
 def customerView(request):
     this_user = User.objects.get (pk=request.user.id)
 
-    return render (request, 'account/customerView.html',
-                   {'this_user': this_user})
+    if request.user.is_authenticated:
+        return redirect(reverse('account:customerView'))
+    else:
+        return render(request, "base.html")
 
+def user_logout(request):
+    return HttpResponseRedirect(reversed('your_app:login'))
 
 class registration_view (FormView):
     def post(self, request):
