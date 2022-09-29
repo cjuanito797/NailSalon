@@ -82,6 +82,8 @@ class TechnicianSchedule (models.Model):
 class timeSlots (models.Model):
     tech = models.EmailField (_ ('email'), unique=False)
     date = models.DateField (blank=True)
+    arrive_time = models.TimeField()
+    
     nine_00_am = models.BooleanField (default=False)
     nine_15am = models.BooleanField (default=False)
     nine_30am = models.BooleanField (default=False)
@@ -123,4 +125,4 @@ class timeSlots (models.Model):
     four_45pm = models.BooleanField (default=False)
 
     def __str__(self):
-        return self.tech + "\'s" + " " + str (self.date) + " Availability"
+        return self.tech + "\'s" + " " + str(self.date)

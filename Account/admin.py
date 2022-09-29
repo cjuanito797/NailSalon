@@ -8,7 +8,7 @@ from .forms import RegistrationForm
 
 class CustomUserAdmin (UserAdmin):
     add_form = RegistrationForm
-    list_display = ('email', 'first_name', 'last_name')
+    list_display = ('id', 'email', 'first_name', 'last_name')
     list_filter = ('email', 'is_staff', 'isTechnician')
     search_fields = ('email')
 
@@ -43,7 +43,7 @@ class TechAdmin (admin.ModelAdmin):
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['user']
+    list_display = ['user', 'id','bio']
 
 @admin.register (Technician)
 class TechAdmin (admin.ModelAdmin):

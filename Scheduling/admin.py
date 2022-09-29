@@ -8,4 +8,4 @@ class scheduleAdmin (admin.ModelAdmin):
 
 @admin.register (timeSlots)
 class timeSlotsAdmin (admin.ModelAdmin):
-    list_display = ['tech', 'date']
+    list_display = ['tech', 'date', 'arrive_time']
