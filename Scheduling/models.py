@@ -82,7 +82,6 @@ class TechnicianSchedule (models.Model):
 class timeSlots (models.Model):
     tech = models.EmailField (_ ('email'), unique=False)
     date = models.DateField (blank=True)
-    date = models.DateField()
     arrive_time = models.TimeField()
     
     nine_00_am = models.BooleanField (default=False)

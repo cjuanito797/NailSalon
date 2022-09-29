@@ -96,11 +96,11 @@ class registration_view (FormView):
         if form.is_valid ( ):
             # create a customer object and attatch it to the newly created user
             new_user = form.save (commit=False)
+            form.save ( )
 
             new_customer = Customer.objects.create (user=new_user, bio='')
             new_customer.save ( )
 
-            form.save ( )
 
 
 
