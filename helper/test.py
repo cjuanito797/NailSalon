@@ -56,7 +56,7 @@ a = [
 for i in a:
     i.save()
 #DELETE FROM Appointments_appointment;
-
+'''
 
 from Account.models import Customer
 a = [
@@ -86,8 +86,8 @@ for i in a:
     i.save()
 #DELETE FROM Account_customer;
 
-'''
 
+'''
 from Account.models import User
 a = [
     User(email='a@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
@@ -99,10 +99,9 @@ a = [
     User(email='g@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
     User(email='h@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
     User(email='i@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
-    
-
 ]
 for i in a:
     i.save()
 #DELETE FROM Account_user;
 #DELETE FROM sqlite_sequence where name = 'Account_user';
+'''
