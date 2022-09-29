@@ -75,11 +75,11 @@ for i in a:
 
 from Account.models import Technician
 a = [
-    Customer(user_id=6, bio=''),
-    Customer(user_id=7, bio=''),
-    Customer(user_id=8, bio=''),
-    Customer(user_id=9, bio=''),
-    Customer(user_id=10, bio=''), 
+    Technician(user_id=6, bio=''),
+    Technician(user_id=7, bio=''),
+    Technician(user_id=8, bio=''),
+    Technician(user_id=9, bio=''),
+    Technician(user_id=10, bio=''), 
 
 ]
 for i in a:
@@ -105,3 +105,4 @@ a = [
 for i in a:
     i.save()
 #DELETE FROM Account_user;
+#DELETE FROM sqlite_sequence where name = 'Account_user';

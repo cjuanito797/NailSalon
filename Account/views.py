@@ -75,6 +75,9 @@ def user_login(request):
 def gallery(request):
     return render(request, 'Home/gallery.html')
 
+def aboutUs(request):
+    return render(request, 'Home/aboutUs.html')
+
 @login_required
 def customerView(request):
     this_user = User.objects.get (pk=request.user.id)
