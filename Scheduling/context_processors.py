@@ -2,7 +2,7 @@ from datetime import timedelta
 from datetime import datetime
 from django.utils import timezone
 from datetime import date
-from .models import *
+from Scheduling.models import timeSlots, TechnicianSchedule
 from Account.models import Technician
 from Calendar.models import calendarEntry
 myDates = []
@@ -72,6 +72,7 @@ def buildSchedules(todaysDate):
 
         # now also each time that we move the window one day to the right, we also need to create a calendar entry with
         # all of the techs working on that day.
+        from date import calendar
         dayOfWeek = calendar.day_name[nextDayInWindow.weekday ( )].lower ( )
 
         if dayOfWeek == 'Monday':
