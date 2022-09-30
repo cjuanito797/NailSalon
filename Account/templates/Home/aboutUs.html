@@ -6,120 +6,82 @@
 {% block title %}<title>About Us</title>{% endblock %}
 
 {% block navigation %}
-
-<nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="{% url 'account:home' %}">
-                <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
-            </a>
-
-            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
-               data-target="navbarBasicExample">
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-            </a>
-        </div>
-
-        <div id="navbarBasicExample" class="navbar-menu">
-            <div class="navbar-start">
-                <a class="navbar-item" href="{% url 'account:gallery' %}">
-                    Gallery
-                </a>
-
-                <a class="navbar-item" href="{% url 'account:services' %}">
-                    Our Services
-                </a>
-
-                <a class="navbar-item is-active" href="{% url 'account:aboutUs' %}">
-                    About Us
-                </a>
-
-                {% if request.user.is_authenticated %}
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <a class="navbar-link has-text-black">
-                            My Account
+<nav class="navbar if" role="navigation" aria-label="main navigation">
+                    <div class="navbar-brand">
+                        <a class="navbar-item" href="{% url 'account:home' %}">
+                            <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
                         </a>
 
-                        <div class="navbar-dropdown" style="color: black;">
-                            <a class="navbar-item">
-                                My Appointment History
+                        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                           data-target="navbarBasicExample">
+                            <span aria-hidden="true"></span>
+                            <span aria-hidden="true"></span>
+                            <span aria-hidden="true"></span>
+                        </a>
+                    </div>
+
+                    <div id="navbarBasicExample" class="navbar-menu">
+                        <div class="navbar-start">
+                            <a class="navbar-item" href="{% url 'account:gallery' %}">
+                                Gallery
                             </a>
-                            <a class="navbar-item">
-                                My Profile
+
+                            <a class="navbar-item" href="{% url 'account:services' %}">
+                                Our Services
                             </a>
-                            <a class="navbar-item" style="color: black;">
-                                My Promotions
+
+                            <a class="navbar-item" href="{% url 'account:aboutUs' %}">
+                                About Us
                             </a>
-                            <hr class="navbar-divider">
-                            <a class="navbar-item">
-                                Security Settings
-                            </a>
+
+
+                            <div class="navbar-item has-dropdown is-hoverable">
+                                <a class="navbar-link has-text-black">
+                                    More
+                                </a>
+
+                                <div class="navbar-dropdown" style="color: black;">
+                                    <a class="navbar-item">
+                                        About
+                                    </a>
+                                    <a class="navbar-item">
+                                        Jobs
+                                    </a>
+                                    <a class="navbar-item" style="color: black;">
+                                        Contact
+                                    </a>
+                                    <hr class="navbar-divider">
+                                    <a class="navbar-item">
+                                        Report an issue
+                                    </a>
+                                </div>
+                            </div>
+                             <div class="navbar-end">
+                            <div class="navbar-item">
+                                <a class="button is-success" href="{% url 'account:home' %}">
+                                    Book Appointment
+                                </a>
+                            </div>
+                        </div>
+
+                        </div>
+
+
+
+                        <div class="navbar-end">
+                            <div class="navbar-item">
+                                <div class="buttons">
+                                    <a class="button is-info" href="{% url 'account:user_registration' %}">
+                                        <strong>Sign up</strong>
+                                    </a>
+                                    <a class="button is-light" href="{% url 'account:user_login' %}">
+                                        Log in
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                {% endif %}
-
-
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a class="navbar-link has-text-black">
-                        More
-                    </a>
-
-                    <div class="navbar-dropdown" style="color: black;">
-                        <a class="navbar-item">
-                            About
-                        </a>
-                        <a class="navbar-item">
-                            Jobs
-                        </a>
-                        <a class="navbar-item" style="color: black;">
-                            Contact
-                        </a>
-                        <hr class="navbar-divider">
-                        <a class="navbar-item">
-                            Report an issue
-                        </a>
-                    </div>
-                </div>
-
-
-            </div>
-
-
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
-
-                        <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
-                            <img src="../../static/shopping_bag.png" style=""/>
-                            {% with total_items=cart|length %}
-                                {% if cart|length > 0 %}
-                                        ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
-
-                                {% else %}
-                                    Empty
-                                {% endif %}
-                            {% endwith %}
-                        </a>
-
-                        &nbsp;
-                        &nbsp;
-
-                        <a class="button is-success" href="{% url 'appointments:service_list' %}">
-                            Book Appointment
-                        </a>
-
-                        <a class="button is-light" href="{% url 'account:logout' %}">
-                            Sign Out
-                        </a>
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
+                </nav>
 {% endblock %}
 
 
@@ -163,5 +125,21 @@
                 </p>
             </div>
     </div>
+
+        <br>;
+        <br>;
+    <div class="container has-text-centered">
+            <p class="title has-text-black">
+                Contact Us
+            </p>
+            <p><b>Address: 12005 W. Center Road Unit 98, Omaha, NE 68144</b></p>
+            <p><b>Hour: Mon - Sat: 9:30am - 7:00pm
+                Sun:   Closed
+       </b></p>
+       <p><b>Phone number: 402-991-7887</b></p>
+       <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000.494877551189!2d-96.10389768461867!3d41.23277697927864!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8793f304efcd9cfd%3A0x68c43ab90e82e2a9!2sApple%20Nails%20%26%20Spa!5e0!3m2!1sen!2sus!4v1663702680300!5m2!1sen!2sus"
+       width="400" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+                </div>
     </section>
 {% endblock %}

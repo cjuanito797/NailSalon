@@ -27,9 +27,6 @@ def home(request):
         return render (request, "base.html")
 
 
-def contactUs(request):
-    return render (request, "Home/contactUs.html")
-
 
 def availableTechs(request):
     # print all available technicians for that day.
@@ -71,6 +68,7 @@ def user_login(request):
                              password=cd['password'])
         request.session['is_signedIn'] = True
 
+        # here we should redirect a user to seperate views depending on whether they are a customer, tech or admin.
         if user is not None:
             if user.is_active:
                 login (request, user)
