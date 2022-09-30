@@ -81,6 +81,9 @@ def services(request):
 def aboutUs(request):
     return render(request, 'Home/aboutUs.html')
 
+def logout(request):
+    return render (request, 'account:user_login')
+
 @login_required
 def customerView(request):
     this_user = User.objects.get (pk=request.user.id)
