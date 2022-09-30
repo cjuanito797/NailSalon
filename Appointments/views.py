@@ -5,7 +5,14 @@ from cart.forms import CartAddServiceForm
 from Account.models import Technician
 from django.contrib import messages
 from Calendar.models import calendarEntry
+from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import cache_control
+from django.contrib.auth.decorators import login_required
 
+
+@never_cache
+@cache_control (no_cache=True, must_revalidate=True, no_store=True)
+@login_required (login_url='/login/')
 def service_list(request, category_slug=None):
     # function that will be used to display oll of our services.
     category = None
@@ -24,7 +31,9 @@ def service_list(request, category_slug=None):
 
                    })
 
-
+@never_cache
+@cache_control (no_cache=True, must_revalidate=True, no_store=True)
+@login_required (login_url='/login/')
 def service_detail(request, id, slug):
     # function used to display the details of a particular service.
     service = get_object_or_404 (Service,
@@ -40,7 +49,9 @@ def service_detail(request, id, slug):
                        'cart_service_form': cart_service_form
                    })
 
-
+@never_cache
+@cache_control (no_cache=True, must_revalidate=True, no_store=True)
+@login_required (login_url='/login/')
 def appointment_create(request):
     # on this page we will display the technicians on the backend and calculate everything
     # on the backend to pass into our scheduling module, such as total time.
@@ -75,6 +86,9 @@ def appointment_create(request):
 
         return render (request, "Scheduling/chooseTechnician.html", {'techs': techs})
 
+@never_cache
+@cache_control (no_cache=True, must_revalidate=True, no_store=True)
+@login_required (login_url='/login/')
 def scheduleWithTech(request, pk):
     # so the pk passed in is the primary key of the tech that we are wanting to schedule with.
     tech = Technician.objects.get(pk=pk)

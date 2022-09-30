@@ -8,12 +8,12 @@ from django.views.generic import FormView
 from django.http import HttpResponse
 from .forms import RegistrationForm, LoginForm
 from .models import Technician, User, Customer
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.cache import cache_control
 from django.contrib.auth import logout
 from django.template import loader
 from django.shortcuts import render
 from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import cache_control
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
