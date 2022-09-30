@@ -15,7 +15,65 @@ class User (AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField (max_length=200)
     last_name = models.CharField (max_length=200)
     street_num = models.CharField (max_length=20)
-    state = models.CharField (max_length=2)
+
+    STATE_OPTIONS = (
+        ('Alabama', 'Alabama'),
+        ('Alaska', 'Alaska'),
+        ('Arizona', 'Arizona'),
+        ('Arkansas', 'Arkansas'),
+        ('California', 'California'),
+        ('Colorado', 'Colorado'),
+        ('Conneticut', 'Conneticut'),
+        ('Deleware', 'Deleware'),
+        ('Florida', 'Florida'),
+        ('Georgia', 'Georgia'),
+        ('Hawaii', 'Hawaii'),
+        ('Idaho', 'Idaho'),
+        ('Illinois', 'Illinois'),
+        ('Indiana', 'Indiana'),
+        ('Iowa', 'Iowa'),
+        ('Kansas', 'Kansas'),
+        ('Kentucky', 'Kentucky'),
+        ('Louisiana', 'Louisiana'),
+        ('Maine', 'Maine'),
+        ('Maryland', 'Maryland'),
+        ('Massachusetts', 'Massachusetts'),
+        ('Michigan', 'Michigan'),
+        ('Minnesota', 'Minnesota'),
+        ('Mississippi', 'Mississippi'),
+        ('Missouri', 'Missouri'),
+        ('Montana', 'Montana'),
+        ('Nebraska', 'Nebraska'),
+        ('Nevada', 'Nevada'),
+        ('New Hampshire', 'New Hampshire'),
+        ('New Jersey', 'New Jersey'),
+        ('New Mexico', 'New Mexico'),
+        ('New York', 'New York'),
+        ('North Carolina', 'North Carolina'),
+        ('North Dakota', 'North Dakota'),
+        ('Ohio', 'Ohio'),
+        ('Oklahoma', 'Oklahoma'),
+        ('Oregon', 'Oregon'),
+        ('Pennsylvania', 'Pennsylvania'),
+        ('Rhode Island', 'Rhode Island'),
+        ('South Carolina', 'South Carolina'),
+        ('South Dakota', 'South Dakota'),
+        ('Tennessee', 'Tennessee'),
+        ('Texas', 'Texas'),
+        ('Utah', 'Utah'),
+        ('Vermont', 'Vermont'),
+        ('Virginia', 'Virgina'),
+        ('Washington', 'Washington'),
+        ('West Virginia', 'West Virginia'),
+        ('Wisconsin', 'Wisconsin'),
+        ('Wyoming', 'Wyoming'),
+    )
+
+    state = models.CharField (max_length=15,
+                              choices=STATE_OPTIONS,
+                              blank=False,
+                              default=None,
+                              )
     zipcode = models.CharField (max_length=5, validators=[MinLengthValidator (5)])
     city = models.CharField (max_length=20)
     phoneNumber = models.CharField (max_length=10, validators=[MinLengthValidator (10)])
@@ -26,6 +84,7 @@ class User (AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManger ( )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
 
 
 class Technician (models.Model):

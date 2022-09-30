@@ -101,9 +101,6 @@ class registration_view (FormView):
             new_customer = Customer.objects.create (user=new_user, bio='blank')
             new_customer.save ( )
 
-
-
-
             return redirect (reverse ('account:user_login'))
         return render (request, 'registration/registration.html', {'form': form})
 
