@@ -9,12 +9,20 @@ from django.http import HttpResponse
 from .forms import RegistrationForm, LoginForm
 from .models import Technician, User, Customer
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_control
+from django.contrib.auth import logout
+from django.template import loader
+from django.shortcuts import render
+from django.views.decorators.cache import never_cache
 
 
 # Create your views here.
 def home(request):
     if request.user.is_authenticated:
-        return redirect(reverse('account:customerView'))
+        if (request.session.get('is_signedIn'), True):
+            return redirect (reverse ('account:customerView'))
+        else:
+            print("User is not logged in!")
     else:
         return render (request, "base.html")
 
@@ -52,6 +60,7 @@ def availableTechs(request):
     return render (request, "availableTechs.html", {"techs": techs, "dayOfWeek": dayOfWeek})
 
 
+@cache_control (no_cache=True, must_revalidate=True, no_store=True)
 def user_login(request):
     form = LoginForm (request.POST)
     if form.is_valid ( ):
@@ -60,6 +69,8 @@ def user_login(request):
         user = authenticate (request,
                              username=cd['email'],
                              password=cd['password'])
+        request.session['is_signedIn'] = True
+
         if user is not None:
             if user.is_active:
                 login (request, user)
@@ -72,27 +83,50 @@ def user_login(request):
         form = LoginForm ( )
     return render (request, 'registration/login.html', {'form': form})
 
+
 def gallery(request):
-    return render(request, 'Home/gallery.html')
+    return render (request, 'Home/gallery.html')
+
 
 def services(request):
     return render (request, 'Home/services.html')
 
+
 def aboutUs(request):
-    return render(request, 'Home/aboutUs.html')
+    return render (request, 'Home/aboutUs.html')
 
-
-
-@login_required
+@never_cache
+@cache_control (no_cache=True, must_revalidate=True, no_store=True)
+@login_required (login_url='/login/')
 def logout(request):
-    return HttpResponseRedirect(reversed('your_app:login'))
+    if request.user.is_authenticated:
+        request.session['is_signedIn'] = False
+        logout (request)
+        del request.session['is_signedIn']
+        request.session.flush()
+        return HttpResponseRedirect ("/")
 
-@login_required
+
+@never_cache
+@cache_control (no_cache=True, must_revalidate=True, no_store=True)
+@login_required (login_url='/login/')
 def customerView(request):
-    this_user = User.objects.get (pk=request.user.id)
+    if request.user.is_authenticated:
+        if (request.session.get ('is_signedIn'), True):
+            username = request.user.email
+            this_user = User.objects.get (pk=request.user.id)
+            template = loader.get_template ('account/customerView.html')
 
-    return render (request, 'account/customerView.html',
-                   {'this_user': this_user})
+            context = {
+                'this_user': this_user
+            }
+
+            return HttpResponse (template.render (context, request))
+        else:
+            print("User is not signed in!")
+            return redirect('account:home')
+    else:
+        return redirect ('account:home')
 
 
 class registration_view (FormView):
