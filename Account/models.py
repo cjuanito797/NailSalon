@@ -37,7 +37,7 @@ class Technician (models.Model):
 
 
     schedule = models.OneToOneField("Scheduling.TechnicianSchedule",
-                                    on_delete=models.CASCADE,
+                                   on_delete=models.CASCADE,
                                     default=False,
                                     blank=True)
 

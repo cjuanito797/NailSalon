@@ -102,7 +102,7 @@ class registration_view (FormView):
             new_user = form.save (commit=False)
             form.save ( )
 
-            new_customer = Customer.objects.create (user=new_user, bio='')
+            new_customer = Customer.objects.create (user=new_user, bio='blank')
             new_customer.save ( )
 
 
