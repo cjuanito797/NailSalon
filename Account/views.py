@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponseRedirect
 from datetime import date
 import calendar
 from django.urls import reverse
@@ -81,8 +81,11 @@ def services(request):
 def aboutUs(request):
     return render(request, 'Home/aboutUs.html')
 
+
+
+@login_required
 def logout(request):
-    return render (request, 'account:user_login')
+    return HttpResponseRedirect(reversed('your_app:login'))
 
 @login_required
 def customerView(request):
