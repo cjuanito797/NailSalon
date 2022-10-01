@@ -116,6 +116,27 @@ def profile(request):
         return redirect ('account:home')
 
 @never_cache
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='/login/')
+def changePassword(request):
+    if request.user.is_authenticated:
+        if (request.session.get('is_signedIn'), True):
+            username = request.user.email
+            this_user = User.objects.get(pk=request.user.id)
+            template = loader.get_template('account/changePassword.html')
+
+            context = {
+                'this_user': this_user
+            }
+
+            return HttpResponse(template.render(context, request))
+        else:
+            print("User is not signed in!")
+            return redirect('account:home')
+    else:
+        return redirect('account:home')
+
+@never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
 @login_required (login_url='/login/')
 def logout(request):
