@@ -117,19 +117,19 @@ def profile(request):
 
 def changePassword (request):
     if request.user.is_authenticated:
-        form = PasswordChangeForm (request.POST)
+        form = PasswordChangeForm (request.user, request.POST)
 
         if form.is_valid ( ):
             user = form.save (commit=False)
             form.save ( )
             update_session_auth_hash(request, user)
 
-            return redirect (reverse ('account:user_login'))
-        return render (request, 'account/profile.html', {'form': form})
+            return redirect ('account:user_login')
+        return render (request, 'account/changePassword.html', {'form': form})
 
     def get(self, request):
         form = PasswordChangeForm ( )
-        return render (request, 'account/profile.html', {'form': form})
+        return render (request, 'account/changePassword.html', {'form': form})
 
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
