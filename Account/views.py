@@ -1,4 +1,5 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, HttpResponseRedirect
 from datetime import date
@@ -10,7 +11,6 @@ from .forms import RegistrationForm, LoginForm
 from .models import Technician, User, Customer
 from django.contrib.auth import logout
 from django.template import loader
-from django.shortcuts import render
 from django.views.decorators.cache import never_cache
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
@@ -115,26 +115,21 @@ def profile(request):
     else:
         return redirect ('account:home')
 
-@never_cache
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='/login/')
-def changePassword(request):
+def changePassword (request):
     if request.user.is_authenticated:
-        if (request.session.get('is_signedIn'), True):
-            username = request.user.email
-            this_user = User.objects.get(pk=request.user.id)
-            template = loader.get_template('account/changePassword.html')
+        form = PasswordChangeForm (request.POST)
 
-            context = {
-                'this_user': this_user
-            }
+        if form.is_valid ( ):
+            user = form.save (commit=False)
+            form.save ( )
+            update_session_auth_hash(request, user)
 
-            return HttpResponse(template.render(context, request))
-        else:
-            print("User is not signed in!")
-            return redirect('account:home')
-    else:
-        return redirect('account:home')
+            return redirect (reverse ('account:user_login'))
+        return render (request, 'account/profile.html', {'form': form})
+
+    def get(self, request):
+        form = PasswordChangeForm ( )
+        return render (request, 'account/profile.html', {'form': form})
 
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
