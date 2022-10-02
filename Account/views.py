@@ -113,13 +113,8 @@ def customerView(request):
         if (request.session.get ('is_signedIn'), True):
             username = request.user.email
             this_user = User.objects.get (pk=request.user.id)
-            template = loader.get_template ('account/customerView.html')
 
-            context = {
-                'this_user': this_user
-            }
-
-            return HttpResponse (template.render (context, request))
+            return render(request, "account/customerView.html", {'this_user': this_user})
         else:
             print("User is not signed in!")
             return redirect('account:home')
