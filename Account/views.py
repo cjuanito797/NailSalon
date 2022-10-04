@@ -14,6 +14,7 @@ from django.template import loader
 from django.views.decorators.cache import never_cache
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
+from .forms import EditAddress
 
 
 # Create your views here.
@@ -178,5 +179,18 @@ class registration_view (FormView):
     def get(self, request):
         form = RegistrationForm ( )
         return render (request, 'registration/registration.html', {'form': form})
+
+
+@login_required
+def edit_address(request):
+    if request.method == "POST":
+        form = EditAddress (request.POST or None, instance=request.user, use_required_attribute=False)
+        if form.is_valid ( ):
+            form.save ( )
+            return render (request, 'account/editAddress.html')
+
+    else:
+        form = EditAddress (request.POST or None, instance=request.user, use_required_attribute=False)
+    return render (request, 'account/editAddress.html', {'form': form})
 
 # Begin to add all of the CRUD operations on the Account Side
