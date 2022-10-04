@@ -130,15 +130,21 @@
             </p>
         </div>
     </div>
-    <br>
 
-        <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 5px; margin: auto;">
-        <div class="container has-text-centered">
+    <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
+
+                <a class="button is-info" href="">
+                    Change Email
+                </a>
 
                 <a class="button is-info" href="{% url 'account:changePassword' %}">
                     Change Password
                 </a>
-        </div>
+
+                <a class="button is-info" href="">
+                    Delete Account
+                </a>
+
     </div>
 
 {% endblock %}
