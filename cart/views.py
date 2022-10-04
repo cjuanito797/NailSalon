@@ -14,8 +14,6 @@ def cart_add(request, service_id):
         quantity=1
     )
 
-    print(service.name)
-    print(cart.get_total_price())
 
     return redirect ('appointments:service_list')  # simply redirect to the page displaying our services.
 

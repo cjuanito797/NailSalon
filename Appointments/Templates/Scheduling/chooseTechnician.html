@@ -2,9 +2,11 @@
 
 {% load static %}
 
-{% block title %}<title>Confirm Appointment</title>{% endblock %}
+
+{% block title %}<title>Choose Technician Below</title>{% endblock %}
 
 {% block navigation %}
+
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="{% url 'account:home' %}">
@@ -89,7 +91,7 @@
                     <div class="buttons">
 
                         <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
-                            <img src="../../static/shopping_bag.png" style=""/>
+                            <img src="../../../Account/static/shopping_bag.png" style=""/>
                             {% with total_items=cart|length %}
                                 {% if cart|length > 0 %}
                                     ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
@@ -120,12 +122,29 @@
 {% endblock %}
 
 {% block mainbody %}
+    <section class="section">
+        {% if messages %}
+            {% for message in messages %}
+
+                <artcile class="message is-danger is-size-5-desktop">
+                    <div class="message-header">
+                        <p>Please Correct Error Below</p>
+                    </div>
+                    <div class="message-body">
+                        {{ message }}
+                    </div>
+                </artcile>
+            {% endfor %}
+
+        {% endif %}
+
+    </section>
 
     <section class="hero is-fullheight">
         <div class="hero-head has-text-centered">
             <div class="">
                 <p class="title has-text-black">
-                    Please Select a date and time for technician {{ tech.user.first_name }}
+                    Please choose from one of our technicians below.
                 </p>
 
             </div>
@@ -133,49 +152,86 @@
 
         </div>
 
-        <!--Add some spacing-->
-        <section class="field-body" style="margin-left: 55%; margin-top: 7%; position: relative;">
-            <div class="field-label has-text centered" style="margin: -5%;">
-                <p class="title has-text-black has-text-centered">
-                    Availability
-                </p>
+        <section class="field-body" style="position: absolute; margin-right: -10%; border-right: 1px solid black; height: 1000px; width: 15%;">
+            <div class="container" style=" position:relative; width: 50%; height: 10%; margin-left: 5%; margin-right: 5%; margin-top: 10%;">
+                <button class="button is-info is-fullwidth">Random</button>
 
             </div>
+
+
+            <div class="container" style=" position:absolute; width: 50%; height: 50%; margin-left: 25%; margin-right: 5%; margin-top: 50%;">
+                <p class="title is-5 has-text-black">Your Services </p>
+
+
+                <!-- iterate through the cart and display their services-->
+                <div class="container" style="height: 45%; overflow-y: scroll; overflow-x: hidden;">
+                    {% for item in cart %}
+                <p>{{ item.service }} x {{ item.quantity }}</p>
+                {% endfor %}
+                </div>
+
+
+                <a class="is-underlined" href="{% url "cart:cart_detail" %}">
+                        Edit Your Services
+                    </a>
+
+
+
+
+            </div>
+
+
+        </section>
+        <section class="field-body"
+                 style="margin-left: 35%; margin-top: 5%; position: relative; margin-right: 5%; background-color: transparent; border: none;">
 
             <!--render a box in here to hold the dates-->
-            <div class="box"
-                 style="border-radius: 5px; margin-top: 5%; width: 100%; overflow-y: scroll; position: absolute; height: 75%;">
-                {% for day in availableDates %}
-                    <!-- create a styled box for each of the dates and then render them that way-->
+            <div class="container"
+                 style=" margin-top: 5%; width: 100%;  position: relative; height: 75%; background-color: transparent; border: none; overflow-y: scroll; overflow-x: hidden;">
+                <div class="p-4 columns is-flex-wrap-wrap">
 
-                    <button class="button is-fullwidth is-spaced is-size-5 has-text-centered" style="margin: 2%; padding: 10px;">{{ day.date }}</button>
+                    {% for tech in techs %}
+                        <!-- create a styled box for each of the dates and then render them that way-->
+                        <div class="card" style="width: 18rem; margin: 1%;">
 
-                {% endfor %}
+                            <div class="container">
+                                <figure class="mx-auto">
+                                    <img src="https://riverlegacy.org/wp-content/uploads/2021/07/blank-profile-photo.jpeg"
+                                         alt="Placeholder image"
+                                         style="width: 100px; height: 100px; border-radius: 50%; align-items: center;
+                                            justify-content: center; display: flex; margin-left: 30%; margin-top: 10%;"
+                                    >
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="media">
 
+                                    <div class="media-content">
+                                        <p class="title is-4 has-text-black">{{ tech.user.first_name }} {{ tech.user.last_name }}</p>
+                                        <p class="subtitle is-6 has-text-black">{{ tech.user.email }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="content">
+                                    {{ tech.bio }}
+                                </div>
+                            </div>
+
+
+                            <!-- render a button for scheduling -->
+                            <footer class="card-footer">
+                                <p class="card-footer-item">
+                                    <button class="button is-primary">Schedule Now!</button>
+                                </p>
+                            </footer>
+                        </div>
+
+
+                    {% endfor %}
+
+                </div>
             </div>
         </section>
-
-        <section class="field-body" style="margin-left: 5%; margin-top: 10%; position:absolute;">
-
-            <div class="field-label has-text-left">
-                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
-                    Morning
-                </p>
-
-                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
-                    Afternoon
-                </p>
-
-                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
-                    Evening
-                </p>
-
-            </div>
-
-
-        </section>
-
-
     </section>
-
 {% endblock %}
+
