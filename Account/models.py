@@ -72,7 +72,7 @@ class User (AbstractBaseUser, PermissionsMixin):
     state = models.CharField (max_length=15,
                               choices=STATE_OPTIONS,
                               blank=False,
-                              default=None,
+                              default='Nebraska',
                               )
     zipcode = models.CharField (max_length=5, validators=[MinLengthValidator (5)])
     city = models.CharField (max_length=20)
