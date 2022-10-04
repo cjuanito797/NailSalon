@@ -6,7 +6,7 @@ from .models import *
 from Account.models import Technician
 from Calendar.models import calendarEntry
 from Appointments.models import Appointment
-from helper.assign_techs import Assign_techs
+from helper.assign_techs import open_timeslot
 import calendar
 myDates = []
 
@@ -92,8 +92,6 @@ def buildSchedules(todaysDate):
 
             new_time_slot.save ( )
 
-            appointment_preschedule(tech=t.user.email)
-
         # now also each time that we move the window one day to the right, we also need to create a calendar entry with
         # all of the techs working on that day.
         dayOfWeek = calendar.day_name[nextDayInWindow.weekday ( )].lower ( )
@@ -140,7 +138,5 @@ def getTodaysDate(request):
     return {'todaysDate': todaysDate}
 
 
-def appointment_preschedule(tech):
-    appointments = Appointment.objects.all()
-    for a in appointments:
-        Assign_techs.process(appointment_id=a.id)
+def initilize_timeslot(date):
+    open_timeslot()

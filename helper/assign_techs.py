@@ -1,10 +1,8 @@
 from asyncio.log import logger
 import math
-from tabnanny import check
 import django
 import os
 import calendar
-from datetime import date, datetime, timedelta
 import sys
 
 sys.path.append ("../NailSalon")
@@ -22,10 +20,46 @@ ERROR_MESSAGE = {0: "Cannot find appointment", 1: "Cannot find open timeslot for
 
 tech_queue = []
 
-
 def process_queue():
     pass
 
+def open_timeslot(date):
+    process = _Process(check_date=date)
+    ''' # on working - enable timeslot with time_In, time_Out constraint
+    available_on_day = list(TechnicianSchedule.objects.filter (
+        **{process.dayOfWeek_field_name: True}
+        ).values_list ('tech', f'{process.dayOfWeek.lower()}_time_In', f'{process.dayOfWeek.lower()}_time_Out'))[0]
+    
+    #print(available_on_day)
+    '''
+    timeslot_avail_techs = process._get_available_techs ( )
+    
+    # total timeslot in one day
+    count = 32
+
+    # get slot field_name as start
+    hour = 9
+    minute = 0
+    minute -= 15
+
+    # Prepare all timeslot fieldname depend for total duration of all services
+    fieldname_list = []
+    for _ in range(count):
+        if minute + 15 >= 60:
+            minute = 0
+            hour += 1
+        else:
+            minute += 15
+        fieldname_list.append(_Process._convert_time_fieldname(process, hour, minute))
+    
+    
+    for timeslot in timeslot_avail_techs:
+        print(timeslot['tech'])
+        print(timeSlots.objects.get (tech=timeslot['tech'], date=date))
+        for field in fieldname_list:
+            assign = timeSlots.objects.get (tech=timeslot['tech'], date=date)
+            setattr (assign, field, False)
+            assign.save ( )
 
 class Assign_techs:
     def process(appointment_id, check_date):
@@ -47,9 +81,8 @@ class Assign_techs:
         except IndexError as ie:
             logger.error (ie)
 
-
 class _Process (Assign_techs):
-    def __init__(self, appointment_id, check_date):
+    def __init__(self, check_date, appointment_id=None):
         self.__appointment_id = appointment_id
 
         # self.current_date = date.today()
@@ -60,12 +93,13 @@ class _Process (Assign_techs):
             calendar.day_name[self.current_date.weekday ( )].lower ( )
         )  # string concat to match field_name for filter
 
-        try:
-            self.starttime_object = (Appointment.objects.filter (
-                id=appointment_id, date=self.current_date
-            ).values_list ('start_time', flat=True))[0]
-        except IndexError:
-            raise IndexError ("appointment error")
+        if appointment_id is not None:
+            try:
+                self.starttime_object = (Appointment.objects.filter (
+                    id=appointment_id, date=self.current_date
+                ).values_list ('start_time', flat=True))[0]
+            except IndexError:
+                raise IndexError ("appointment error")
 
         # print(self.starttime_object)
 
