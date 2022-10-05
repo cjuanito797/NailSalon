@@ -26,10 +26,10 @@ def process_queue():
 class Process:
     def processing(**kargs):
         if len(kargs) == 2:      # Process appointment (by appointment_id, date)
-            appointment_id = kargs['appointment_id']
+            __appointment_id = kargs['appointment_id']
             check_date = kargs['date']
             try:
-                process = _Process(check_date, appointment_id)
+                process = _Process(check_date, __appointment_id)
                 # retrieve all available technicians (using today day)
                 timeslot_avail_techs = process._get_available_techs ( )
                 # split appointment to sales
