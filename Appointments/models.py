@@ -1,5 +1,5 @@
 from django.db import models
-from Account.models import Technician
+from Account.models import Technician, User
 from django.urls import reverse
 
 
@@ -88,7 +88,7 @@ class Sale(models.Model):
     service = models.ForeignKey(Service,
                                 on_delete=models.CASCADE,
                                 related_name='service')
-    technician = models.ForeignKey(Technician,
+    technician = models.ForeignKey(User,
                                 on_delete=models.CASCADE,
                                 related_name='technician')
     appointment = models.ForeignKey(Appointment,

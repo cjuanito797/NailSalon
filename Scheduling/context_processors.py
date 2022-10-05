@@ -5,8 +5,6 @@ from datetime import date
 from .models import *
 from Account.models import Technician
 from Calendar.models import calendarEntry
-from Appointments.models import Appointment
-from helper.assign_techs import open_timeslot
 import calendar
 myDates = []
 
@@ -136,7 +134,3 @@ def getTodaysDate(request):
     buildSchedules (todaysDate)
 
     return {'todaysDate': todaysDate}
-
-
-def initilize_timeslot(date):
-    open_timeslot()

@@ -10,8 +10,8 @@ os.environ.setdefault ('DJANGO_SETTINGS_MODULE', 'NailSalon.settings')
 django.setup ( )
 
 from Scheduling.models import TechnicianSchedule, timeSlots
-from Appointments.models import Appointment, Service
-from Account.models import User
+from Appointments.models import Appointment, Service, Sale
+from Account.models import Technician, User
 
 num_to_word = {13: 'one_', 14: 'two_', 15: 'three_', 16: 'four_',
                9: 'nine_', 10: 'ten_', 11: 'eleven_',
@@ -23,68 +23,55 @@ tech_queue = []
 def process_queue():
     pass
 
-def open_timeslot(date):
-    process = _Process(check_date=date)
-    ''' # on working - enable timeslot with time_In, time_Out constraint
-    available_on_day = list(TechnicianSchedule.objects.filter (
-        **{process.dayOfWeek_field_name: True}
-        ).values_list ('tech', f'{process.dayOfWeek.lower()}_time_In', f'{process.dayOfWeek.lower()}_time_Out'))[0]
-    
-    #print(available_on_day)
-    '''
-    timeslot_avail_techs = process._get_available_techs ( )
-    
-    # total timeslot in one day
-    count = 32
-
-    # get slot field_name as start
-    hour = 9
-    minute = 0
-    minute -= 15
-
-    # Prepare all timeslot fieldname depend for total duration of all services
-    fieldname_list = []
-    for _ in range(count):
-        if minute + 15 >= 60:
-            minute = 0
-            hour += 1
-        else:
-            minute += 15
-        fieldname_list.append(_Process._convert_time_fieldname(process, hour, minute))
-    
-    
-    for timeslot in timeslot_avail_techs:
-        print(timeslot['tech'])
-        print(timeSlots.objects.get (tech=timeslot['tech'], date=date))
-        for field in fieldname_list:
-            assign = timeSlots.objects.get (tech=timeslot['tech'], date=date)
-            setattr (assign, field, False)
-            assign.save ( )
-
-class Assign_techs:
-    def process(appointment_id, check_date):
-        try:
-            process = _Process (appointment_id, check_date)
-
-            # retrieve all available technicians (using today day)
+class Process:
+    def processing(**kargs):
+        if len(kargs) == 2:      # Process appointment (by appointment_id, date)
+            appointment_id = kargs['appointment_id']
+            check_date = kargs['date']
+            try:
+                process = _Process(check_date, appointment_id)
+                # retrieve all available technicians (using today day)
+                timeslot_avail_techs = process._get_available_techs ( )
+                # split appointment to sales
+                sale_service = process._split_appointment_to_sales ( )
+                # find and assign open technician for sales
+                assign_tech = process._sort_and_assign_tech (timeslot_avail_techs, sale_service)
+                # retrieve technician name for return
+                tech_name = User.objects.filter (email=assign_tech).values_list ('first_name', 'last_name')[0]
+                # set return value (tech first, last name)
+                return f"{tech_name[0]} {tech_name[1]}" # --return for test
+            except IndexError as ie:
+                logger.error (ie)
+        elif len(kargs) == 1:    # Initialize timeslot for new day (by date)
+            date = kargs['date']
+            process = _Process(date)
             timeslot_avail_techs = process._get_available_techs ( )
+            
+            # total timeslot in one day
+            count = 32
+            # get slot field_name as start
+            hour = 9
+            minute = 0
+            minute -= 15    # subtract 15 so the next slot will be 9:00
 
-            # split appointment to sales
-            sale_service = process._split_appointment_to_sales ( )
+            # Prepare all timeslot fieldname depend for total duration of all services
+            fieldname_list = []
+            for _ in range(count):
+                if minute + 15 >= 60:
+                    minute = 0
+                    hour += 1
+                else:
+                    minute += 15
+                fieldname_list.append(_convert_time_fieldname(hour, minute))
 
-            # find and assign open technician for sales
-            assign_tech = process._sort_and_assign_tech (timeslot_avail_techs, sale_service)
-            # retrieve technician name for return
-            tech_name = User.objects.filter (email=assign_tech).values_list ('first_name', 'last_name')[0]
+            for timeslot in timeslot_avail_techs:
+                for field in fieldname_list:
+                    assign = timeSlots.objects.get (tech=timeslot['tech'], date=date)
+                    setattr (assign, field, True)
+                    assign.save ( )
 
-            return "{0} {1}".format (tech_name[0], tech_name[1])  # --return for test
-        except IndexError as ie:
-            logger.error (ie)
-
-class _Process (Assign_techs):
+class _Process:
     def __init__(self, check_date, appointment_id=None):
-        self.__appointment_id = appointment_id
-
         # self.current_date = date.today()
         self.current_date = check_date
 
@@ -95,13 +82,12 @@ class _Process (Assign_techs):
 
         if appointment_id is not None:
             try:
+                self.__appointment_id = appointment_id
                 self.starttime_object = (Appointment.objects.filter (
                     id=appointment_id, date=self.current_date
                 ).values_list ('start_time', flat=True))[0]
             except IndexError:
                 raise IndexError ("appointment error")
-
-        # print(self.starttime_object)
 
     def _get_available_techs(self):
         # filter {field_name(provide as custom string): True} (dict)
@@ -137,8 +123,12 @@ class _Process (Assign_techs):
                     hour += 1
                 else:
                     minute += 15
-                fieldname_list.append (self._convert_time_fieldname (hour, minute))
+                fieldname_list.append (_convert_time_fieldname (hour, minute))
 
+        #print(sale_service)
+        #print(count)
+        #print(fieldname_list)
+        #print(all_time_slots)
         # Find technician who open to do all services in appointment
         tech_email = None
         for tech in all_time_slots:
@@ -147,24 +137,27 @@ class _Process (Assign_techs):
                 count += (1 if tech[field] == True else 0)
             if count == len (fieldname_list):
                 tech_email = tech['tech']
-
+            break
+        
+        # Set time slot and tech into sales
         if tech_email != None:
-            # Set False (busy) for open technician
+            # Create new Sales
+            for s in sale_service:
+                Sale.objects.create(
+                    service=Service.objects.get(id=s['id']),
+                    technician=User.objects.get(email=tech_email),
+                    appointment=Appointment.objects.get(id=self.__appointment_id),
+                )
+            # Set time slot to False (busy) for open technician
             for field in fieldname_list:
-                assign = timeSlots.objects.get (tech=tech_email)
+                assign = timeSlots.objects.get (tech=tech_email, date=self.current_date) # ****
                 setattr (assign, field, False)
                 assign.save ( )
+
         else:
             tech_email == -1
 
         return tech_email
-
-    def _convert_time_fieldname(self, hour, minute):
-        hour_string = num_to_word[hour]
-        minute_tostring = ("00_" if minute == 0 else str (minute))
-        meridiem = ("am" if hour < 12 else "pm")
-
-        return "{0}{1}{2}".format (hour_string, minute_tostring, meridiem)
 
     def _split_appointment_to_sales(self):
         test_date = self.current_date  # --test input data
@@ -183,11 +176,9 @@ class _Process (Assign_techs):
             )
         return services
 
+def _convert_time_fieldname(hour, minute):
+    hour_string = num_to_word[hour]
+    minute_tostring = ("00_" if minute == 0 else str (minute))
+    meridiem = ("am" if hour < 12 else "pm")
+    return "{0}{1}{2}".format (hour_string, minute_tostring, meridiem)
 
-# --main to test assign_techs
-def main():
-    Assign_techs.process (appointment_id=5, check_date=1)
-
-
-if __name__ == "__main__":
-    main ( )
