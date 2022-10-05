@@ -114,6 +114,7 @@ def profile(request):
     else:
         return redirect ('account:home')
 
+@login_required(login_url='/login/')
 def changePassword (request):
     if request.user.is_authenticated:
         form = PasswordChangeForm (request.user, request.POST)
