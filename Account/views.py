@@ -27,6 +27,7 @@ def home(request):
         return render (request, "base.html")
 
 
+
 def availableTechs(request):
     # print all available technicians for that day.
     curr_date = date.today ( )

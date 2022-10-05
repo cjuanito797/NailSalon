@@ -2,9 +2,7 @@
 
 {% load static %}
 
-<!DOCTYPE html>
-
-{% block title %}<title>Profile</title>{% endblock %}
+{% block title %}<title>Confirm Appointment</title>{% endblock %}
 
 {% block navigation %}
     <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -45,7 +43,7 @@
                             <a class="navbar-item">
                                 My Appointment History
                             </a>
-                            <a class="navbar-item" href="{% url 'account:profile' %}">
+                            <a class="navbar-item">
                                 My Profile
                             </a>
                             <a class="navbar-item" style="color: black;">
@@ -94,7 +92,7 @@
                             <img src="../../static/shopping_bag.png" style=""/>
                             {% with total_items=cart|length %}
                                 {% if cart|length > 0 %}
-                                        ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
+                                    ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
 
                                 {% else %}
                                     Empty
@@ -119,32 +117,65 @@
             </div>
         </div>
     </nav>
-
 {% endblock %}
 
 {% block mainbody %}
-    <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
-        <div class="container has-text-centered">
-            <p class="title has-text-black">
-                {{ this_user.first_name }}'s Profile
-            </p>
+
+    <section class="hero is-fullheight">
+        <div class="hero-head has-text-centered">
+            <div class="">
+                <p class="title has-text-black">
+                    Please Select a date and time for technician {{ tech.user.first_name }}
+                </p>
+
+            </div>
+
+
         </div>
-    </div>
 
-    <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
+        <!--Add some spacing-->
+        <section class="field-body" style="margin-left: 55%; margin-top: 7%; position: relative;">
+            <div class="field-label has-text centered" style="margin: -5%;">
+                <p class="title has-text-black has-text-centered">
+                    Availability
+                </p>
 
-                <a class="button is-info" href="">
-                    Change Email
-                </a>
+            </div>
 
-                <a class="button is-info" href="{% url 'account:changePassword' %}">
-                    Change Password
-                </a>
+            <!--render a box in here to hold the dates-->
+            <div class="box"
+                 style="border-radius: 5px; margin-top: 5%; width: 100%; overflow-y: scroll; position: absolute; height: 75%;">
+                {% for day in availableDates %}
+                    <!-- create a styled box for each of the dates and then render them that way-->
 
-                <a class="button is-info" href="">
-                    Delete Account
-                </a>
+                    <button class="button is-fullwidth is-spaced is-size-5 has-text-centered" style="margin: 2%; padding: 10px;">{{ day.date }}</button>
 
-    </div>
+                {% endfor %}
+
+            </div>
+        </section>
+
+        <section class="field-body" style="margin-left: 5%; margin-top: 10%; position:absolute;">
+
+            <div class="field-label has-text-left">
+                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
+                    Morning
+                </p>
+
+                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
+                    Afternoon
+                </p>
+
+                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
+                    Evening
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </section>
 
 {% endblock %}
