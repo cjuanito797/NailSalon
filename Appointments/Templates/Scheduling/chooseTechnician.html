@@ -210,7 +210,7 @@
                             <!-- render a button for scheduling -->
                             <footer class="card-footer">
                                 <p class="card-footer-item">
-                                    <button class="button is-primary">Schedule Now!</button>
+                                    <a class="button is-primary" href={% url 'appointments:schedule' tech.id%}>Schedule Now</a>
                                 </p>
                             </footer>
                         </div>
