@@ -9,7 +9,6 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 
-
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
 @login_required (login_url='/login/')
@@ -109,7 +108,6 @@ def scheduleWithTech(request, pk):
             # add the day to a list.
             workingDays.append(day)
 
-
     # but our backend algorithm should work to sort technicians by who is available to work on their service the closes and
     # who actually has the most amount of time.
 
@@ -118,7 +116,6 @@ def scheduleWithTech(request, pk):
 
     # so we need to build the time slots, each time that a user has selected on a date.
 
-
-
+    # so we need to set a default date, make it be the first one in the list, and display the available times.
 
     return render(request, "Scheduling/calendar.html", {"tech": tech, "availableDates": workingDays})
