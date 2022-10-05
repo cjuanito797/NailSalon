@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-
 {% load static %}
-
-
 {% block title %}<title>Choose Technician Below</title>{% endblock %}
 
 {% block navigation %}
-
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="{% url 'account:home' %}">
@@ -59,7 +55,6 @@
                     </div>
                 {% endif %}
 
-
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link has-text-black">
                         More
@@ -81,10 +76,7 @@
                         </a>
                     </div>
                 </div>
-
-
             </div>
-
 
             <div class="navbar-end">
                 <div class="navbar-item">
@@ -102,9 +94,6 @@
                             {% endwith %}
                         </a>
 
-                        &nbsp;
-                        &nbsp;
-
                         <a class="button is-success" href="{% url 'appointments:service_list' %}">
                             Book Appointment
                         </a>
@@ -112,7 +101,6 @@
                         <a class="button is-light" href="{% url 'account:logout' %}">
                             Sign Out
                         </a>
-
 
                     </div>
                 </div>
@@ -145,45 +133,47 @@
             <div class="">
                 <p class="title has-text-black">
                     Please choose from one of our technicians below.
+                    <br>
+
+
                 </p>
+                <progress class="progress is-primary is-medium has-text-black" value="50" max="100"
+                          style="position: absolute; width: 50%; margin-left: 30%;">50%
+                </progress>
+
 
             </div>
-
-
         </div>
 
-        <section class="field-body" style="position: absolute; margin-right: -10%; border-right: 1px solid black; height: 1000px; width: 15%;">
-            <div class="container" style=" position:relative; width: 50%; height: 10%; margin-left: 5%; margin-right: 5%; margin-top: 10%;">
-                <button class="button is-info is-fullwidth">Random</button>
+        <section class="field-body"
+                 style="position: absolute; margin-right: -10%; border-right: 1px solid black; height: 75%; width: 15%;">
 
-            </div>
-
-
-            <div class="container" style=" position:absolute; width: 50%; height: 50%; margin-left: 25%; margin-right: 5%; margin-top: 50%;">
+            <div class="container"
+                 style=" position:absolute; width: 50%; height: 50%; margin-left: 25%; margin-right: 5%; margin-top: 10%;">
                 <p class="title is-5 has-text-black">Your Services </p>
 
 
                 <!-- iterate through the cart and display their services-->
                 <div class="container" style="height: 45%; overflow-y: scroll; overflow-x: hidden;">
                     {% for item in cart %}
-                <p>{{ item.service }} x {{ item.quantity }}</p>
-                {% endfor %}
+                        <p>{{ item.service }} x {{ item.quantity }}</p>
+                    {% endfor %}
                 </div>
 
 
                 <a class="is-underlined" href="{% url "cart:cart_detail" %}">
-                        Edit Your Services
-                    </a>
-
-
-
+                    Edit Your Services
+                </a>
 
             </div>
 
+            <div class="container" style="position: relative; margin-top: 100%;">
+                <button class="button is-info is-fullwidth">Random Technician</button>
 
+            </div>
         </section>
         <section class="field-body"
-                 style="margin-left: 35%; margin-top: 5%; position: relative; margin-right: 5%; background-color: transparent; border: none;">
+                 style="margin-left: 35%; margin-top: 5%; position: relative; margin-right: 5%;  margin-bottom: 10%;">
 
             <!--render a box in here to hold the dates-->
             <div class="container"
@@ -196,7 +186,8 @@
 
                             <div class="container">
                                 <figure class="mx-auto">
-                                    <img src="https://riverlegacy.org/wp-content/uploads/2021/07/blank-profile-photo.jpeg"
+                                    <img {% if tech.profilePicture %}src="{{ tech.profilePicture.url }}" {% else %}
+                                         src="../../static/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg" {% endif %}
                                          alt="Placeholder image"
                                          style="width: 100px; height: 100px; border-radius: 50%; align-items: center;
                                             justify-content: center; display: flex; margin-left: 30%; margin-top: 10%;"
@@ -216,8 +207,6 @@
                                     {{ tech.bio }}
                                 </div>
                             </div>
-
-
                             <!-- render a button for scheduling -->
                             <footer class="card-footer">
                                 <p class="card-footer-item">
@@ -226,12 +215,10 @@
                             </footer>
                         </div>
 
-
                     {% endfor %}
-
                 </div>
             </div>
         </section>
+
     </section>
 {% endblock %}
-

@@ -10,41 +10,41 @@ class TechnicianSchedule (models.Model):
     tech = models.EmailField (_ ('email'), unique=True)
 
     monday_availability = models.BooleanField (default=False)
-    monday_timeIn = models.TimeField ( )
-    monday_timeOut = models.TimeField ( )
+    monday_timeIn = models.TimeField (blank=True)
+    monday_timeOut = models.TimeField (blank=True)
 
     tuesday_availability = models.BooleanField (default=False)
-    tuesday_time_In = models.TimeField ( )
-    tuesday_time_Out = models.TimeField ( )
+    tuesday_time_In = models.TimeField (blank=True)
+    tuesday_time_Out = models.TimeField (blank=True)
 
 
     wednesday_availability = models.BooleanField (default=False)
-    wednesday_time_In = models.TimeField ( )
-    wednesday_time_Out = models.TimeField ( )
+    wednesday_time_In = models.TimeField (blank=True)
+    wednesday_time_Out = models.TimeField (blank=True)
 
 
 
     thursday_availability = models.BooleanField (default=False)
-    thursday_time_In = models.TimeField ( )
-    thursday_time_Out = models.TimeField ( )
+    thursday_time_In = models.TimeField (blank=True)
+    thursday_time_Out = models.TimeField (blank=True)
 
 
 
     friday_availability = models.BooleanField (default=False)
-    friday_time_In = models.TimeField ( )
-    friday_time_Out = models.TimeField ( )
+    friday_time_In = models.TimeField (blank=True)
+    friday_time_Out = models.TimeField (blank=True)
 
 
 
     saturday_availability = models.BooleanField (default=False)
-    saturday_time_In = models.TimeField ( )
-    saturday_time_Out = models.TimeField ( )
+    saturday_time_In = models.TimeField (blank=True)
+    saturday_time_Out = models.TimeField (blank=True)
 
 
 
     sunday_availability = models.BooleanField (default=False)
-    sunday_time_In = models.TimeField ( )
-    sunday_time_Out = models.TimeField ( )
+    sunday_time_In = models.TimeField (blank=True)
+    sunday_time_Out = models.TimeField (blank=True)
 
 
 
