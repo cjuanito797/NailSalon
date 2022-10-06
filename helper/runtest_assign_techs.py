@@ -1,10 +1,11 @@
-from assign_techs import Process
+from timeslot_process import Process
 from datetime import date
 
-#appointment = Process.processing(date=date(2022, 10, 4), appointment_id=4)
+#appointment = Process.close(date=date(2022, 10, 4), appointment_id=4)
 
 
-Process.processing(date=date(2022, 10, 15))
+print(Process.close_slots(id=4,date=date(2022, 10, 4)))
+#Process.open_slots(date=date(2022, 11, 5))
 
 
 #print(appointment)
