@@ -5,82 +5,141 @@
 
 
 {% block navigation %}
- <nav class="navbar if" role="navigation" aria-label="main navigation">
-                    <div class="navbar-brand">
-                        <a class="navbar-item" href="{% url 'account:home' %}">
-                            <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
+    <nav class="navbar if" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{% url 'account:home' %}">
+                <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'account:gallery' %}">
+                    Gallery
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:services' %}">
+                    Our Services
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:aboutUs' %}">
+                    About Us
+                </a>
+
+                {% if request.user.is_authenticated %}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link has-text-black">
+                            My Account
                         </a>
 
-                        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
-                           data-target="navbarBasicExample">
-                            <span aria-hidden="true"></span>
-                            <span aria-hidden="true"></span>
-                            <span aria-hidden="true"></span>
+                        <div class="navbar-dropdown" style="color: black;">
+                            <a class="navbar-item">
+                                My Appointment History
+                            </a>
+                            <a class="navbar-item" href="{% url 'account:profile' %}">
+                                My Profile
+                            </a>
+                            <a class="navbar-item" style="color: black;">
+                                My Promotions
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{% url 'account:security' %}">
+                                Security Settings
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link has-text-black">
+                        More
+                    </a>
+
+                    <div class="navbar-dropdown" style="color: black;">
+                        <a class="navbar-item">
+                            Meet the team
+                        </a>
+                        <a class="navbar-item">
+                            Career Opportunities
+                        </a>
+                        <a class="navbar-item" style="color: black;">
+                            Promotions
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Report an issue
                         </a>
                     </div>
+                </div>
 
-                    <div id="navbarBasicExample" class="navbar-menu">
-                        <div class="navbar-start">
-                            <a class="navbar-item" href="{% url 'account:gallery' %}">
-                                Gallery
+
+            </div>
+
+
+            {% if request.user.is_authenticated %}
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+
+                            <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
+                                <img src="../../static/shopping_bag.png" style=""/>
+                                {% with total_items=cart|length %}
+                                    {% if cart|length > 0 %}
+                                        ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
+
+                                    {% else %}
+                                        Empty
+                                    {% endif %}
+                                {% endwith %}
                             </a>
 
-                            <a class="navbar-item" href="{% url 'account:services' %}">
-                                Our Services
+                            &nbsp;
+                            &nbsp;
+
+                            <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                                Book Appointment
                             </a>
 
-                            <a class="navbar-item" href="{% url 'account:aboutUs' %}">
-                                About Us
+                            <a class="button is-light" href="{% url 'account:logout' %}">
+                                Sign Out
                             </a>
 
 
-                            <div class="navbar-item has-dropdown is-hoverable">
-                                <a class="navbar-link has-text-black">
-                                    More
-                                </a>
-
-                                <div class="navbar-dropdown" style="color: black;">
-                                    <a class="navbar-item">
-                                        About
-                                    </a>
-                                    <a class="navbar-item">
-                                        Jobs
-                                    </a>
-                                    <a class="navbar-item" style="color: black;">
-                                        Contact
-                                    </a>
-                                    <hr class="navbar-divider">
-                                    <a class="navbar-item">
-                                        Report an issue
-                                    </a>
-                                </div>
-                            </div>
-                             <div class="navbar-end">
-                            <div class="navbar-item">
-                                <a class="button is-success" href="{% url 'account:home' %}">
-                                    Book Appointment
-                                </a>
-                            </div>
-                        </div>
-
-                        </div>
-
-
-
-                        <div class="navbar-end">
-                            <div class="navbar-item">
-                                <div class="buttons">
-                                    <a class="button is-info" href="{% url 'account:user_registration' %}">
-                                        <strong>Sign up</strong>
-                                    </a>
-                                    <a class="button is-light" href="{% url 'account:user_login' %}">
-                                        Log in
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                </nav>
+                </div>
+
+
+            {% else %}
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+
+                            <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                                Book Appointment
+                            </a>
+                            <a class="button is-info" href="{% url 'account:user_registration' %}">
+                                <strong>Sign up</strong>
+                            </a>
+                            <a class="button is-light" href="{% url 'account:user_login' %}">
+                                Log in
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            {% endif %}
+        </div>
+    </nav>
 {% endblock %}
 
 {% block mainbody %}
@@ -92,14 +151,51 @@
                 </p>
             </div>
             <section class="section has-text-left">
-                <h1 class="title has-text-black">Nails</h1>
-
+                <h1 class="title has-text-black">MANICURE</h1>
+                <p>Acrylic Full Set</p>
+                <p>Acrylic Full Set with Shellac</p>
+                <p>Acrylic Full Set White Tips</p>
+                <p>Acrylic Fill In</p>
+                <p>Acrylic Fill In with Shellac</p>
+                <p>Ombre Full Set</p>
+                <p>Ombre refill</p>
+                <p>Ombre Pink refill</p>
+                <p>Pink and White Full Set</p>
+                <p>Pink and White refill</p>
+                <p>Pink refill</p>
+                <p>Dip Powder with Manicure</p>
+                <p>Dip Powder Full Set</p>
+                <p>Dip Powder refill</p>
 
             </section>
 
             <section class="section has-text-left">
-                <h1 class="title has-text-black">Pedicures</h1>
+                <h1 class="title has-text-black">PEDICURE</h1>
+                <p>Luxury Spa Pedicure</p>
+                <p>Luxury Spa Pedicure with Shellac</p>
+                <p>Luxury Spa Pedicure and Manicure</p>
+                <p> Deluxe Spa Pedicure</p>
+                <p> Deluxe Spa Pedicure with Shellac</p>
+                <p> Deluxe Spa Pedicure and Manicure</p>
+                <p> Smoothie Spa Pedicure</p>
+                <p> Smoothie Spa Pedicure with Shellac</p>
+                <p> Smoothie Spa Pedicure and Manicure</p>
+            </section>
 
+            <section class="section has-text-left">
+                <h1 class="title has-text-black">WAX</h1>
+                <p> Wax Eyebrow</p>
+                <p> Wax Upper Lip</p>
+                <p> Wax Chin and Upper Lip</p>
+                <p> Wax Sideburns</p>
+                <p> Wax Upper and Lower Lip</p>
+                <p> Wax Full Face</p>
+                <p> Wax Under Arm</p>
+                <p> Wax Half Arm</p>
+                <p> Wax Full Arm</p>
+                <p> Wax Half Leg</p>
+                <p> Wax Full Leg</p>
+                <p> Wax Back</p>
             </section>
         </div>
     </section>

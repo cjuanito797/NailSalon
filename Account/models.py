@@ -99,9 +99,15 @@ class Technician (models.Model):
                                    on_delete=models.CASCADE,
                                     default=False,
                                     blank=True)
+    profilePicture = models.ImageField(upload_to='technicians/%Y/%m/%d',
+                                       blank=True,
+                                       default=None,
+                                       null=True)
 
     def __str__(self):
         return self.user.email
+
+
 class Customer (models.Model):
     user = models.OneToOneField ('Account.User',
                                  related_name='customer',
