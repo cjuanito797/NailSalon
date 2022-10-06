@@ -8,7 +8,186 @@ import sys
 sys.path.append("../NailSalon")
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'NailSalon.settings')
 django.setup()
-'''
+
+from Account.models import User
+a = [
+    User(email='a@a.com', first_name='a', last_name='aa', street_num=' ', state='Nebraska', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
+    User(email='b@a.com', first_name='a', last_name='aa', street_num=' ', state='Nebraska', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
+    User(email='c@a.com', first_name='a', last_name='aa', street_num=' ', state='Nebraska', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
+    User(email='d@a.com', first_name='a', last_name='aa', street_num=' ', state='Nebraska', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
+    User(email='e@a.com', first_name='a', last_name='aa', street_num=' ', state='Nebraska', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
+    User(email='f@a.com', first_name='a', last_name='aa', street_num=' ', state='Nebraska', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
+    User(email='g@a.com', first_name='a', last_name='aa', street_num=' ', state='Nebraska', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
+    User(email='h@a.com', first_name='a', last_name='aa', street_num=' ', state='Nebraska', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
+    User(email='i@a.com', first_name='a', last_name='aa', street_num=' ', state='Nebraska', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
+    User(email='j@a.com', first_name='a', last_name='aa', street_num=' ', state='Nebraska', zipcode=' ', city=' ', phoneNumber='000', bio =' ')
+]
+for i in a:
+    i.save()
+
+print("User done!")
+#DELETE FROM Account_user;
+#DELETE FROM sqlite_sequence where name = 'Account_user';
+
+
+from Account.models import Customer
+a = [
+    Customer(user_id=1, bio=''),
+    Customer(user_id=2, bio=''),
+    Customer(user_id=3, bio=''),
+    Customer(user_id=4, bio=''),
+    Customer(user_id=5, bio=''), 
+
+]
+for i in a:
+    i.save()
+print("Customer done!")
+#DELETE FROM Account_customer;
+
+from Scheduling.models import TechnicianSchedule
+a = [
+    TechnicianSchedule(
+        tech = "f@a.com",
+        monday_availability = True,
+        monday_timeIn = datetime.time(9,0),
+        monday_timeOut =datetime.time (17,0),
+        tuesday_availability = True,
+        tuesday_time_In = datetime.time(9,0),
+        tuesday_time_Out = datetime.time(17,0),
+        wednesday_availability = True,
+        wednesday_time_In = datetime.time(9,0),
+        wednesday_time_Out = datetime.time(17,0),
+        thursday_availability = True,
+        thursday_time_In = datetime.time(9,0),
+        thursday_time_Out = datetime.time(17,0),
+        friday_availability = True,
+        friday_time_In = datetime.time(9,0),
+        friday_time_Out = datetime.time(17,0),
+        saturday_availability = True,
+        saturday_time_In = datetime.time(9,0),
+        saturday_time_Out = datetime.time(17,0),
+        sunday_availability = True,
+        sunday_time_In = datetime.time(9,0),
+        sunday_time_Out = datetime.time(17,0),
+    ),
+    TechnicianSchedule(
+        tech = "g@a.com",
+        monday_availability = True,
+        monday_timeIn = datetime.time(9,0),
+        monday_timeOut =datetime.time (17,0),
+        tuesday_availability = True,
+        tuesday_time_In = datetime.time(9,0),
+        tuesday_time_Out = datetime.time(17,0),
+        wednesday_availability = True,
+        wednesday_time_In = datetime.time(9,0),
+        wednesday_time_Out = datetime.time(17,0),
+        thursday_availability = True,
+        thursday_time_In = datetime.time(9,0),
+        thursday_time_Out = datetime.time(17,0),
+        friday_availability = True,
+        friday_time_In = datetime.time(9,0),
+        friday_time_Out = datetime.time(17,0),
+        saturday_availability = True,
+        saturday_time_In = datetime.time(9,0),
+        saturday_time_Out = datetime.time(17,0),
+        sunday_availability = True,
+        sunday_time_In = datetime.time(9,0),
+        sunday_time_Out = datetime.time(17,0),
+    ),
+    TechnicianSchedule(
+        tech = "h@a.com",
+        monday_availability = True,
+        monday_timeIn = datetime.time(9,0),
+        monday_timeOut =datetime.time (17,0),
+        tuesday_availability = True,
+        tuesday_time_In = datetime.time(9,0),
+        tuesday_time_Out = datetime.time(17,0),
+        wednesday_availability = True,
+        wednesday_time_In = datetime.time(9,0),
+        wednesday_time_Out = datetime.time(17,0),
+        thursday_availability = True,
+        thursday_time_In = datetime.time(9,0),
+        thursday_time_Out = datetime.time(17,0),
+        friday_availability = True,
+        friday_time_In = datetime.time(9,0),
+        friday_time_Out = datetime.time(17,0),
+        saturday_availability = True,
+        saturday_time_In = datetime.time(9,0),
+        saturday_time_Out = datetime.time(17,0),
+        sunday_availability = True,
+        sunday_time_In = datetime.time(9,0),
+        sunday_time_Out = datetime.time(17,0),
+    ),
+    TechnicianSchedule(
+        tech = "i@a.com",
+        monday_availability = True,
+        monday_timeIn = datetime.time(9,0),
+        monday_timeOut =datetime.time (17,0),
+        tuesday_availability = True,
+        tuesday_time_In = datetime.time(9,0),
+        tuesday_time_Out = datetime.time(17,0),
+        wednesday_availability = True,
+        wednesday_time_In = datetime.time(9,0),
+        wednesday_time_Out = datetime.time(17,0),
+        thursday_availability = True,
+        thursday_time_In = datetime.time(9,0),
+        thursday_time_Out = datetime.time(17,0),
+        friday_availability = True,
+        friday_time_In = datetime.time(9,0),
+        friday_time_Out = datetime.time(17,0),
+        saturday_availability = True,
+        saturday_time_In = datetime.time(9,0),
+        saturday_time_Out = datetime.time(17,0),
+        sunday_availability = True,
+        sunday_time_In = datetime.time(9,0),
+        sunday_time_Out = datetime.time(17,0),
+    ),
+    TechnicianSchedule(
+        tech = "j@a.com",
+        monday_availability = True,
+        monday_timeIn = datetime.time(9,0),
+        monday_timeOut =datetime.time (17,0),
+        tuesday_availability = True,
+        tuesday_time_In = datetime.time(9,0),
+        tuesday_time_Out = datetime.time(17,0),
+        wednesday_availability = True,
+        wednesday_time_In = datetime.time(9,0),
+        wednesday_time_Out = datetime.time(17,0),
+        thursday_availability = True,
+        thursday_time_In = datetime.time(9,0),
+        thursday_time_Out = datetime.time(17,0),
+        friday_availability = True,
+        friday_time_In = datetime.time(9,0),
+        friday_time_Out = datetime.time(17,0),
+        saturday_availability = True,
+        saturday_time_In = datetime.time(9,0),
+        saturday_time_Out = datetime.time(17,0),
+        sunday_availability = True,
+        sunday_time_In = datetime.time(9,0),
+        sunday_time_Out = datetime.time(17,0),
+    ),
+
+]
+for i in a:
+    i.save()
+print("Tech_Schedule done!")
+
+from Account.models import Technician
+a = [
+    Technician(user_id=6, bio='', schedule_id=1),
+    Technician(user_id=7, bio='', schedule_id=2),
+    Technician(user_id=8, bio='', schedule_id=3),
+    Technician(user_id=9, bio='', schedule_id=4),
+    Technician(user_id=10, bio='', schedule_id=5), 
+
+]
+for i in a:
+    i.save()
+print("Technician done!")
+#DELETE FROM Account_technician;
+
+
+
 from Appointments.models import Category
 a = [
     Category(name='Wax',slug='wax'),
@@ -17,10 +196,12 @@ a = [
 ]
 for i in a:
     i.save()
+print("Category done!")
 #DELETE FROM Appointments_category;
 
 
 from Appointments.models import Service
+
 b = datetime.timedelta(minutes = 15)
 c = datetime.timedelta(minutes = 30)
 d = datetime.timedelta(minutes = 45)
@@ -67,74 +248,29 @@ a = [
 ]
 for i in a:
     i.save()
+print("Service done!")
 #DELETE FROM Appointments_service;
 
 from Appointments.models import Appointment
-b = datetime.time(10,30,00)
-b1 = datetime.time(11,00,00)
-c = datetime.time(11,30,00)
-d = datetime.time(11,45,00)
-e = datetime.time(12,00,00)
-f = datetime.date(2022,9,10)
-f1 = datetime.date(2022,9,12)
-#g = datetime.timedelta(minutes = 60)
+g = datetime.time(10,30,00)
+h = datetime.time(11,00,00)
+i = datetime.time(11,30,00)
+j = datetime.time(11,45,00)
+k = datetime.time(12,00,00)
+l = datetime.date(2022,10,10)
+m = datetime.date(2022,10,11)
+n = datetime.date(2022,10,12)
 a = [
-    Appointment(customer_id=2, totalDuration=60, date =f, end_time=c, start_time=b,totalCharge=50),
-    Appointment(customer_id=1, totalDuration=30, date =f1, end_time=c, start_time=b1,totalCharge=50),
-    Appointment(customer_id=3, totalDuration=30, date =f, end_time=c, start_time=b1,totalCharge=50),
-    Appointment(customer_id=8, totalDuration=45, date =f1, end_time=d, start_time=b1,totalCharge=50),
-    Appointment(customer_id=9, totalDuration=30, date =f, end_time=c, start_time=b1,totalCharge=50),
-    Appointment(customer_id=10, totalDuration=90, date =f1, end_time=e, start_time=b,totalCharge=50),
+    Appointment(customer_id=1, totalDuration=60, date =l, end_time=i, start_time=g,totalCharge=50),
+    Appointment(customer_id=2, totalDuration=60, date =l, end_time=i, start_time=g,totalCharge=50),
+    Appointment(customer_id=3, totalDuration=30, date =l, end_time=k, start_time=i,totalCharge=50),
+    Appointment(customer_id=4, totalDuration=30, date =m, end_time=k, start_time=i,totalCharge=50),
+    Appointment(customer_id=5, totalDuration=30, date =m, end_time=h, start_time=g,totalCharge=50),
+    Appointment(customer_id=1, totalDuration=60, date =m, end_time=i, start_time=g,totalCharge=50),
+    Appointment(customer_id=2, totalDuration=60, date =n, end_time=k, start_time=h,totalCharge=50),
 ]
 for i in a:
     i.save()
+print("Appointment done!")
 #DELETE FROM Appointments_appointment;
 
-
-from Account.models import Customer
-a = [
-    Customer(user_id=1, bio=''),
-    Customer(user_id=2, bio=''),
-    Customer(user_id=3, bio=''),
-    Customer(user_id=4, bio=''),
-    Customer(user_id=5, bio=''), 
-
-]
-for i in a:
-    i.save()
-#DELETE FROM Account_customer;
-
-
-
-from Account.models import Technician
-a = [
-    Technician(user_id=6, bio=''),
-    Technician(user_id=7, bio=''),
-    Technician(user_id=8, bio=''),
-    Technician(user_id=9, bio=''),
-    Technician(user_id=10, bio=''), 
-
-]
-for i in a:
-    i.save()
-#DELETE FROM Account_customer;
-
-
-
-from Account.models import User
-a = [
-    User(email='a@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
-    User(email='b@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
-    User(email='c@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
-    User(email='d@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
-    User(email='e@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
-    User(email='f@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
-    User(email='g@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
-    User(email='h@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
-    User(email='i@a.com', first_name='a', last_name='aa', street_num=' ', state=' ', zipcode=' ', city=' ', phoneNumber='000', bio =' '),
-]
-for i in a:
-    i.save()
-#DELETE FROM Account_user;
-#DELETE FROM sqlite_sequence where name = 'Account_user';
-'''

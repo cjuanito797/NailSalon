@@ -71,8 +71,8 @@ class User (AbstractBaseUser, PermissionsMixin):
 
     state = models.CharField (max_length=15,
                               choices=STATE_OPTIONS,
-                              blank=False,
-                              default=None,
+                              blank=True,
+                              default='Nebraska',
                               )
     zipcode = models.CharField (max_length=5, validators=[MinLengthValidator (5)])
     city = models.CharField (max_length=20)
@@ -97,11 +97,12 @@ class Technician (models.Model):
 
     schedule = models.OneToOneField("Scheduling.TechnicianSchedule",
                                    on_delete=models.CASCADE,
-                                    default=False,
+                                    default=True,
                                     blank=True)
 
     def __str__(self):
         return self.user.email
+        
 class Customer (models.Model):
     user = models.OneToOneField ('Account.User',
                                  related_name='customer',
