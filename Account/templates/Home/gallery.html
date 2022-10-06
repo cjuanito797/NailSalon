@@ -5,7 +5,7 @@
 
 
 {% block navigation %}
- <nav class="navbar" role="navigation" aria-label="main navigation">
+    <nav class="navbar if" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="{% url 'account:home' %}">
                 <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
@@ -21,7 +21,7 @@
 
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-                <a class="navbar-item is-active" href="{% url 'account:gallery' %}">
+                <a class="navbar-item" href="{% url 'account:gallery' %}">
                     Gallery
                 </a>
 
@@ -43,14 +43,14 @@
                             <a class="navbar-item">
                                 My Appointment History
                             </a>
-                            <a class="navbar-item">
+                            <a class="navbar-item" href="{% url 'account:profile' %}">
                                 My Profile
                             </a>
                             <a class="navbar-item" style="color: black;">
                                 My Promotions
                             </a>
                             <hr class="navbar-divider">
-                            <a class="navbar-item">
+                            <a class="navbar-item" href="{% url 'account:security' %}">
                                 Security Settings
                             </a>
                         </div>
@@ -65,13 +65,13 @@
 
                     <div class="navbar-dropdown" style="color: black;">
                         <a class="navbar-item">
-                            About
+                            Meet the team
                         </a>
                         <a class="navbar-item">
-                            Jobs
+                            Career Opportunities
                         </a>
                         <a class="navbar-item" style="color: black;">
-                            Contact
+                            Promotions
                         </a>
                         <hr class="navbar-divider">
                         <a class="navbar-item">
@@ -84,37 +84,60 @@
             </div>
 
 
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
+            {% if request.user.is_authenticated %}
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
 
-                        <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
-                            <img src="../../static/shopping_bag.png" style=""/>
-                            {% with total_items=cart|length %}
-                                {% if cart|length > 0 %}
+                            <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
+                                <img src="../../static/shopping_bag.png" style=""/>
+                                {% with total_items=cart|length %}
+                                    {% if cart|length > 0 %}
                                         ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
 
-                                {% else %}
-                                    Empty
-                                {% endif %}
-                            {% endwith %}
-                        </a>
+                                    {% else %}
+                                        Empty
+                                    {% endif %}
+                                {% endwith %}
+                            </a>
 
-                        &nbsp;
-                        &nbsp;
+                            &nbsp;
+                            &nbsp;
 
-                        <a class="button is-success" href="{% url 'appointments:service_list' %}">
-                            Book Appointment
-                        </a>
+                            <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                                Book Appointment
+                            </a>
 
-                        <a class="button is-light" href="{% url 'account:customerView' %}">
-                            Sign Out
-                        </a>
+                            <a class="button is-light" href="{% url 'account:logout' %}">
+                                Sign Out
+                            </a>
 
 
+                        </div>
                     </div>
                 </div>
-            </div>
+
+
+            {% else %}
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+
+                            <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                                Book Appointment
+                            </a>
+                            <a class="button is-info" href="{% url 'account:user_registration' %}">
+                                <strong>Sign up</strong>
+                            </a>
+                            <a class="button is-light" href="{% url 'account:user_login' %}">
+                                Log in
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            {% endif %}
         </div>
     </nav>
 {% endblock %}
@@ -140,47 +163,66 @@
                     <img src="../../static/galleryImages/Nail_on_request.jpg" style="width: 250px; height: 350px;">
                     <img src="../../static/galleryImages/Nail_on_request2.jpg" style="width: 250px; height: 350px;">
                     <img src="../../static/galleryImages/Nail_on_request3.jpg" style="width: 250px; height: 350px;">
-                    <img src="../../static/galleryImages/naildesignsabstract/Almond-shape.jpg" style="width: 250px; height: 350px;">
-                    <img src="../../static/galleryImages/naildesignsabstract/burberry line.jpg" style="width: 250px; height: 350px;">
-                    <img src="../../static/galleryImages/naildesignsabstract/Burberry.jpg" style="width: 250px; height: 350px;">
-                    <img src="../../static/galleryImages/naildesignsabstract/Coffin-shape.jpg" style="width: 250px; height: 350px;">
-                    <img src="../../static/galleryImages/naildesignsabstract/elegant burberry.jpg" style="width: 250px; height: 350px;">
-                    <img src="../../static/galleryImages/naildesignsabstract/Gold bold.jpg" style="width: 250px; height: 350px;">  
-                    <img src="../../static/galleryImages/naildesignsabstract/Gold sparkle.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/naildesignsabstract/Interesting square.jpg" style="width: 250px; height: 350px;">
-                    <img src="../../static/galleryImages/naildesignsabstract/Short.jpg" style="width: 250px; height: 350px;">  
-                    <img src="../../static/galleryImages/naildesignsabstract/Simple.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/naildesignsabstract/square.jpg" style="width: 250px; height: 350px;">  
-                    <img src="../../static/galleryImages/naildesignsabstract/teal almond.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/Almond-shape.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/burberry line.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/Burberry.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/Coffin-shape.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/elegant burberry.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/Gold bold.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/Gold sparkle.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/Interesting square.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/Short.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/Simple.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/square.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/naildesignsabstract/teal almond.jpg"
+                         style="width: 250px; height: 350px;">
                     <img src="../../static/galleryImages/ombre/cheetah.jpg" style="width: 250px; height: 350px;">
-                    <img src="../../static/galleryImages/ombre/round sparkle.jpg" style="width: 250px; height: 350px;">   
-                    <img src="../../static/galleryImages/ombre/silver chrome.jpg" style="width: 250px; height: 350px;">    
-                    <img src="../../static/galleryImages/ombre/urban.jpg" style="width: 250px; height: 350px;">  
-                    <img src="../../static/galleryImages/simple/bloody coffin.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/candle.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/candy.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/cat eyes.jpg" style="width: 250px; height: 350px;">   
-                    <img src="../../static/galleryImages/simple/fading coffin.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/ghost.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/ombre coffin.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/pattern.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/sassy pumpkin.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/sassy pumpkin1.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/short nail.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/short square.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/short.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/simple.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/skull.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/solid coffin.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/V-line.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/with French.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/simple/zoombie.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/specialgalaxy/blue coffin-shape.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/specialgalaxy/long coffin-shape.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/specialgalaxy/long pointed multicolor.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/specialgalaxy/orange square-shape.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/specialgalaxy/pink coffin.jpg" style="width: 250px; height: 350px;"> 
-                    <img src="../../static/galleryImages/specialgalaxy/purple coffin.jpg" style="width: 250px; height: 350px;"> 
+                    <img src="../../static/galleryImages/ombre/round sparkle.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/ombre/silver chrome.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/ombre/urban.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/bloody coffin.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/candle.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/candy.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/cat eyes.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/fading coffin.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/ghost.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/ombre coffin.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/pattern.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/sassy pumpkin.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/sassy pumpkin1.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/short nail.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/short square.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/short.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/simple.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/skull.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/solid coffin.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/V-line.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/with French.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/simple/zoombie.jpg" style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/specialgalaxy/blue coffin-shape.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/specialgalaxy/long coffin-shape.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/specialgalaxy/long pointed multicolor.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/specialgalaxy/orange square-shape.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/specialgalaxy/pink coffin.jpg"
+                         style="width: 250px; height: 350px;">
+                    <img src="../../static/galleryImages/specialgalaxy/purple coffin.jpg"
+                         style="width: 250px; height: 350px;">
                 </div>
 
             </section>

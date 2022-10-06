@@ -11,85 +11,113 @@
           href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
 
+    <script>
+
+        var check = function () {
+                if ((document.getElementById('id_password1').value === document.getElementById('id_password2').value) && (document.getElementById('id_password1').value.length !== 0)) {
+
+                    if(document.getElementById('id_password1').value.length === 0)
+                    {
+                        document.getElementById('message').style.color = 'red';
+                        document.getElementById('message').innerHTML = 'Please enter a password!';
+
+
+                    }
+
+                    else {
+                        document.getElementById('message').style.color = 'green';
+                        document.getElementById('message').innerHTML = 'Passwords Match! &#x2713;';
+                    }
+
+                }
+        else
+            {
+                if(!(document.getElementById('id_password2').value.length == 0) &&(document.getElementById('id_password1').value.length !== 0)  && document.getElementById('id_password1').value !== document.getElementById('id_password2').value) {
+                    document.getElementById('message').style.color = 'red';
+                    document.getElementById('message').innerHTML = 'Passwords do not match! &#10006;';
+                }
+            }
+        }
+    </script>
+
 {% endblock %}
 
 {% block navigation %}
-   <nav class="navbar" role="navigation" aria-label="main navigation">
-                    <div class="navbar-brand">
-                        <a class="navbar-item" href="{% url 'account:home' %}">
-                            <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
-                        </a>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{% url 'account:home' %}">
+                <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
+            </a>
 
-                        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
-                           data-target="navbarBasicExample">
-                            <span aria-hidden="true"></span>
-                            <span aria-hidden="true"></span>
-                            <span aria-hidden="true"></span>
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'account:gallery' %}">
+                    Gallery
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:services' %}">
+                    Our Services
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:aboutUs' %}">
+                    About Us
+                </a>
+
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link has-text-black">
+                        More
+                    </a>
+
+                    <div class="navbar-dropdown" style="color: black;">
+                        <a class="navbar-item">
+                            About
+                        </a>
+                        <a class="navbar-item">
+                            Jobs
+                        </a>
+                        <a class="navbar-item" style="color: black;">
+                            Contact
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Report an issue
                         </a>
                     </div>
-
-                    <div id="navbarBasicExample" class="navbar-menu">
-                        <div class="navbar-start">
-                            <a class="navbar-item" href="{% url 'account:gallery' %}">
-                                Gallery
-                            </a>
-
-                            <a class="navbar-item" href="{% url 'account:services' %}">
-                                Our Services
-                            </a>
-
-                            <a class="navbar-item" href="{% url 'account:aboutUs' %}">
-                                About Us
-                            </a>
-
-
-                            <div class="navbar-item has-dropdown is-hoverable">
-                                <a class="navbar-link has-text-black">
-                                    More
-                                </a>
-
-                                <div class="navbar-dropdown" style="color: black;">
-                                    <a class="navbar-item">
-                                        About
-                                    </a>
-                                    <a class="navbar-item">
-                                        Jobs
-                                    </a>
-                                    <a class="navbar-item" style="color: black;">
-                                        Contact
-                                    </a>
-                                    <hr class="navbar-divider">
-                                    <a class="navbar-item">
-                                        Report an issue
-                                    </a>
-                                </div>
-                            </div>
-                             <div class="navbar-end">
-                            <div class="navbar-item">
-                                <a class="button is-success" href="{% url 'account:home' %}">
-                                    Book Appointment
-                                </a>
-                            </div>
-                        </div>
-
-                        </div>
-
-
-
-                        <div class="navbar-end">
-                            <div class="navbar-item">
-                                <div class="buttons">
-                                    <a class="button is-info" href="{% url 'account:user_registration' %}">
-                                        <strong>Sign up</strong>
-                                    </a>
-                                    <a class="button is-light" href="{% url 'account:user_login' %}">
-                                        Log in
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-success" href="{% url 'account:home' %}">
+                            Book Appointment
+                        </a>
                     </div>
-                </nav>
+                </div>
+
+            </div>
+
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <a class="button is-info" href="{% url 'account:user_registration' %}">
+                            <strong>Sign up</strong>
+                        </a>
+                        <a class="button is-light" href="{% url 'account:user_login' %}">
+                            Log in
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 {% endblock %}
 
 
@@ -99,9 +127,9 @@
         <div class="container has-text-centered">
             <div class="column is-5 is-offset-3">
 
-                <h3 class="title has-text-white">Register Below</h3>
-                <hr class="signup-hr">
-                <p class="subtitle has-text-white">Signup to enjoy our services at your fingertips.</p>
+                <h3 class="title has-text-grey-dark">Register Below</h3>
+                <hr class="signup-hr is-black">
+                <p class="subtitle has-text-grey-dark">Signup to enjoy our services at your fingertips.</p>
 
                 <div class="box">
                     <div class="box">
@@ -126,7 +154,7 @@
                         </div>
                     </div>
 
-                    <p class="has-text-white">
+                    <p class="has-text-grey-dark">
                         Password must contain a mix of: <br>
                         Special characters (@, %,..) and AlphaNumeric (A-Z, a-z, 0-9)
                     </p>
@@ -135,7 +163,7 @@
                         <div class="control">
                             <input class="input is-medium" type="password" name="password1" autocomplete="new-password"
                                    class="form-control"
-                                   placeholder="Password" required id="id_password1">
+                                   placeholder="Password" required id="id_password1" onkeyup="check();" onkeypress="check();" onpaste="check();">
                         </div>
                     </div>
 
@@ -143,9 +171,14 @@
                         <div class="control">
                             <input class="input is-medium" type="password" name="password2" autocomplete="new-password"
                                    class="form-control"
-                                   placeholder="Password confirmation" required id="id_password2">
+                                   placeholder="Password confirmation" required id="id_password2" onkeyup="check();" onkeypress="check();" onpaste="check();">
                         </div>
                     </div>
+
+                    <div class="message is-medium" style="background-color: white;">
+                        <span id="message"></span>
+                    </div>
+
 
                     <div class="field">
                         <div class="control">
@@ -180,11 +213,63 @@
                         </div>
                     </div>
 
-                    <div class="field">
+                    <div class="select is-medium is-fullwidth">
                         <div class="control">
-                            <input class="input is-medium" type="text" name="state" maxlength="2" class="form-control"
-                                   placeholder="State" required
-                                   id="id_state">
+                            <select name="state" class="form-control" placeholder="State" id="id_state">
+                                <option value="" disabled selected>Choose Your State</option>
+                                <option value="Alabama">Alabama</option>
+                                <option value="Alaska">Alaska</option>
+                                <option value="Arizona">Arizona</option>
+                                <option value="Arkansas">Arkansas</option>
+                                <option value="California">California</option>
+                                <option value="Colorado">Colorado</option>
+                                <option value="Conneticut">Conneticut</option>
+                                <option value="Deleware">Deleware</option>
+                                <option value="Florida">Florida</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Hawaii">Hawaii</option>
+                                <option value="Idaho">Idaho</option>
+                                <option value="Illinois">Illinois</option>
+                                <option value="Indiana">Indiana</option>
+                                <option value="Iowa">Iowa</option>
+                                <option value="Kansas">Kansas</option>
+                                <option value="Kentucky">Kentucky</option>
+                                <option value="Louisiana">Louisiana</option>
+                                <option value="Maine">Maine</option>
+                                <option value="Maryland">Maryland</option>
+                                <option value="Massachusetts">Massachusetts</option>
+                                <option value="Michigan">Michigan</option>
+                                <option value="Minnesota">Minnesota</option>
+                                <option value="Mississippi">Mississippi</option>
+                                <option value="Missouri">Missouri</option>
+                                <option value="Montana">Montana</option>
+                                <option value="Nebraska">Nebraska</option>
+                                <option value="Nevada">Nevada</option>
+                                <option value="New Hampshire">New Hampshire</option>
+                                <option value="New Jersey">New Jersey</option>
+                                <option value="New Mexico">New Mexico</option>
+                                <option value="New York">New York</option>
+                                <option value="North Carolina">North Carolina</option>
+                                <option value="North Dakota">North Dakota</option>
+                                <option value="Ohio">Ohio</option>
+                                <option value="Oklahoma">Oklahoma</option>
+                                <option value="Oregon">Oregon</option>
+                                <option value="Pennsylvania">Pennsylvania</option>
+                                <option value="Rhode Island">Rhode Island</option>
+                                <option value="South Carolina">South Carolina</option>
+                                <option value="South Dakota">South Dakota</option>
+                                <option value="Tennessee">Tennessee</option>
+                                <option value="Texas">Texas</option>
+                                <option value="Utah">Utah</option>
+                                <option value="Vermont">Vermont</option>
+                                <option value="Virginia">Virgina</option>
+                                <option value="Washington">Washington</option>
+                                <option value="West Virginia">West Virginia</option>
+                                <option value="Wisconsin">Wisconsin</option>
+                                <option value="Wyoming">Wyoming</option>
+
+                            </select>
+
                         </div>
                     </div>
 
@@ -198,7 +283,7 @@
 
                     <div class="field">
                         <div class="control">
-                            <input class="input is-medium" type="text" name="phoneNumber" maxlength="10"
+                            <input class="input is-medium" type="tel" name="phoneNumber" maxlength="10"
                                    class="form-control"
                                    placeholder="PhoneNumber" required id="id_phoneNumber">
                         </div>
@@ -207,11 +292,8 @@
                     <button class="button is-block is-primary is-large is-fullwidth" type="submit">Signup!</button>
 
                 </form>
-
             </div>
         </div>
-
-
     </div>
 
 {% endblock %}

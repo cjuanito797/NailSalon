@@ -15,7 +15,65 @@ class User (AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField (max_length=200)
     last_name = models.CharField (max_length=200)
     street_num = models.CharField (max_length=20)
-    state = models.CharField (max_length=2)
+
+    STATE_OPTIONS = (
+        ('Alabama', 'Alabama'),
+        ('Alaska', 'Alaska'),
+        ('Arizona', 'Arizona'),
+        ('Arkansas', 'Arkansas'),
+        ('California', 'California'),
+        ('Colorado', 'Colorado'),
+        ('Conneticut', 'Conneticut'),
+        ('Deleware', 'Deleware'),
+        ('Florida', 'Florida'),
+        ('Georgia', 'Georgia'),
+        ('Hawaii', 'Hawaii'),
+        ('Idaho', 'Idaho'),
+        ('Illinois', 'Illinois'),
+        ('Indiana', 'Indiana'),
+        ('Iowa', 'Iowa'),
+        ('Kansas', 'Kansas'),
+        ('Kentucky', 'Kentucky'),
+        ('Louisiana', 'Louisiana'),
+        ('Maine', 'Maine'),
+        ('Maryland', 'Maryland'),
+        ('Massachusetts', 'Massachusetts'),
+        ('Michigan', 'Michigan'),
+        ('Minnesota', 'Minnesota'),
+        ('Mississippi', 'Mississippi'),
+        ('Missouri', 'Missouri'),
+        ('Montana', 'Montana'),
+        ('Nebraska', 'Nebraska'),
+        ('Nevada', 'Nevada'),
+        ('New Hampshire', 'New Hampshire'),
+        ('New Jersey', 'New Jersey'),
+        ('New Mexico', 'New Mexico'),
+        ('New York', 'New York'),
+        ('North Carolina', 'North Carolina'),
+        ('North Dakota', 'North Dakota'),
+        ('Ohio', 'Ohio'),
+        ('Oklahoma', 'Oklahoma'),
+        ('Oregon', 'Oregon'),
+        ('Pennsylvania', 'Pennsylvania'),
+        ('Rhode Island', 'Rhode Island'),
+        ('South Carolina', 'South Carolina'),
+        ('South Dakota', 'South Dakota'),
+        ('Tennessee', 'Tennessee'),
+        ('Texas', 'Texas'),
+        ('Utah', 'Utah'),
+        ('Vermont', 'Vermont'),
+        ('Virginia', 'Virgina'),
+        ('Washington', 'Washington'),
+        ('West Virginia', 'West Virginia'),
+        ('Wisconsin', 'Wisconsin'),
+        ('Wyoming', 'Wyoming'),
+    )
+
+    state = models.CharField (max_length=15,
+                              choices=STATE_OPTIONS,
+                              blank=True,
+                              default='Nebraska',
+                              )
     zipcode = models.CharField (max_length=5, validators=[MinLengthValidator (5)])
     city = models.CharField (max_length=20)
     phoneNumber = models.CharField (max_length=10, validators=[MinLengthValidator (10)])
@@ -28,6 +86,7 @@ class User (AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
 
+
 class Technician (models.Model):
     user = models.OneToOneField ("Account.User",
                                  related_name='user',
@@ -38,11 +97,17 @@ class Technician (models.Model):
 
     schedule = models.OneToOneField("Scheduling.TechnicianSchedule",
                                    on_delete=models.CASCADE,
-                                    default=False,
+                                    default=True,
                                     blank=True)
+    profilePicture = models.ImageField(upload_to='technicians/%Y/%m/%d',
+                                       blank=True,
+                                       default=None,
+                                       null=True)
 
     def __str__(self):
         return self.user.email
+
+
 class Customer (models.Model):
     user = models.OneToOneField ('Account.User',
                                  related_name='customer',

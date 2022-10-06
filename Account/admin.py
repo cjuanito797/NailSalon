@@ -47,6 +47,6 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register (Technician)
 class TechAdmin (admin.ModelAdmin):
-    list_display = ['user']
+    list_display = ['user', 'pk']
 
 
