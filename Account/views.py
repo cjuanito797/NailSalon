@@ -116,6 +116,10 @@ def profile(request):
         return redirect ('account:home')
 
 @login_required(login_url='/login/')
+def securitySettings(request):
+    return render(request, "account/securitySettings.html")
+
+@login_required(login_url='/login/')
 def changePassword (request):
     if request.user.is_authenticated:
         form = PasswordChangeForm (request.user, request.POST)
