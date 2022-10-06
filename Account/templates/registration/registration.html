@@ -12,15 +12,27 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
 
     <script>
+
         var check = function () {
-            if (document.getElementById('id_password1').value === document.getElementById('id_password2').value)
-            {
-                document.getElementById('message').style.color = 'green';
-                document.getElementById('message').innerHTML = 'Passwords Match! &#x2713;';
-            }
+                if ((document.getElementById('id_password1').value === document.getElementById('id_password2').value) && (document.getElementById('id_password1').value.length !== 0)) {
+
+                    if(document.getElementById('id_password1').value.length === 0)
+                    {
+                        document.getElementById('message').style.color = 'red';
+                        document.getElementById('message').innerHTML = 'Please enter a password!';
+
+
+                    }
+
+                    else {
+                        document.getElementById('message').style.color = 'green';
+                        document.getElementById('message').innerHTML = 'Passwords Match! &#x2713;';
+                    }
+
+                }
         else
             {
-                if(!(document.getElementById('id_password2').value.length == 0)  && document.getElementById('id_password1').value !== document.getElementById('id_password2').value) {
+                if(!(document.getElementById('id_password2').value.length == 0) &&(document.getElementById('id_password1').value.length !== 0)  && document.getElementById('id_password1').value !== document.getElementById('id_password2').value) {
                     document.getElementById('message').style.color = 'red';
                     document.getElementById('message').innerHTML = 'Passwords do not match! &#10006;';
                 }
@@ -151,7 +163,7 @@
                         <div class="control">
                             <input class="input is-medium" type="password" name="password1" autocomplete="new-password"
                                    class="form-control"
-                                   placeholder="Password" required id="id_password1" onkeyup="check();">
+                                   placeholder="Password" required id="id_password1" onkeyup="check();" onkeypress="check();" onpaste="check();">
                         </div>
                     </div>
 
@@ -159,7 +171,7 @@
                         <div class="control">
                             <input class="input is-medium" type="password" name="password2" autocomplete="new-password"
                                    class="form-control"
-                                   placeholder="Password confirmation" required id="id_password2" onkeyup="check();">
+                                   placeholder="Password confirmation" required id="id_password2" onkeyup="check();" onkeypress="check();" onpaste="check();">
                         </div>
                     </div>
 
