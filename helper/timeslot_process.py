@@ -1,7 +1,6 @@
 import logging
 import traceback
 import math
-from msilib.schema import Error
 import django
 import os
 import calendar
@@ -50,7 +49,7 @@ class Process:
                 logger.error("Closing timeslot process failed!")
             finally:
                 return msg
-        
+
     def open_slots(**kargs):
         if len(kargs) == 1:      # Initialize timeslot for new day (by date)
             date = kargs['date']
@@ -115,17 +114,17 @@ class _Process:
         for slots in time_slots:
             if slots['tech'] == self.tech:
                 return slots
-        
+
     def _get_time_scheduled_techs(self):
         timeIn_field_name = "{0}_time_In".format (self.dayOfWeek.lower())
         timeOut_field_name = "{0}_time_Out".format (self.dayOfWeek.lower())
-        
+
         # filter {field_name(provide as custom string): True} (dict)
         time_scheduled = list(TechnicianSchedule.objects.filter (
             **{self.dayOfWeek_field_name: True}
         ).values_list ('tech', timeIn_field_name, timeOut_field_name))
 
-        return time_scheduled     
+        return time_scheduled
 
     def _assign_chosen_tech(self, tech_email, sale_service):
         # count number of timefield for each service
@@ -150,9 +149,9 @@ class _Process:
                     minute += 15
                 fieldname_list.append (_convert_time_fieldname (hour, minute))
         '''
-        
-        
-        
+
+
+
         # Create new Sales
         for s in sale_service:
             Sale.objects.create(
@@ -188,7 +187,7 @@ class _Process:
 
 def _collect_time_fieldname(starthour, startminute, count: list):
     # move minute back 15 to include the startslot at next count
-    startminute -= 15   
+    startminute -= 15
 
     fieldname_list = []
     for i in count:
@@ -207,7 +206,7 @@ def _convert_time_fieldname(hour, minute):
     meridiem = ("am" if hour < 12 else "pm")
 
     return f"{hour_string}{minute_tostring}{meridiem}"
-    
+
 
 def main():
     pass

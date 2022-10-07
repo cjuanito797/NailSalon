@@ -6,6 +6,7 @@ from .models import *
 from Account.models import Technician
 from Calendar.models import calendarEntry
 import calendar
+from helper.timeslot_process import Process
 
 myDates = []
 
@@ -30,39 +31,17 @@ def buildMonthlyDays(today):
         # perhaps we wont delete old time slots as it may helpt with data processing.
         # time slot for each technician on this new day, note that this should only be done once.
         techs = Technician.objects.all ( )
-        dayOfWeek = calendar.day_name[today.weekday ( )].lower ( )
 
-        if dayOfWeek == 'Monday':
-            techs = Technician.objects.filter (schedule__monday_availability=True)
+        techs = Technician.objects.all ( )
+        for t in techs:
+            # add a new time slot for that day
+            new_time_slot = timeSlots.objects.create (tech=t.user.email, date=today)
 
-        elif dayOfWeek == 'Tuesday':
-            techs = Technician.objects.filter (schedule__tuesday_availability=True)
+            # set the hours for the time slot depending on tech and day of the week.
 
-        elif dayOfWeek == 'Wednesday':
-            techs = Technician.objects.filter (schedule__wednesday_availability=True)
+            new_time_slot.save ( )
 
-        elif dayOfWeek == 'Thursday':
-            techs = Technician.objects.filter (schedule__thursday_availability=True)
-
-        elif dayOfWeek == 'Friday':
-            techs = Technician.objects.filter (schedule__friday_availability=True)
-
-        elif dayOfWeek == 'Saturday':
-            techs = Technician.objects.filter (schedule__saturday_availability=True)
-
-        else:
-            techs = Technician.objects.filter (schedule__sunday_availability=True)
-
-        new_entry = calendarEntry.objects.create (date=today)
-
-        for tech in techs:
-            new_entry.technicians.add (tech)
-
-        # so now go ahead and create the calendar entries.
-        new_entry.save ( )
-
-        # now for each of the new days, what we will do is we modify the time slots based off of the technicians
-        # availability that they have set, for an abstract week.
+        Process.open_slots (date=today)
 
         today = today + timedelta (days=1)
 
@@ -95,6 +74,7 @@ def buildSchedules(todaysDate):
 
         myDates.append (str (nextDayInWindow) + '\n')
 
+
         # so with our new myDates file we can write them to our file.
 
         f = open ("dates.txt", "w")
@@ -114,6 +94,9 @@ def buildSchedules(todaysDate):
             # set the hours for the time slot depending on tech and day of the week.
 
             new_time_slot.save ( )
+
+        Process.open_slots (date=nextDayInWindow)
+
 
         # now also each time that we move the window one day to the right, we also need to create a calendar entry with
         # all of the techs working on that day.
@@ -155,7 +138,7 @@ def buildSchedules(todaysDate):
 
 def getTodaysDate(request):
     todaysDate = date.today ( )
-    # buildMonthlyDays(todaysDate)
-    # buildSchedules (todaysDate)
+    #buildMonthlyDays(todaysDate)
+    buildSchedules (todaysDate)
 
     return {'todaysDate': todaysDate}

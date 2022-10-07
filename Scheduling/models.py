@@ -10,8 +10,8 @@ class TechnicianSchedule (models.Model):
     tech = models.EmailField (_ ('email'), unique=True)
 
     monday_availability = models.BooleanField (default=False)
-    monday_timeIn = models.TimeField (blank=True)
-    monday_timeOut = models.TimeField (blank=True)
+    monday_time_In = models.TimeField (blank=True)
+    monday_time_Out = models.TimeField (blank=True)
 
     tuesday_availability = models.BooleanField (default=False)
     tuesday_time_In = models.TimeField (blank=True)
