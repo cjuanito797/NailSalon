@@ -6,6 +6,7 @@ from .models import *
 from Account.models import Technician
 from Calendar.models import calendarEntry
 import calendar
+
 myDates = []
 
 
@@ -29,19 +30,44 @@ def buildMonthlyDays(today):
         # perhaps we wont delete old time slots as it may helpt with data processing.
         # time slot for each technician on this new day, note that this should only be done once.
         techs = Technician.objects.all ( )
-        for t in techs:
-            # add a new time slot for that day
-            new_time_slot = timeSlots.objects.create (tech=t.user.email, date=today)
+        dayOfWeek = calendar.day_name[today.weekday ( )].lower ( )
 
-            # set the hours for the time slot depending on tech and day of the week.
+        if dayOfWeek == 'Monday':
+            techs = Technician.objects.filter (schedule__monday_availability=True)
 
-            new_time_slot.save ( )
+        elif dayOfWeek == 'Tuesday':
+            techs = Technician.objects.filter (schedule__tuesday_availability=True)
+
+        elif dayOfWeek == 'Wednesday':
+            techs = Technician.objects.filter (schedule__wednesday_availability=True)
+
+        elif dayOfWeek == 'Thursday':
+            techs = Technician.objects.filter (schedule__thursday_availability=True)
+
+        elif dayOfWeek == 'Friday':
+            techs = Technician.objects.filter (schedule__friday_availability=True)
+
+        elif dayOfWeek == 'Saturday':
+            techs = Technician.objects.filter (schedule__saturday_availability=True)
+
+        else:
+            techs = Technician.objects.filter (schedule__sunday_availability=True)
+
+        new_entry = calendarEntry.objects.create (date=today)
+
+        for tech in techs:
+            new_entry.technicians.add (tech)
+
+        # so now go ahead and create the calendar entries.
+        new_entry.save ( )
+
+        # now for each of the new days, what we will do is we modify the time slots based off of the technicians
+        # availability that they have set, for an abstract week.
 
         today = today + timedelta (days=1)
 
-
-
     f.close ( )
+
 
 def buildSchedules(todaysDate):
     # so what we do is we pass in today in order to build the schedules and using our list, if today is not in the list.
@@ -60,7 +86,6 @@ def buildSchedules(todaysDate):
 
         # delete yesterday's calendar entry.
         # convert myDates[0] (yesterdays date into actual date)
-
         yesterday = datetime.strptime (myDates[0].strip ('\n'), "%Y-%m-%d").date ( )
         calendarEntry.objects.filter (date=yesterday).delete ( )
 
@@ -68,7 +93,7 @@ def buildSchedules(todaysDate):
         today = date.today ( )
         nextDayInWindow = today + timedelta (days=30)
 
-        myDates.append (str(nextDayInWindow) + '\n')
+        myDates.append (str (nextDayInWindow) + '\n')
 
         # so with our new myDates file we can write them to our file.
 
@@ -130,7 +155,7 @@ def buildSchedules(todaysDate):
 
 def getTodaysDate(request):
     todaysDate = date.today ( )
-    #buildMonthlyDays(todaysDate)
-    buildSchedules (todaysDate)
+    # buildMonthlyDays(todaysDate)
+    # buildSchedules (todaysDate)
 
     return {'todaysDate': todaysDate}
