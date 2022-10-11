@@ -49,7 +49,17 @@ class Process:
                 logger.error("Closing timeslot process failed!")
             finally:
                 return msg
-
+        elif len(kargs) == 1:       # move sale status by appointment (by id(appointment))  
+            appointment_id = kargs['id']
+            sales = Sale.objects.filter(appointment=appointment_id).values_list('status')
+            
+            #appointment already assigned -> move status
+            if sales.count() > 0:
+                for sale in sales:
+                    print(sale[0])
+            #appointment not assign -> get random tech -> set status to working
+            else:   
+                print('no')        
     def open_slots(**kargs):
         if len(kargs) == 1:      # Initialize timeslot for new day (by date)
             date = kargs['date']
