@@ -6,6 +6,8 @@ from .models import *
 from Account.models import Technician
 from Calendar.models import calendarEntry
 import calendar
+from helper.timeslot_process import Process
+
 myDates = []
 
 
@@ -29,6 +31,8 @@ def buildMonthlyDays(today):
         # perhaps we wont delete old time slots as it may helpt with data processing.
         # time slot for each technician on this new day, note that this should only be done once.
         techs = Technician.objects.all ( )
+
+        techs = Technician.objects.all ( )
         for t in techs:
             # add a new time slot for that day
             new_time_slot = timeSlots.objects.create (tech=t.user.email, date=today)
@@ -37,11 +41,12 @@ def buildMonthlyDays(today):
 
             new_time_slot.save ( )
 
+        Process.open_slots (date=today)
+
         today = today + timedelta (days=1)
 
-
-
     f.close ( )
+
 
 def buildSchedules(todaysDate):
     # so what we do is we pass in today in order to build the schedules and using our list, if today is not in the list.
@@ -60,7 +65,6 @@ def buildSchedules(todaysDate):
 
         # delete yesterday's calendar entry.
         # convert myDates[0] (yesterdays date into actual date)
-
         yesterday = datetime.strptime (myDates[0].strip ('\n'), "%Y-%m-%d").date ( )
         calendarEntry.objects.filter (date=yesterday).delete ( )
 
@@ -68,7 +72,8 @@ def buildSchedules(todaysDate):
         today = date.today ( )
         nextDayInWindow = today + timedelta (days=30)
 
-        myDates.append (str(nextDayInWindow) + '\n')
+        myDates.append (str (nextDayInWindow) + '\n')
+
 
         # so with our new myDates file we can write them to our file.
 
@@ -89,6 +94,9 @@ def buildSchedules(todaysDate):
             # set the hours for the time slot depending on tech and day of the week.
 
             new_time_slot.save ( )
+
+        Process.open_slots (date=nextDayInWindow)
+
 
         # now also each time that we move the window one day to the right, we also need to create a calendar entry with
         # all of the techs working on that day.
