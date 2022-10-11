@@ -174,12 +174,16 @@ print("Tech_Schedule done!")
 
 from Account.models import Technician
 a = [
-    Technician(user_id=6, bio='', schedule_id=1),
-    Technician(user_id=7, bio='', schedule_id=2),
-    Technician(user_id=8, bio='', schedule_id=3),
-    Technician(user_id=9, bio='', schedule_id=4),
-    Technician(user_id=10, bio='', schedule_id=5), 
-
+    Technician(user_id=6, bio='', schedule_id=1, profilePicture='technicians/2022/10/04/images.jpeg'),
+    Technician(user_id=7, bio='', schedule_id=2, profilePicture=' '),
+    Technician(user_id=8, bio='', schedule_id=3, profilePicture=' '),
+    Technician(user_id=9, bio='', schedule_id=4, profilePicture=' '),
+    Technician(user_id=10, bio='', schedule_id=5, profilePicture=' '), 
+    # Technician(user_id=6, bio='', schedule_id=1),
+    # Technician(user_id=7, bio='', schedule_id=2),
+    # Technician(user_id=8, bio='', schedule_id=3),
+    # Technician(user_id=9, bio='', schedule_id=4),
+    # Technician(user_id=10, bio='', schedule_id=5),
 ]
 for i in a:
     i.save()
