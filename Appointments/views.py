@@ -17,6 +17,7 @@ def service_list(request, category_slug=None):
     category = None
     categories = Category.objects.all ( )
     services = Service.objects.all ( )
+    techs = Technician.objects.all()
     if category_slug:
         category = get_object_or_404 (Category, slug=category_slug)
         services = services.filter (category=category)
@@ -26,7 +27,8 @@ def service_list(request, category_slug=None):
                    {
                        'category': category,
                        'categories': categories,
-                       'services': services
+                       'services': services,
+                       'techs': techs,
 
                    })
 
