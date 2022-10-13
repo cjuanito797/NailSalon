@@ -38,9 +38,9 @@ class Service (models.Model):
                                  related_name='products',
                                  blank=True,
                                  default=None)
-    name = models.CharField (max_length=50, db_index=True, blank=False)
+    name = models.CharField (max_length=30, db_index=True, blank=False)
     description = models.TextField (max_length=150, blank=False)
-    slug = models.SlugField (max_length=50, db_index=True)
+    slug = models.SlugField (max_length=30, db_index=True)
     price = models.DecimalField (max_digits=10, decimal_places=2)
     duration = models.DurationField (blank=False)
     image = models.ImageField (upload_to="services/%Y/%m/%d", blank=False)
