@@ -8,6 +8,8 @@
     <link href="{% static "css/base.css" %}" rel="stylesheet">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
+
 
 {% endblock %}
 
@@ -86,104 +88,316 @@
                         </a>
                     </div>
                 </div>
-
-
-            </div>
-
-
-            </div>
-
-
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
-
-                        <a class="button is-success" href="{% url 'appointments:service_list' %}">
-                            Book Appointment
-                        </a>
-
-                        <a class="button is-light" href="{% url 'account:logout' %}">
-                            Sign Out
-                        </a>
-                    </div>
-                </div>
             </div>
         </div>
 
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
 
+                    <a href="{% url 'cart:cart_detail' %}" class="has-text-black" style="padding-right: 15px;">
+                        <img src="../../static/shopping_bag.png" style=""/>
+                        {% with total_items=cart|length %}
+                            {% if cart|length > 0 %}
+                                ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
+
+                            {% else %}
+                                Empty
+                            {% endif %}
+                        {% endwith %}
+                    </a>
+
+                    <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                        Book Appointment
+                    </a>
+
+                    <a class="button is-light" href="{% url 'account:logout' %}">
+                        Sign Out
+                    </a>
+                </div>
+            </div>
+        </div>
     </nav>
 {% endblock %}
 
-
-
 {% block mainbody %}
+    <section class="hero is-fullheight">
 
-   <div class="Top_Top">
-
-    <div id="subheader">
-        <div class="cart">
-            {% with total_items=cart|length %}
-                {% if cart|length > 0 %}
-                    Your cart:
-                    <a href="{% url "cart:cart_detail" %}">
-                        {{ total_items }} services{{ total_items|pluralize }},
-                        ${{ cart.get_total_price }}
-                    </a>
-                {% else %}
-                    Your cart is empty.
-                {% endif %}
-            {% endwith %}
+        <div class="banner">
+            <div class="hero-head has-text-centered">
+                <p class="title is-size-1 has-text-grey-dark" style="margin-top: 5%; margin-bottom: 0;">
+                    Add Services For Your Next Appointment Below
+                </p>
+            </div>
         </div>
 
-    </div>
+        <div class='parent'>
+            <div class='child'>
+                <div class="box has-text-left">
+                    {% if cart|length > 0 %}
+                        <!--make the progress bar display a green check mark for the first step, and give them the option to continue.
+                        this design will need to be consistent throughout all of the pages -->
+                        <a href="{% url 'appointments:service_list' %}">
 
-    <section class="hero is-fullheight">
-        <div class="hero-head has-text-centered">
-            <div class="">
-                <p class="title has-text-black">
-                    Shop Below
-                </p>
+                            <div class="step has-text-centered"
+                                 style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 0%; width: 15%;">
+                                <iconify-icon icon="carbon:shopping-bag" width="50"></iconify-icon>
 
-            </div>
+                                <p>Add service(s) below</p>
 
 
-            <section class="section has-text-left">
-                <h1 class="title has-text-black">Categories</h1>
-                <div class="container" style="width: 25%; margin-left: 0px;">
+                            </div>
+                        </a>
 
-                    <ul class="menu-list is-size-5 is-hoverable" style="background-color: antiquewhite; border-radius: 25px; padding: 15px;">
-                        <li {% if not category %}class="is-active"{% endif %}>
-                            <a href="{% url "appointments:service_list" %}">All</a>
-                        </li>
-                        {% for c in categories %}
-                            <li {% if category.slug == c.slug %}class="is-active"{% endif %}>
-                                <a href="{{ c.get_absolute_url }}" class="is-selected">{{ c.name }}</a>
-                            </li>
-                        {% endfor %}
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+                            <p>Confirm your services</p>
 
-                    </ul>
+                        </div>
+
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="bi:person-check-fill" width="50"></iconify-icon>
+
+                            <p>Select Technician</p>
+
+                        </div>
+
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+
+                            <iconify-icon icon="akar-icons:calendar" width="50"></iconify-icon>
+                            <p>Select Date & Time</p>
+
+                        </div>
+
+                        <div class="step has-text-centered"
+                             style="display: inline-block; padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+
+                            <p>Confirm your appointment</p>
+
+                        </div>
+
+
+                        <div class="stepsNumbers" style="display: flex; align-items: center;">
+                            <iconify-icon icon="bi:1-circle-fill" width="25"
+                                          style="margin-left: 6%; color: lightgreen;"></iconify-icon>
+
+                            <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                            </div>
+
+                            <iconify-icon icon="bi:2-circle" width="25"></iconify-icon>
+
+                            <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                            </div>
+
+                            <iconify-icon icon="bi:3-circle" width="25"></iconify-icon>
+
+                            <div class="hr" style="border: 1px solid black; width: 17%; display: inline-block; ">
+                            </div>
+
+                            <iconify-icon icon="bi:4-circle" width="25"></iconify-icon>
+
+                            <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                            </div>
+
+                            <iconify-icon icon="bi:5-circle" width="25"></iconify-icon>
+
+                        </div>
+
+
+                    {% else %}
+                        <!--make the progress bar display a green check mark for the first step, and give them the option to continue.
+                        this design will need to be consistent throughout all of the pages -->
+                        <a href="{% url 'appointments:service_list' %}">
+
+                            <div class="step has-text-centered"
+                                 style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 0%; width: 15%;">
+                                <iconify-icon icon="carbon:shopping-bag" width="50"></iconify-icon>
+
+                                <p>Add service(s) below</p>
+
+
+                            </div>
+                        </a>
+
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+
+                            <p>Confirm your services</p>
+
+                        </div>
+
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="bi:person-check-fill" width="50"></iconify-icon>
+
+                            <p>Select Technician</p>
+
+                        </div>
+
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="akar-icons:calendar" width="50"></iconify-icon>
+
+                            <p>Select Date & Time</p>
+
+                        </div>
+
+                        <div class="step has-text-centered"
+                             style="display: inline-block; padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+
+                            <p>Confirm your appointment</p>
+
+                        </div>
+
+
+                        <div class="stepsNumbers" style="display: flex; align-items: center;">
+                            <iconify-icon icon="bi:1-circle-fill" width="25"
+                                          style="margin-left: 6%; color: gray;"></iconify-icon>
+
+                            <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                            </div>
+
+                            <iconify-icon icon="bi:2-circle" width="25"></iconify-icon>
+
+                            <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                            </div>
+
+                            <iconify-icon icon="bi:3-circle" width="25"></iconify-icon>
+
+                            <div class="hr" style="border: 1px solid black; width: 17%; display: inline-block; ">
+                            </div>
+
+                            <iconify-icon icon="bi:4-circle" width="25"></iconify-icon>
+
+                            <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                            </div>
+
+                            <iconify-icon icon="bi:5-circle" width="25"></iconify-icon>
+
+                        </div>
+
+
+
+                    {% endif %}
                 </div>
-            </section>
-            <div id="main" class="product-list">
-                {% for service in services %}
-                    <div class="item">
-                        <a href="{{ service.get_absolute_url }}">
-                            <img src="{% if service.image %}{{ service.image.url }}{% else %}{% static "" %}{% endif %}"
-                                 style="height: 400px; width: 500px;">
-                        </a>
-                        <a href="{{ service.get_absolute_url }}">{{ service.name }}</a><br>
-                        ${{ service.price }}
-
-                        <br>
-                        <a class="button is-primary" href="{% url 'cart:cart_add' service.id %}" type="submit">
-                            Add Service
-                        </a>
-                        {% csrf_token %}
-
-                    </div>
-                {% endfor %}
             </div>
+            <div class='child'>
+                {% if cart|length > 0 %}
+
+                    <a class="button is-info" href="{% url 'cart:cart_detail' %}">Continue</a>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <div class="grid-container">
+
+            <div class="grid-child-categories">
+                <nav class="panel">
+                    <p class="panel-heading" style="background-color: lightpink">
+                        Categories
+                    </p>
+                    <div class="panel-block">
+                        <p class="control has-icons-left">
+                            <input class="input" type="text" placeholder="Search">
+                            <span class="icon is-left">
+        <i class="fas fa-search" aria-hidden="true"></i>
+      </span>
+                        </p>
+                    </div>
+                    <p class="panel-tabs">
+                        <a class="is-active">All</a>
+                        <a>Nails</a>
+                        <a>Waxing</a>
+                        <a>Manicure</a>
+                        <a>Pedicure</a>
+                        <a></a>
+                    </p>
+                    <a class="panel-block is-active">
+    <span class="panel-icon">
+      <i class="fas fa-book" aria-hidden="true"></i>
+    </span>
+                        Nail Paintings
+                    </a>
+                    <a class="panel-block">
+    <span class="panel-icon">
+      <i class="fas fa-book" aria-hidden="true"></i>
+    </span>
+                        Nail Filing
+                    </a>
+                    <a class="panel-block">
+    <span class="panel-icon">
+      <i class="fas fa-book" aria-hidden="true"></i>
+    </span>
+                        Feet Treatment
+                    </a>
+                    <a class="panel-block">
+    <span class="panel-icon">
+      <i class="fas fa-book" aria-hidden="true"></i>
+    </span>
+                        Lip Waxing
+                    </a>
+                    <a class="panel-block">
+    <span class="panel-icon">
+      <i class="fas fa-code-branch" aria-hidden="true"></i>
+    </span>
+                        Ear Waxing
+                    </a>
+
+                </nav>
+            </div>
+
+            <div class="grid-child-services">
+
+                <div class="services has-text-centered"
+                     style="overflow-y: scroll; height: 750px; margin-right: 5%; overflow-x: hidden;">
+                    <!-- Iterate and display a card of products recall that if overflow occurs a scroll bar will be used.-->
+
+                    <div class="p-3 columns is-flex-wrap-wrap">
+
+                        {% for service in services %}
+                            <!-- create a styled box for each of the dates and then render them that way-->
+
+                            <a href="">
+
+                                <div class="card" style="width: 18rem; margin: 1%; height: 100%;">
+                                    <div class="card-image">
+                                        <figure class="image is-4by3">
+                                            <img src="https://images6.alphacoders.com/348/348005.jpg">
+                                        </figure>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="media">
+
+                                            <div class="media-content" style="height: 75px; margin: 0;">
+                                                <p class="title is-4 has-text-black">{{ service.name }}</p>
+                                            </div>
+
+                                        </div>
+                                        <p class="subtitle is-6 has-text-black">{{ service.category }}</p>
+                                        <p class="subtitle is-6 has-text-black">${{ service.price }}</p>
+
+                                    </div>
+                                    <footer class="card-footer">
+                                        <a class="button is-primary is-fullwidth"
+                                           href="{% url 'cart:cart_add' service.id %}" class="card-footer-item">Add To
+                                            Cart</a>
+
+                                    </footer>
+                                </div>
+
+                            </a>
+
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
-
-
 {% endblock %}

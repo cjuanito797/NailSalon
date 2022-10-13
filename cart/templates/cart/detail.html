@@ -3,11 +3,14 @@
 {% load static %}
 
 {% block head %}
- <meta charset="utf-8"/>
+    <meta charset="utf-8"/>
     <title>{% block title %}My Cart{% endblock %}</title>
-    <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <link href="{% static "css/cartDetail.css" %}" rel="stylesheet">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
+
+
 {% endblock %}
 
 {% block navigation %}
@@ -85,28 +88,35 @@
                         </a>
                     </div>
                 </div>
-
-
             </div>
+        </div>
 
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
 
-            </div>
+                    <a href="{% url 'cart:cart_detail' %}" class="has-text-black" style="padding-right: 15px;">
+                        <img src="../../static/shopping_bag.png" style=""/>
+                        {% with total_items=cart|length %}
+                            {% if cart|length > 0 %}
+                                ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
 
+                            {% else %}
+                                Empty
+                            {% endif %}
+                        {% endwith %}
+                    </a>
 
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
+                    <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                        Book Appointment
+                    </a>
 
-                        <a class="button is-success" href="{% url 'appointments:service_list' %}">
-                            Book Appointment
-                        </a>
-
-                        <a class="button is-light" href="{% url 'account:logout' %}">
-                            Sign Out
-                        </a>
-                    </div>
+                    <a class="button is-light" href="{% url 'account:logout' %}">
+                        Sign Out
+                    </a>
                 </div>
             </div>
+        </div>
         </div>
 
 
@@ -114,52 +124,186 @@
 {% endblock %}
 
 {% block mainbody %}
+    <section class="hero is-fullheight">
+        <div class="banner">
+            <div class="hero-head has-text-centered">
+                <p class="title is-size-1 has-text-grey-dark" style="margin-top: 5%; margin-bottom: 0;">
+                    Confirm Your Services!
+                </p>
+            </div>
+        </div>
 
-    <h1>Your shopping cart</h1>
-    <table class="cart">
-        <thead>
-        <tr>
+        <div class='column has-text-centered' style="position: relative; width: 100%;">
+            <div class='child'>
+                <div class="box has-text-left">
+                    <!--make the progress bar display a green check mark for the first step, and give them the option to continue.
+                    this design will need to be consistent throughout all of the pages -->
+                    <a href="{% url 'appointments:service_list' %}">
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 0%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="carbon:shopping-bag" width="50"></iconify-icon>
+                            <p>Add service(s) below</p>
+                        </div>
+                    </a>
 
-        </tr>
-        </thead>
-        <tbody>
-        {% for item in cart %}
-            {% with service=item.service %}
-                <tr>
-                    <td>
-                        <a href="{{ service.get_absolute_url }}">
-                            <img src="
-                                    {% if service.image %}{{ service.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}"
-                                 alt="" width="100" height="200">
-                        </a>
-                    </td>
-                    <td>{{ service.name }}</td>
-                    <td>
-                        <form action="{% url "cart:cart_add" service.id %}" method="post">
-                            {{ item.update_quantity_form.quantity }}
-                            {{ item.update_quantity_form.update }}
-                            <input type="submit" value="Update">
-                            {% csrf_token %}
-                        </form>
-                    </td>
-                    <td><a href="{% url "cart:cart_remove" service.id %}">Remove</a></td>
-                    <td class="num">${{ item.price }}</td>
-                    <td class="num">${{ item.total_price }}</td>
-                </tr>
-            {% endwith %}
-        {% endfor %}
-        <tr class="total">
-            <td>Total</td>
-            <td colspan="4"></td>
-            <td class="num" style="color: black">${{ cart.get_total_price }}</td>
-        </tr>
-        </tbody>
-    </table>
-    <p class="text-right">
-        <a href="{% url "appointments:service_list" %}" class="button is-primary">Continue shopping</a>
-        <a href="{% url "appointments:appointment_create" %}" class="button is-primary">Book Appointment</a>
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%;">
+                        <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+                        <p>Confirm your services</p>
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="bi:person-check-fill" width="50"></iconify-icon>
+                        <p>Select Technician</p>
+
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="akar-icons:calendar" width="50"></iconify-icon>
+                        <p>Select Date & Time</p>
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block; padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+                        <p>Confirm your appointment</p>
+                    </div>
 
 
-    </p>
+                    <div class="stepsNumbers" style="display: flex; align-items: center;">
+                        {% if cart|length > 0 %}
+                            <iconify-icon icon="bi:1-circle-fill" width="25"
+                                      style="margin-left: 6%; color: lightgreen;"></iconify-icon>
+                        {% else %}
+                            <iconify-icon icon="bi:1-circle" width="25"
+                                      style="margin-left: 6%;"></iconify-icon>
+
+                        {% endif %}
+
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:2-circle-fill" width="25"></iconify-icon>
+
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:3-circle" width="25"></iconify-icon>
+
+                        <div class="hr" style="border: 1px solid black; width: 17%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:4-circle" width="25"></iconify-icon>
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:5-circle" width="25"></iconify-icon>
+
+                    </div>
+                </div>
+            </div>
+            <div class='child'>
+                {% if cart|length > 0 %}
+                    <a class="button is-info" href="{% url 'appointments:appointment_create' %}">Continue</a>
+                {% endif %}
+            </div>
+        </div>
+
+    {% if cart|length > 0 %}
+
+        <div class="column">
+            <div class="tableContainer"
+                 style="margin-left: 15%; margin-right: 15%; height: 75%; overflow-y: scroll; overflow-x: hidden;">
+
+                <table class="table">
+                    {% for item in cart %}
+                        {% with service=item.service %}
+                            <tr>
+                                <td>{{ service.name }}</td>
+                                <td><img src="
+                                        {% if service.image %}{{ service.image.url }}{% else %}{{ 'https://images6.alphacoders.com/348/348005.jpg' }}{% endif %}"
+                                         alt="" width="100" height="200"></td>
+                                <td>$ {{ service.price }}</td>
+                                <td>
+                                    <form action="{% url 'cart:update_quantity' service.id %}" method="post">
+                                        <select name="quantity" required id="id_quantity">
+                                            <option value="" disabled selected>{{ item.quantity }}</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+
+                                        </select>
+                                        <input type="hidden" name="update" value="True" id="id_update">
+                                        <input type="submit" class="button is-info" value="Update">
+                                        {% csrf_token %}
+                                    </form>
+                                </td>
+
+                                <td>
+
+                                    <a class="button is-danger"
+                                       onclick="return confirm('Are you sure you want to delete?')"
+                                       href="{% url "cart:cart_remove" service.id %}">Remove</a></td>
+
+                            </tr>
+                        {% endwith %}
+                    {% endfor %}
+
+                    <tr>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
+        <div class="container has-text-centered">
+            <p class="title has-text-black">
+                Your Services
+                <!-- If user has one or more appointments, render a table, otherwise display an image-->
+            <div class="box" style="">
+
+                <div class="title has-text-grey is-5">It doesn't look like you have added any services to your cart just yet.
+                    <br>
+                    <br>
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjy3_45HDoLtedaF2WO4zWEmuP6VF4LCZBLg&usqp=CAU"
+                         alt="nail cartoon">
+                </div>
+
+                <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                    Add Services
+                </a>
+            </div>
+
+
+        </div>
+    </div>
+
+    {% endif %}
+    </section>
+
+
 
 {% endblock %}

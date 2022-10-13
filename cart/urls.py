@@ -11,4 +11,7 @@ urlpatterns = [
     path('remove/<int:service_id>/',
          views.cart_remove,
          name='cart_remove'),
+    path('update/<int:service_id>/',
+         views.cart_update_Quanity,
+         name='update_quantity')
 ]

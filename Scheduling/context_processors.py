@@ -74,7 +74,6 @@ def buildSchedules(todaysDate):
 
         myDates.append (str (nextDayInWindow) + '\n')
 
-
         # so with our new myDates file we can write them to our file.
 
         f = open ("dates.txt", "w")
@@ -96,7 +95,6 @@ def buildSchedules(todaysDate):
             new_time_slot.save ( )
 
         Process.open_slots (date=nextDayInWindow)
-
 
         # now also each time that we move the window one day to the right, we also need to create a calendar entry with
         # all of the techs working on that day.
@@ -138,7 +136,7 @@ def buildSchedules(todaysDate):
 
 def getTodaysDate(request):
     todaysDate = date.today ( )
-    #buildMonthlyDays(todaysDate)
+    # buildMonthlyDays(todaysDate)
     buildSchedules (todaysDate)
 
     return {'todaysDate': todaysDate}
