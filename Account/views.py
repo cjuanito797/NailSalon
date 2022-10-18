@@ -136,6 +136,10 @@ def changePassword (request):
         form = PasswordChangeForm ( )
         return render (request, 'account/changePassword.html', {'form': form})
 
+@login_required(login_url='/login/')
+def deleteAccount(request):
+    return render(request, "account/deleteAccount.html")
+
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
 @login_required (login_url='/login/')
