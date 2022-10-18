@@ -1,10 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width = device-width, initial-scale = 1">
+    <title>Bulma Elements Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    <script src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </head>
+
 <body>
+<section class="section">
+    <div class="container">
+            <span class="title">
+               Modal Card
+            </span>
+        <br>
+        <br>
+
+        <p>
+            <a class="primary modal-button" data-target="#modal">Launch Card modal</a>
+        </p>
+
+        <div id="modal" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Modal Card</p>
+                    <button class="modal-close is-large" aria-label="close"></button>
+
+                </header>
+
+                <section class="modal-card-body">
+                    <div class="content">
+                        <h1>Level One</h1>
+                        <p>
+                            This is simple text. This is simple text.
+                            This is simple text. This is simple text.
+                        </p>
+
+                        <h2>Level Two</h2>
+                        <p>
+                            This is simple text. This is simple text.
+                            This is simple text. This is simple text.
+                        </p>
+
+                        <h3>Level Three</h3>
+                        <blockquote>
+                            This is simple text. This is simple text.
+                            This is simple text. This is simple text.
+                        </blockquote>
+
+                        <h4>Level Four</h4>
+                        <p>
+                            This is simple text. This is simple text.
+                            This is simple text. This is simple text.
+                        </p>
+
+                        <h5>Level Five</h5>
+                        <p>
+                            This is simple text. This is simple text.
+                            This is simple text. This is simple text.
+                        </p>
+                        </ul>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(".modal-button").click(function () {
+        var target = $(this).data("target");
+        $("html").addClass("is-clipped");
+        $(target).addClass("is-active");
+    });
+
+    $(".modal-close").click(function () {
+        $("html").removeClass("is-clipped");
+        $(this).parent().removeClass("is-active");
+    });
+</script>
 
 </body>
 </html>

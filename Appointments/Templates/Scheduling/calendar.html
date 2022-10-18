@@ -2,7 +2,14 @@
 
 {% load static %}
 
+{% block head %}
 {% block title %}<title>Confirm Appointment</title>{% endblock %}
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
+
+{% endblock %}
 
 {% block navigation %}
     <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -89,7 +96,7 @@
                     <div class="buttons">
 
                         <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
-                            <img src="../../../Account/static/shopping_bag.png" style=""/>
+                            <img src="shopping_bag.png" style=""/>
                             {% with total_items=cart|length %}
                                 {% if cart|length > 0 %}
                                     ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
@@ -122,15 +129,79 @@
 {% block mainbody %}
 
     <section class="hero is-fullheight">
-        <div class="hero-head has-text-centered">
-            <div class="">
-                <p class="title has-text-black">
-                    Please Select a date and time for technician {{ tech.user.first_name }}
-                </p>
+        <div class='column has-text-centered is-half' style="position: relative; width: 100%;">
+            <div class='child'>
+                <div class="box has-text-left">
+                    <!--make the progress bar display a green check mark for the first step, and give them the option to continue.
+                    this design will need to be consistent throughout all of the pages -->
+                    <a href="{% url 'appointments:service_list' %}">
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 0%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="carbon:shopping-bag" width="50"></iconify-icon>
+                            <p>Add service(s) below</p>
+                        </div>
+                    </a>
 
+                    <a href="{% url 'cart:cart_detail' %}">
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+                            <p>Confirm your services</p>
+                        </div>
+                    </a>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="bi:person-check-fill" width="50"></iconify-icon>
+                        <p>Select Technician</p>
+
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; ">
+                        <iconify-icon icon="akar-icons:calendar" width="50"></iconify-icon>
+                        <p>Select Date & Time</p>
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block; padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+                        <p>Confirm your appointment</p>
+                    </div>
+
+
+                    <div class="stepsNumbers" style="display: flex; align-items: center;">
+                        {% if cart|length > 0 %}
+                            <iconify-icon icon="bi:1-circle-fill" width="25"
+                                          style="margin-left: 6%; color: lightgreen;"></iconify-icon>
+                        {% else %}
+                            <iconify-icon icon="bi:1-circle" width="25"
+                                          style="margin-left: 6%;"></iconify-icon>
+
+                        {% endif %}
+
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:2-circle-fill" width="25" style="color: lightgreen"></iconify-icon>
+
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:3-circle-fill" width="25" style="color: lightgreen"></iconify-icon>
+
+                        <div class="hr" style="border: 1px solid black; width: 17%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:4-circle-fill" width="25"></iconify-icon>
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:5-circle" width="25"></iconify-icon>
+
+                    </div>
+                </div>
             </div>
-
-
         </div>
 
         <!--Add some spacing-->
