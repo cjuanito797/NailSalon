@@ -1,10 +1,28 @@
-{% extends "base.html" %}
+{% block head %}
 
-{% load static %}
+    {% block title %}<title>Edit Address</title>{% endblock %}
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
 
-<!DOCTYPE html>
+    <script>
+        var check = function () {
+            if (document.getElementById('id_password1').value === document.getElementById('id_password2').value)
+            {
+                document.getElementById('message').style.color = 'green';
+                document.getElementById('message').innerHTML = 'Passwords Match! &#x2713;';
+            }
+        else
+            {
+                if(!(document.getElementById('id_password2').value.length == 0)  && document.getElementById('id_password1').value !== document.getElementById('id_password2').value) {
+                    document.getElementById('message').style.color = 'red';
+                    document.getElementById('message').innerHTML = 'Passwords do not match! &#10006;';
+                }
+            }
+        }
+    </script>
 
-{% block title %}<title>Welcome, {{ this_user.first_name }}</title>{% endblock %}
+{% endblock %}
 
 {% block navigation %}
     <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -52,7 +70,7 @@
                                 My Promotions
                             </a>
                             <hr class="navbar-divider">
-                            <a class="navbar-item" href="{% url 'account:security' %}">
+                            <a class="navbar-item">
                                 Security Settings
                             </a>
                         </div>
@@ -67,13 +85,13 @@
 
                     <div class="navbar-dropdown" style="color: black;">
                         <a class="navbar-item">
-                            Meet the team
+                            About
                         </a>
                         <a class="navbar-item">
-                            Career Opportunities
+                            Jobs
                         </a>
                         <a class="navbar-item" style="color: black;">
-                            Promotions
+                            Contact
                         </a>
                         <hr class="navbar-divider">
                         <a class="navbar-item">
@@ -94,7 +112,7 @@
                             <img src="../../static/shopping_bag.png" style=""/>
                             {% with total_items=cart|length %}
                                 {% if cart|length > 0 %}
-                                    ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
+                                        ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
 
                                 {% else %}
                                     Empty
@@ -124,57 +142,14 @@
 
 
 {% block mainbody %}
-    <!-- Hero content: will be in the middle -->
-    <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
-        <div class="container has-text-centered">
-            <p class="title has-text-black">
-                Hello {{ this_user.first_name }}
-                <!-- If user has one or more appointments, render a table, otherwise display an image-->
-            </p>
+    <div class="Banner">
+        <h1>Edit your address below</h1>
+        <div id="form">
+        <form method="post">
+            {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Update</button>
+    </form>
         </div>
     </div>
-    <br>
-
-    <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
-        <div class="container has-text-centered">
-            <p class="title has-text-black">
-                Current Appointments
-                <!-- If user has one or more appointments, render a table, otherwise display an image-->
-            <div class="box" style="">
-
-                <div class="title has-text-grey is-5">It doesn't like you have any upcoming appointments, see the link below to book an appointment!
-                    <br>
-                    <br>
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjy3_45HDoLtedaF2WO4zWEmuP6VF4LCZBLg&usqp=CAU"
-                         alt="nail cartoon">
-                </div>
-
-                <a class="button is-success" href="{% url 'appointments:service_list' %}">
-                    Book Appointment
-                </a>
-            </div>
-
-
-        </div>
-    </div>
-
-    <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
-        <div class="container has-text-centered">
-            <p class="title has-text-black">
-                Recommendations
-                <!-- If user has one or more appointments, render a table, otherwise display an image-->
-            <div class="box" style="">
-
-                <div class="title has-text-grey is-5">Below are some services that we think you may enjoy, also check
-                    out
-                    the services that we offer.
-                </div>
-                <a class="button is-info" href="{% url 'account:services' %}">
-                    Our Services
-                </a>
-            </div>
-        </div>
-    </div>
-
 {% endblock %}
-

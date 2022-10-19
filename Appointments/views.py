@@ -60,37 +60,40 @@ def appointment_create(request):
     # display a list of technicians irregardless of who works when and where.
     if request.user.is_authenticated:
         techs = Technician.objects.all ( )
+        if request.method == "POST":
+            if "technician" in request.POST:
+                selectedTech = request.POST.get("technician")
+                tech = Technician.objects.get(pk=selectedTech)
 
-        # render these objects and depending on which the user selects, pass that into the scheduling and
-        # create a dummy appointment model for now.
+                # so we go the technician that the user has selected.
 
-        # will need to loop through all of the services in the cart and calulcate the total estimated duration.
-
-        # if user selects on option to schedule and a technician was selected, then we need to pass in the tech ID
-        # to our calendar module.
-        if request.method == 'POST':
-            if 'schedule_with' in request.POST:
-                myVar = request.POST.get("tech")
-                if myVar is None:
-                    # render an error message
-                    messages.error(request, ('No Technician Was Selected!'))
-
-                else:
-                    tech = Technician.objects.get(pk=myVar)
-                    # pass in tech to scheduling view, with the tech_id as the argument in the URL.
-                    return scheduleWithTech(request, tech.pk)
-
-            else:
-                return render(request, "Scheduling/chooseTechnician.html", {'techs': techs})
+                # we need to get their first availble day in order to pass to the calendar view page.
 
 
+                availableDates = calendarEntry.objects.all ( )
 
-        return render (request, "Scheduling/chooseTechnician.html", {'techs': techs})
+                for day in availableDates:
+
+                    techs = day.technicians.all ( )
+                    if tech in techs:
+                        # we want to get the next immediate date that the technician is available.
+                        # also instead of passing in the exact date, we can pass in its ID from the calendar Entry
+
+                        date = day.id
+                        return redirect('appointments:schedule', pk=tech.id, date=day.id)
+
+
+
+        # so we display all of the technicians, here not much else to do but handle
+        # the choose for me option.
+
+    return render(request, "Scheduling/chooseTechnician.html", {'techs': techs})
+
 
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
 @login_required (login_url='/login/')
-def scheduleWithTech(request, pk):
+def scheduleWithTech(request, pk, date):
     # so the pk passed in is the primary key of the tech that we are wanting to schedule with.
     tech = Technician.objects.get(pk=pk)
     workingDays = []
@@ -110,13 +113,13 @@ def scheduleWithTech(request, pk):
             # add the day to a list.
             workingDays.append(day)
 
-    # but our backend algorithm should work to sort technicians by who is available to work on their service the closes and
-    # who actually has the most amount of time.
 
-    # so for each day that the user is in our sliding window (remember) only techs available to work on that day get
-    # a date entry.
+    # build a list for the time slots that the user may elect to start their appointment at.
 
-    # so we need to build the time slots, each time that a user has selected on a date.
+    # some calculations and logic will be written here, keep in mind that we are not actually passing in the date but the ID.
+
+    dateSelected = calendarEntry.objects.get(pk=date)
+    print("You have elected the following date: ", dateSelected.date)
 
     # so we need to set a default date, make it be the first one in the list, and display the available times.
 

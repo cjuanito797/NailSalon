@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}<title>Choose Technician Below</title>{% endblock %}
+
+{% block head %}
+    <meta charset="utf-8"/>
+    <title>{% block title %}Schedule Now!{% endblock %}</title>
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
+{% endblock %}
 
 {% block navigation %}
     <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -110,110 +118,141 @@
 {% endblock %}
 
 {% block mainbody %}
-    <section class="section">
-        {% if messages %}
-            {% for message in messages %}
-
-                <artcile class="message is-danger is-size-5-desktop">
-                    <div class="message-header">
-                        <p>Please Correct Error Below</p>
-                    </div>
-                    <div class="message-body">
-                        {{ message }}
-                    </div>
-                </artcile>
-            {% endfor %}
-
-        {% endif %}
-
-    </section>
-
     <section class="hero is-fullheight">
-        <div class="hero-head has-text-centered">
-            <div class="">
-                <p class="title has-text-black">
-                    Please choose from one of our technicians below.
-                    <br>
-
-
+        <div id="ScheduleBanner">
+            <div class="hero-head has-text-centered">
+                <p class="title is-size-1 has-text-grey-dark" style="margin-top: 5%; margin-bottom: 0;">
+                    Please Select Your Service Provider
                 </p>
-                <progress class="progress is-primary is-medium has-text-black" value="50" max="100"
-                          style="position: absolute; width: 50%; margin-left: 30%;">50%
-                </progress>
-
-
             </div>
         </div>
 
-        <section class="field-body"
-                 style="position: absolute; margin-right: -10%; border-right: 1px solid black; height: 75%; width: 15%;">
+        <div class='column has-text-centered is-half' style="position: relative; width: 100%;">
+            <div class='child'>
+                <div class="box has-text-left">
+                    <!--make the progress bar display a green check mark for the first step, and give them the option to continue.
+                    this design will need to be consistent throughout all of the pages -->
+                    <a href="{% url 'appointments:service_list' %}">
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 0%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="carbon:shopping-bag" width="50"></iconify-icon>
+                            <p>Add service(s) below</p>
+                        </div>
+                    </a>
 
-            <div class="container"
-                 style=" position:absolute; width: 50%; height: 50%; margin-left: 25%; margin-right: 5%; margin-top: 10%;">
-                <p class="title is-5 has-text-black">Your Services </p>
+                    <a href="{% url 'cart:cart_detail' %}">
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+                            <p>Confirm your services</p>
+                        </div>
+                    </a>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%;">
+                        <iconify-icon icon="bi:person-check-fill" width="50"></iconify-icon>
+                        <p>Select Technician</p>
+
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="akar-icons:calendar" width="50"></iconify-icon>
+                        <p>Select Date & Time</p>
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block; padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+                        <p>Confirm your appointment</p>
+                    </div>
 
 
-                <!-- iterate through the cart and display their services-->
-                <div class="container" style="height: 45%; overflow-y: scroll; overflow-x: hidden;">
-                    {% for item in cart %}
-                        <p>{{ item.service }} x {{ item.quantity }}</p>
-                    {% endfor %}
-                </div>
+                    <div class="stepsNumbers" style="display: flex; align-items: center;">
+                        {% if cart|length > 0 %}
+                            <iconify-icon icon="bi:1-circle-fill" width="25"
+                                          style="margin-left: 6%; color: lightgreen;"></iconify-icon>
+                        {% else %}
+                            <iconify-icon icon="bi:1-circle" width="25"
+                                          style="margin-left: 6%;"></iconify-icon>
 
+                        {% endif %}
 
-                <a class="is-underlined" href="{% url "cart:cart_detail" %}">
-                    Edit Your Services
-                </a>
-
-            </div>
-        </section>
-        <section class="field-body"
-                 style="margin-left: 35%; margin-top: 5%; position: relative; margin-right: 5%;  margin-bottom: 10%;">
-
-            <!--render a box in here to hold the dates-->
-            <div class="container"
-                 style=" margin-top: 5%; width: 100%;  position: relative; height: 75%; background-color: transparent; border: none; overflow-y: scroll; overflow-x: hidden;">
-                <div class="p-4 columns is-flex-wrap-wrap">
-
-                    {% for tech in techs %}
-                        <!-- create a styled box for each of the dates and then render them that way-->
-                        <div class="card" style="width: 18rem; margin: 1%;">
-
-                            <div class="container">
-                                <figure class="mx-auto">
-                                    <img {% if tech.profilePicture %}src="{{ tech.profilePicture.url }}" {% else %}
-                                         src="../../static/360_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg" {% endif %}
-                                         alt="Placeholder image"
-                                         style="width: 100px; height: 100px; border-radius: 50%; align-items: center;
-                                            justify-content: center; display: flex; margin-left: 30%; margin-top: 10%;"
-                                    >
-                                </figure>
-                            </div>
-                            <div class="card-content">
-                                <div class="media">
-
-                                    <div class="media-content">
-                                        <p class="title is-4 has-text-black">{{ tech.user.first_name }} {{ tech.user.last_name }}</p>
-                                        <p class="subtitle is-6 has-text-black">{{ tech.user.email }}</p>
-                                    </div>
-                                </div>
-
-                                <div class="content">
-                                    {{ tech.bio }}
-                                </div>
-                            </div>
-                            <!-- render a button for scheduling -->
-                            <footer class="card-footer">
-                                <p class="card-footer-item">
-                                    <a class="button is-primary" href={% url 'appointments:schedule' tech.id%}>Schedule Now</a>
-                                </p>
-                            </footer>
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
                         </div>
 
-                    {% endfor %}
+                        <iconify-icon icon="bi:2-circle-fill" width="25" style="color: lightgreen"></iconify-icon>
+
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:3-circle-fill" width="25"></iconify-icon>
+
+                        <div class="hr" style="border: 1px solid black; width: 17%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:4-circle" width="25"></iconify-icon>
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:5-circle" width="25"></iconify-icon>
+
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
 
+        <div class="column has-text-centered">
+            <div class="hero-head has-text-centered">
+                <p class="title has-text-grey-dark" style="margin-top: 5%; margin-bottom: 0;">
+                    Choose from one of our technicians below, or have us choose for you.
+                </p>
+                <br>
+                <a class="button is-info" href="{% url 'account:home' %}">Choose For Me</a>
+            </div>
+
+                    <form method="POST" class="post-form">
+                    {% csrf_token %}
+
+            <!-- add the cards for displaying each of the unique technicians and render them within a form to get the selected ID-->
+            <div class="p-6 columns is-flex-wrap-wrap has-text-centered" style="margin-left: 15%;">
+
+
+                {% for tech in techs %}
+                    <!-- create a styled box for each of the dates and then render them that way-->
+
+
+                    <div class="card" style="width: 18rem; margin: 1%; height: 100%;">
+                        <div class="card-image">
+                            <figure class="image is-4by3">
+                                <img {% if tech.profilePicture %}src="{{ tech.profilePicture.url }}"
+                                     {% else %} src="{{ tech.profilePicture.url }}" {% endif %}>
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <div class="media">
+
+                                <div class="media-content" style="height: 75px; margin: 0;">
+                                    <p class="title is-4 has-text-black">{{ tech.user.first_name }} {{ tech.user.last_name }}</p>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <footer class="card-footer">
+                            <button class="button is-primary is-fullwidth" type="submit" value="{{ tech.id }}" name="technician">Schedule Now!</button>
+
+                        </footer>
+                    </div>
+
+                {% endfor %}
+            </form>
+            </div>
+
+
+
+        </div>
     </section>
+
+
 {% endblock %}
