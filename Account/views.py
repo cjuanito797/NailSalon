@@ -139,6 +139,8 @@ def changePassword (request):
 
 @login_required(login_url='/login/')
 def deleteAccount(request):
+    this_user = User.objects.get (pk=request.user.id)
+    this_user.delete()
     return render(request, "account/deleteAccount.html")
 
 @never_cache
