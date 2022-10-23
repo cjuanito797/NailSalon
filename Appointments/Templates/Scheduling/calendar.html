@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block head %}
-{% block title %}<title>Confirm Appointment</title>{% endblock %}
+    {% block title %}<title>Confirm Appointment</title>{% endblock %}
     <link href="{% static "css/base.css" %}" rel="stylesheet">
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
@@ -204,47 +204,90 @@
             </div>
         </div>
 
-        <!--Add some spacing-->
-        <section class="field-body" style="margin-left: 55%; margin-top: 7%; position: relative;">
-            <div class="field-label has-text centered" style="margin: -5%;">
-                <p class="title has-text-black has-text-centered">
+        <div class="grid-container">
+
+            <div class="grid-child-categories" style="margin-top: 12%;">
+                <nav class="panel">
+                    <p class="panel-heading has-text-centered" style="background-color: lightpink">
+                        Select A Time Below
+                    </p>
+                    <div class="panel-block">
+                        <p class="control has-icons-left">
+                            <span class="icon is-left">
+        <i class="fas fa-search" aria-hidden="true"></i>
+      </span>
+                        </p>
+                    </div>
+
+
+                    <div class="navbar has-text-centered" style="color: black; display: grid;">
+                        <p class="subtitle is-size-3 has-text-black">
+                            Morning
+                        </p>
+                        <hr class="navbar-divider">
+                        <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                            {% for time in morning %}
+                                <button class="button is-info" style="width: 25%; margin-top: 1%;">{{ time.0 }}</button>
+                                &nbsp;
+                                <br>
+                            {% endfor %}
+
+                        </div>
+
+                        <p class="subtitle is-size-3 has-text-black">
+                            Afternoon
+                        </p>
+                        <hr class="navbar-divider">
+                        <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                            {% for time in afternoon %}
+                                <button class="button is-info" style="width: 25%; margin-top: 1%;">{{ time.0 }}</button>
+                                &nbsp;
+                                <br>
+                            {% endfor %}
+
+                        </div>
+
+                        <p class="subtitle is-size-3 has-text-black">
+                            Evening
+                        </p>
+                        <hr class="navbar-divider">
+                        <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                            {% for time in evening %}
+                                <button class="button is-info" style="width: 25%; margin-top: 1%;">{{ time.0 }}</button>
+                                &nbsp;
+                                <br>
+                            {% endfor %}
+
+                        </div>
+
+
+                    </div>
+
+
+                </nav>
+            </div>
+
+
+            <div class="grid-child-services has-text-centered">
+
+                <p class="subtitle is-size-3 has-text-black">
                     Availability
                 </p>
+                <div class="box"
+                     style="border-radius: 5px; width: 75%; margin-left: 12%; overflow-y: scroll;  overflow-x: hidden; height: 30%;">
+
+                    {% for day in availableDates %}
+
+                        <a href="{% url 'appointments:schedule' tech.id day.id %}"
+                           class="button is-fullwidth is-spaced is-size-5 has-text-centered"
+                           style="margin-top: 1%;">{{ day.date }}</a>
+
+                    {% endfor %}
+
+                </div>
 
             </div>
-
-            <!--render a box in here to hold the dates-->
-            <div class="box"
-                 style="border-radius: 5px; margin-top: 5%; width: 100%; overflow-y: scroll; position: absolute; height: 75%;">
-                {% for day in availableDates %}
-                    <!-- create a styled box for each of the dates and then render them that way-->
-
-                    <button class="button is-fullwidth is-spaced is-size-5 has-text-centered" style="margin: 2%; padding: 10px;">{{ day.date }}</button>
-
-                {% endfor %}
-
-            </div>
-        </section>
-
-        <section class="field-body" style="margin-left: 5%; margin-top: 10%; position:absolute;">
-
-            <div class="field-label has-text-left">
-                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
-                    Morning
-                </p>
-
-                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
-                    Afternoon
-                </p>
-
-                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
-                    Evening
-                </p>
-
-            </div>
-
-
-        </section>
+        </div>
 
 
     </section>

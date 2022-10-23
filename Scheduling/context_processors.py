@@ -32,16 +32,36 @@ def buildMonthlyDays(today):
         # time slot for each technician on this new day, note that this should only be done once.
         techs = Technician.objects.all ( )
 
-        techs = Technician.objects.all ( )
-        for t in techs:
-            # add a new time slot for that day
-            new_time_slot = timeSlots.objects.create (tech=t.user.email, date=today)
+        dayOfWeek = calendar.day_name[today.weekday ( )].lower ( )
 
-            # set the hours for the time slot depending on tech and day of the week.
+        if dayOfWeek == 'Monday':
+            techs = Technician.objects.filter (schedule__monday_availability=True)
 
-            new_time_slot.save ( )
+        elif dayOfWeek == 'Tuesday':
+            techs = Technician.objects.filter (schedule__tuesday_availability=True)
 
-        Process.open_slots (date=today)
+        elif dayOfWeek == 'Wednesday':
+            techs = Technician.objects.filter (schedule__wednesday_availability=True)
+
+        elif dayOfWeek == 'Thursday':
+            techs = Technician.objects.filter (schedule__thursday_availability=True)
+
+        elif dayOfWeek == 'Friday':
+            techs = Technician.objects.filter (schedule__friday_availability=True)
+
+        elif dayOfWeek == 'Saturday':
+            techs = Technician.objects.filter (schedule__saturday_availability=True)
+
+        else:
+            techs = Technician.objects.filter (schedule__sunday_availability=True)
+
+        new_entry = calendarEntry.objects.create (date=today)
+
+        for tech in techs:
+            new_entry.technicians.add (tech)
+
+        # so now go ahead and create the calendar entries.
+        new_entry.save ( )
 
         today = today + timedelta (days=1)
 
@@ -136,7 +156,7 @@ def buildSchedules(todaysDate):
 
 def getTodaysDate(request):
     todaysDate = date.today ( )
-    # buildMonthlyDays(todaysDate)
+    #buildMonthlyDays(todaysDate)
     buildSchedules (todaysDate)
 
     return {'todaysDate': todaysDate}

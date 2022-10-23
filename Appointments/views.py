@@ -1,3 +1,4 @@
+import datetime
 import time
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Service, Category
@@ -10,6 +11,7 @@ from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from cart.context_processors import Cart
 from Scheduling.models import timeSlots
+
 
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
@@ -83,7 +85,7 @@ def appointment_create(request):
                         # also instead of passing in the exact date, we can pass in its ID from the calendar Entry
 
                         date = day.id
-                        return redirect ('appointments:schedule', pk=tech.id, date=day.id)
+                        return redirect ('appointme![](../../../../../../var/folders/jc/jw27d2mj21d3rm69b783h1rc0000gn/T/TemporaryItems/NSIRD_screencaptureui_QgitGd/Screen Shot 2022-10-22 at 8.29.23 PM.png)nts:schedule', pk=tech.id, date=day.id)
 
         # so we display all of the technicians, here not much else to do but handle
         # the choose for me option.
@@ -143,23 +145,86 @@ def scheduleWithTech(request, pk, date):
     # divide the total duration to get the time slots that will be required.
 
     timeslots = (totalDuration / 15)
+    print ("This appointment will require: ", timeslots)
 
     # now that we know how many time slots will be required, we can work on getting any availabble start times for that day, by
     # getting the technicians time slot object for the date that was passed in, note that the user won't be able to select a time that
     # the tech is not working on.
 
     # Now we need to get the time slot data for the date that was passed in.
-    timeSlot = timeSlots.objects.get(tech=tech.user.email, date=dateSelected.date)
+    timeSlot = timeSlots.objects.get (tech=tech.user.email, date=dateSelected.date)
 
     # print out the boolean values that are true and determine the various start times for that date.
-
 
     # if there are not available start dates, print out an error popup and indicate that the user
     # will need to select another date.
 
-    
+    times = timeSlot.list ( )
 
+    dict = timeSlot.timeDictionary ( )
+    temp = iter (list (dict.items ( )))
 
+    x = 32 - timeslots + 1  # used for determining how many start time there can actually be given our reqs.
+    # Ex. 4:30 would not be a valid time slot for an appointment require 5 time slots.
+    i = 0  # used for iterating over all of the possible start times.
+    y = 0  # used for iterating to get the next (n - 1) time slots after a given start time.
+    pos = 0  # used for iterating to get the next time slot in the list, gets set to i after each iteration.
 
+    startTimes = []
+    startTimesSet = []
+    booleanValue = True
+    for key, value in dict.items ( ):
+        # first we want the actual times that the appointment may be started at.
+        # based off of the equation: x - t + 1
+        if i < x:
+            booleanValue = value
+            listForm = list (dict.keys ( ))
+            startTimes.append (key)
+            # set pos to the value of current key's position.
+            pos = i
+            # only if all of these values are true may we build a set and add them to a list.
+            if value or not (value):  # this is used to get all potential, not assumming whether true or false.
+                for y in range (int (timeslots) - 1):
+                    pos += 1
+                    if (dict.get (listForm[pos])):
+                        startTimes.append (listForm[pos])
+                    else:
+                        # set a second boolean value to false.
+                        booleanValue = False
 
-    return render (request, "Scheduling/calendar.html", {"tech": tech, "availableDates": workingDays})
+                    y += 1
+                pos = 0
+                y = 0
+                i += 1
+
+            # now only if startTimeTrueOrFal was not false may we add our set of times to a list and clear it always regardless.
+            if booleanValue:
+                startTimesSet.append (startTimes)
+            startTimes = []
+
+    # lastly iterate through our set of starttimes.
+    format = '%I:%M%p'
+    morningUpperBound = datetime.time (12, 0, 0)
+    afternoonUpperBound = datetime.time (15, 0, 0)
+    morningTimeSets = []
+    afternoonTimeSets = []
+    eveningTimeSets = []
+
+    for set in startTimesSet:
+        datetime_str = datetime.datetime.strptime (set[0], format)
+        print (datetime_str.time ( ))
+        if datetime_str.time ( ) < morningUpperBound:
+            print ("Time may be added to morning start times.")
+            morningTimeSets.append (set)
+        if datetime_str.time ( ) < afternoonUpperBound:
+            if datetime_str.time ( ) > morningUpperBound:
+                print ("Time may be added to afternoon start times.")
+                afternoonTimeSets.append (set)
+        else:
+            print ("Time may be added to evening start times.")
+            eveningTimeSets.append (set)
+
+    return render (request, "Scheduling/calendar.html", {"tech": tech, "availableDates": workingDays,
+                                                         'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
+                                                         'evening': eveningTimeSets})
+
