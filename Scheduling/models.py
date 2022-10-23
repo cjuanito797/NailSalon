@@ -172,7 +172,6 @@ class timeSlots (models.Model):
             '4:15pm' : self.four_15pm,
             '4:30pm' : self.four_30pm,
             '4:45pm' : self.four_45pm
-
         }
 
         return times

@@ -85,7 +85,7 @@ def appointment_create(request):
                         # also instead of passing in the exact date, we can pass in its ID from the calendar Entry
 
                         date = day.id
-                        return redirect ('appointme![](../../../../../../var/folders/jc/jw27d2mj21d3rm69b783h1rc0000gn/T/TemporaryItems/NSIRD_screencaptureui_QgitGd/Screen Shot 2022-10-22 at 8.29.23 PM.png)nts:schedule', pk=tech.id, date=day.id)
+                        return redirect ('appointments:schedule', pk=tech.id, date=day.id)
 
         # so we display all of the technicians, here not much else to do but handle
         # the choose for me option.
@@ -106,6 +106,10 @@ def scheduleWithTech(request, pk, date):
     # need to get the dates that the technician is actually available on, if not give user to select another technician
     # by taking them back to the previous page.
 
+    # this could should only need to be calclated once, when the user selects the technician so I can write this so it only
+    # calculates once.
+
+
     availableDates = calendarEntry.objects.all ( )
 
     for day in availableDates:
@@ -121,7 +125,6 @@ def scheduleWithTech(request, pk, date):
     # some calculations and logic will be written here, keep in mind that we are not actually passing in the date but the ID.
 
     dateSelected = calendarEntry.objects.get (pk=date)
-    print ("You have elected the following date: ", dateSelected.date)
 
     # so we need to set a default date, make it be the first one in the list, and display the available times.
     # and perform those calculations before we may go with refreshing the page and displaying them.
@@ -145,7 +148,6 @@ def scheduleWithTech(request, pk, date):
     # divide the total duration to get the time slots that will be required.
 
     timeslots = (totalDuration / 15)
-    print ("This appointment will require: ", timeslots)
 
     # now that we know how many time slots will be required, we can work on getting any availabble start times for that day, by
     # getting the technicians time slot object for the date that was passed in, note that the user won't be able to select a time that
@@ -212,16 +214,12 @@ def scheduleWithTech(request, pk, date):
 
     for set in startTimesSet:
         datetime_str = datetime.datetime.strptime (set[0], format)
-        print (datetime_str.time ( ))
         if datetime_str.time ( ) < morningUpperBound:
-            print ("Time may be added to morning start times.")
             morningTimeSets.append (set)
         if datetime_str.time ( ) < afternoonUpperBound:
             if datetime_str.time ( ) > morningUpperBound:
-                print ("Time may be added to afternoon start times.")
                 afternoonTimeSets.append (set)
         else:
-            print ("Time may be added to evening start times.")
             eveningTimeSets.append (set)
 
     return render (request, "Scheduling/calendar.html", {"tech": tech, "availableDates": workingDays,
