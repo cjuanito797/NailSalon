@@ -211,7 +211,7 @@
             <div class="grid-child-categories" style="margin-top: 12%;">
                 <nav class="panel">
                     <p class="panel-heading has-text-centered" style="background-color: lightpink">
-                        Select A Time Below
+                        Select A Time Below for {{ date }}
                     </p>
                     <div class="panel-block">
                         <p class="control has-icons-left">
@@ -267,18 +267,13 @@
                                     <input type="submit" name="start_time" class="button is-info" style="width: 25%; margin-top: 1%;"
                                            value="{{ time.0 }}">
 
-
                                     &nbsp;
                                     <br>
 
-
                                 {% endfor %}
-
                             </div>
-
                         </form>
                     </div>
-
 
                 </nav>
             </div>

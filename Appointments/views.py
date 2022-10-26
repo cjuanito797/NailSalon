@@ -15,7 +15,6 @@ import time
 
 globalVar = ""
 
-
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
 @login_required (login_url='/login/')
@@ -39,7 +38,6 @@ def service_list(request, category_slug=None):
 
                    })
 
-
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
 @login_required (login_url='/login/')
@@ -57,7 +55,6 @@ def service_detail(request, id, slug):
                        'service': service,
                        'cart_service_form': cart_service_form
                    })
-
 
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
@@ -103,6 +100,8 @@ def scheduleWithTech(request, pk, date):
     # so the pk passed in is the primary key of the tech that we are wanting to schedule with.
     tech = Technician.objects.get (pk=pk)
     workingDays = []
+
+    # also pass in the working date to the html page.
     # this is where we need to do the calculations to get the times that the technician is available depending on day
     # that user has selected.
 
@@ -206,22 +205,52 @@ def scheduleWithTech(request, pk, date):
             startTimes = []
 
     # lastly iterate through our set of starttimes.
-    format = '%I:%M%p'
+    format = '%H:%M%p'
     morningUpperBound = datetime.time (12, 0, 0)
     afternoonUpperBound = datetime.time (15, 0, 0)
+
     morningTimeSets = []
     afternoonTimeSets = []
     eveningTimeSets = []
 
+    currentDateAndTime = datetime.datetime.now().time()
+    currentTime = currentDateAndTime.strftime("%H:%M%p")
+
+    todaysDate = datetime.datetime.today().date()
+
+    print("Today's date is: ", todaysDate)
+    current_time = datetime.datetime.strptime(currentTime, format)
+    print("The current time is", current_time.time())
+    print("You have selected", dateSelected.date)
+
+
     for set in startTimesSet:
         datetime_str = datetime.datetime.strptime (set[0], format)
-        if datetime_str.time ( ) < morningUpperBound:
-            morningTimeSets.append (set)
-        if datetime_str.time ( ) < afternoonUpperBound:
-            if datetime_str.time ( ) > morningUpperBound:
-                afternoonTimeSets.append (set)
+        # only add the times that are logically possible.
+        # ex. don't add 9:00am if it is 12pm in the afternoon
+
+        # though we need to convert the time into 24 hour time format in order to do the comparison.
+        # now we only need to do this for the today's date.
+
+        time_in24 = datetime.datetime.strptime(set[0], '%I:%M%p')
+        if dateSelected.date == todaysDate:
+            if time_in24.time() > current_time.time():
+                if time_in24.time() < morningUpperBound:
+                    morningTimeSets.append (set)
+                if time_in24.time() < afternoonUpperBound:
+                    if time_in24.time() > morningUpperBound:
+                        afternoonTimeSets.append (set)
+                else:
+                    eveningTimeSets.append (set)
         else:
-            eveningTimeSets.append (set)
+            if time_in24.time() < morningUpperBound:
+                morningTimeSets.append (set)
+            if time_in24.time() < afternoonUpperBound:
+                if time_in24.time() > morningUpperBound:
+                    afternoonTimeSets.append (set)
+            else:
+                eveningTimeSets.append (set)
+
 
     if request.method == "POST":
         if "start_time" in request.POST:
@@ -264,7 +293,7 @@ def scheduleWithTech(request, pk, date):
 
     return render (request, "Scheduling/calendar.html", {"tech": tech, "availableDates": workingDays,
                                                          'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
-                                                         'evening': eveningTimeSets})
+                                                         'evening': eveningTimeSets, "date": dateSelected.date})
 
 
 def confirmAppointment(request, appointment):
@@ -284,7 +313,6 @@ def confirmAppointment(request, appointment):
             # set the appropriate time slots to false
             timeSlot = timeSlots.objects.get (tech=new_appointment.technician.user.email, date=new_appointment.date)
             for time in globalVar:
-                print (time)
                 slot = timeSlot.getTimeSlot (time)
                 setattr (timeSlot, slot, False)
 
