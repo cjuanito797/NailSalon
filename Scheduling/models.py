@@ -177,7 +177,7 @@ class timeSlots (models.Model):
         elif time == "2:45pm":
             return "two_45pm"
         elif time == "3:00pm":
-            return "three_00pm"
+            return "three_00_pm"
         elif time == "3:15pm":
             return "three_15pm"
         elif time == "3:30pm":
