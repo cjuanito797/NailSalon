@@ -16,7 +16,6 @@ from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from .forms import EditAddress
 
-
 # Create your views here.
 def home(request):
     if request.user.is_authenticated:
@@ -68,6 +67,8 @@ def user_login(request):
                              username=cd['email'],
                              password=cd['password'])
         request.session['is_signedIn'] = True
+
+
 
         # here we should redirect a user to seperate views depending on whether they are a customer, tech or admin.
         if user is not None:

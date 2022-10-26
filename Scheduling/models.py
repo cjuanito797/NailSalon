@@ -127,6 +127,73 @@ class timeSlots (models.Model):
                          self.four_00_pm, self.four_15pm, self.four_30pm, self.four_45pm]
         return timeSlotsList
 
+    def getTimeSlot(self, time):
+        if time == "9:00am":
+            return "nine_00_am"
+        elif time == "9:15am":
+            return "nine_15am"
+        elif time == "9:30am":
+            return "nine_30am"
+        elif time == "9:45am":
+            return "nine_45am"
+        elif time == "10:00am":
+            return "ten_00_am"
+        elif time == "10:15am":
+            return "ten_15am"
+        elif time == "10:30am":
+            return "ten_30am"
+        elif time == "10:45am":
+            return "ten_45am"
+        elif time == "11:00am":
+            return "eleven_00_am"
+        elif time == "11:15am":
+            return "eleven_15am"
+        elif time == "11:30am":
+            return "eleven_30am"
+        elif time == "11:45am":
+            return "eleven_45am"
+        elif time == "12:00pm":
+            return "twelve_00_pm"
+        elif time == "12:15pm":
+            return "twelve_15pm"
+        elif time == "12:30pm":
+            return "twelve_30pm"
+        elif time == "12:45pm":
+            return "twelve_45pm"
+        elif time == "1:00pm":
+            return "one_00_pm"
+        elif time == "1:15pm":
+            return "one_15pm"
+        elif time == "1:30pm":
+            return "one_30pm"
+        elif time == "1:45pm":
+            return "one_45pm"
+        elif time == "2:00pm":
+            return "two_00_pm"
+        elif time == "2:15pm":
+            return "two_15pm"
+        elif time == "2:30pm":
+            return "two_30pm"
+        elif time == "2:45pm":
+            return "two_45pm"
+        elif time == "3:00pm":
+            return "three_00pm"
+        elif time == "3:15pm":
+            return "three_15pm"
+        elif time == "3:30pm":
+            return "three_30pm"
+        elif time == "3:45pm":
+            return "three_45pm"
+        elif time == "4:00pm":
+            return "four_00_pm"
+        elif time == "4:15pm":
+            return "four_15pm"
+        elif time == "4:30pm":
+            return "four_30pm"
+        elif time == "4:45pm":
+            return "four_45pm"
+
+
     def timeDictionary(self):
         times = {
             '9:00am': self.nine_00_am,

@@ -5,10 +5,12 @@
 {% block head %}
     {% block title %}<title>Confirm Appointment</title>{% endblock %}
     <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
-
+    <script src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
 {% endblock %}
 
 {% block navigation %}
@@ -96,7 +98,7 @@
                     <div class="buttons">
 
                         <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
-                            <img src="shopping_bag.png" style=""/>
+                            <img src={% static "shopping_bag.png"%} style=""/>
                             {% with total_items=cart|length %}
                                 {% if cart|length > 0 %}
                                     ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
@@ -214,53 +216,67 @@
                     <div class="panel-block">
                         <p class="control has-icons-left">
                             <span class="icon is-left">
-        <i class="fas fa-search" aria-hidden="true"></i>
       </span>
                         </p>
                     </div>
 
 
                     <div class="navbar has-text-centered" style="color: black; display: grid;">
-                        <p class="subtitle is-size-3 has-text-black">
-                            Morning
-                        </p>
-                        <hr class="navbar-divider">
-                        <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
-                            {% for time in morning %}
-                                <button class="button is-info" style="width: 25%; margin-top: 1%;">{{ time.0 }}</button>
-                                &nbsp;
-                                <br>
-                            {% endfor %}
+                        <form method="post" class="post-form">
+                            {% csrf_token %}
 
-                        </div>
+                            <p class="subtitle is-size-3 has-text-black">
+                                Morning
+                            </p>
+                            <hr class="navbar-divider">
+                            <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                                {% for time in morning %}
+                                    <input type="submit" name="start_time" class="button is-info"
+                                           value="{{ time.0 }}" style="width: 25%; margin-top: 1%;">
+                                    &nbsp;
+                                    <br>
 
-                        <p class="subtitle is-size-3 has-text-black">
-                            Afternoon
-                        </p>
-                        <hr class="navbar-divider">
-                        <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
-                            {% for time in afternoon %}
-                                <button class="button is-info" style="width: 25%; margin-top: 1%;">{{ time.0 }}</button>
-                                &nbsp;
-                                <br>
-                            {% endfor %}
+                                {% endfor %}
 
-                        </div>
+                            </div>
 
-                        <p class="subtitle is-size-3 has-text-black">
-                            Evening
-                        </p>
-                        <hr class="navbar-divider">
-                        <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
-                            {% for time in evening %}
-                                <button class="button is-info" style="width: 25%; margin-top: 1%;">{{ time.0 }}</button>
-                                &nbsp;
-                                <br>
-                            {% endfor %}
+                            <p class="subtitle is-size-3 has-text-black">
+                                Afternoon
+                            </p>
+                            <hr class="navbar-divider">
+                            <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                                {% for time in afternoon %}
+                                    <input type="submit" name="start_time" class="button is-info" style="width: 25%; margin-top: 1%;"
+                                           value="{{ time.0 }}">
 
-                        </div>
+                                    &nbsp;
+                                    <br>
 
 
+                                {% endfor %}
+
+                            </div>
+
+                            <p class="subtitle is-size-3 has-text-black">
+                                Evening
+                            </p>
+                            <hr class="navbar-divider">
+                            <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                                {% for time in evening %}
+
+                                    <input type="submit" name="start_time" class="button is-info" style="width: 25%; margin-top: 1%;"
+                                           value="{{ time.0 }}">
+
+
+                                    &nbsp;
+                                    <br>
+
+
+                                {% endfor %}
+
+                            </div>
+
+                        </form>
                     </div>
 
 

@@ -10,4 +10,5 @@ urlpatterns = [
     path('services/<int:id>/<slug:slug>/', views.service_detail, name='service_detail'),
     path('create/', views.appointment_create, name='appointment_create'),
     path('schedule/<int:pk>/<int:date>/', views.scheduleWithTech, name='schedule'),
+    path('confirm/<int:appointment>/', views.confirmAppointment, name='confirm'),
 ]
