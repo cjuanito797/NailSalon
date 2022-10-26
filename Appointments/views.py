@@ -1,7 +1,7 @@
 import datetime
 import time
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Service, Category
+from .models import Service, Category, Appointment
 from cart.forms import CartAddServiceForm
 from Account.models import Technician
 from django.contrib import messages
@@ -11,7 +11,9 @@ from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from cart.context_processors import Cart
 from Scheduling.models import timeSlots
+import time
 
+globalVar = ""
 
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
@@ -109,7 +111,6 @@ def scheduleWithTech(request, pk, date):
     # this could should only need to be calclated once, when the user selects the technician so I can write this so it only
     # calculates once.
 
-
     availableDates = calendarEntry.objects.all ( )
 
     for day in availableDates:
@@ -193,7 +194,6 @@ def scheduleWithTech(request, pk, date):
                     else:
                         # set a second boolean value to false.
                         booleanValue = False
-
                     y += 1
                 pos = 0
                 y = 0
@@ -222,7 +222,76 @@ def scheduleWithTech(request, pk, date):
         else:
             eveningTimeSets.append (set)
 
+    if request.method == "POST":
+        if "start_time" in request.POST:
+            if request.user.is_authenticated:
+                myVar = request.POST.get ("start_time")
+                # ok we have the start time, now what we need to do is to setup everything to send to confirmation page.
+                # really all that we need to pass in is our Appointment object that we are creating.
+
+                # ultimately if the user decides that they would like to alter it, we can  simply delete it.
+                # but we wont alter the time slots until after they have confirmed their appointment.
+
+                startTime = datetime.datetime.strptime (myVar, format)
+                endTime = startTime + datetime.timedelta (minutes=totalDuration)
+
+                # update a global variable with the set of times.
+                global globalVar
+                for set in startTimesSet:
+                    if set[0] == myVar:
+                        globalVar = set
+
+
+                new_appointment = Appointment.objects.create (
+                    customer_id=request.user.id,
+                    technician_id=tech.id,
+
+                    # iterate through the cart and add the services
+                    # currently there is no way to add the quantity, we could create a ServiceOrderItem
+                    # but that is the job of my teammates.
+
+                    start_time=startTime,
+                    end_time=endTime,
+                    totalDuration=totalDuration,
+                    date=dateSelected.date,
+                    totalCharge=cart.get_total_price()
+
+                )
+
+                new_appointment.save ( )
+
+                return redirect('appointments:confirm', appointment=new_appointment.id)
+
     return render (request, "Scheduling/calendar.html", {"tech": tech, "availableDates": workingDays,
                                                          'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
                                                          'evening': eveningTimeSets})
 
+
+def confirmAppointment(request, appointment):
+    # so in here we need to render a form, where the user will:
+    # provide any additional details that they would like to include in their request.
+    # upload any additional images, that they would like for the technician to
+
+    # here we need to render the form and when the user confirms we can set the timeslots to false.
+    new_appointment = Appointment.objects.filter(pk=appointment).get()
+    if request.method == "POST":
+        if "Confirm" in request.POST:
+
+            # clear the cart
+            cart = Cart (request)
+            cart.clear()
+
+            # set the appropriate time slots to false
+            timeSlot = timeSlots.objects.get(tech=new_appointment.technician.user.email, date=new_appointment.date)
+            for time in globalVar:
+                print(time)
+                slot = timeSlot.getTimeSlot(time)
+                setattr(timeSlot, slot, False)
+
+            timeSlot.save()
+
+            return redirect('account:home')
+
+    # if the user changes their mind, delete the appointment and return to the calendar page with appropriate params.
+
+    return render (request, "Scheduling/confirmation.html")
