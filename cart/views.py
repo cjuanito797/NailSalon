@@ -14,12 +14,9 @@ def cart_add(request, service_id):
         quantity=1
     )
 
-
     return redirect ('appointments:service_list')  # simply redirect to the page displaying our services.
 
-
 def cart_update_Quanity(request, service_id):
-
     if request.method == "POST":
         form = CartAddServiceForm(request.POST)
         if form.is_valid():

@@ -181,6 +181,7 @@ def scheduleWithTech(request, pk, date):
         # based off of the equation: x - t + 1
         if i < x:
             booleanValue = value
+            # transform the list of keys into an array so that we may  iterate through them using index values.
             listForm = list (dict.keys ( ))
             startTimes.append (key)
             # set pos to the value of current key's position.
@@ -218,10 +219,8 @@ def scheduleWithTech(request, pk, date):
 
     todaysDate = datetime.datetime.today().date()
 
-    print("Today's date is: ", todaysDate)
     current_time = datetime.datetime.strptime(currentTime, format)
-    print("The current time is", current_time.time())
-    print("You have selected", dateSelected.date)
+
 
 
     for set in startTimesSet:
@@ -262,7 +261,7 @@ def scheduleWithTech(request, pk, date):
                 # ultimately if the user decides that they would like to alter it, we can  simply delete it.
                 # but we wont alter the time slots until after they have confirmed their appointment.
 
-                startTime = datetime.datetime.strptime (myVar, format)
+                startTime = datetime.datetime.strptime (myVar, '%I:%M%p')
                 endTime = startTime + datetime.timedelta (minutes=totalDuration)
 
                 # update a global variable with the set of times.
@@ -287,7 +286,7 @@ def scheduleWithTech(request, pk, date):
 
                 )
 
-                new_appointment.save ( )
+                new_appointment.save ()
 
                 return redirect ('appointments:confirm', appointment=new_appointment.id)
 
