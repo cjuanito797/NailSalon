@@ -15,6 +15,7 @@ import time
 
 globalVar = ""
 
+
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
 @login_required (login_url='/login/')
@@ -130,7 +131,7 @@ def scheduleWithTech(request, pk, date):
     # so we need to set a default date, make it be the first one in the list, and display the available times.
     # and perform those calculations before we may go with refreshing the page and displaying them.
 
-    # first we need to iterate through the cart and get the total time and multiply by 15.
+    # first we need to iterate through the cart and get the total time and divide by 15.
     cart = Cart (request)
 
     totalDuration = 0
@@ -218,7 +219,6 @@ def scheduleWithTech(request, pk, date):
     currentTime = currentDateAndTime.strftime("%H:%M%p")
 
     todaysDate = datetime.datetime.today().date()
-
     current_time = datetime.datetime.strptime(currentTime, format)
 
 
@@ -270,6 +270,7 @@ def scheduleWithTech(request, pk, date):
                     if set[0] == myVar:
                         globalVar = set
 
+                # so one thing that i'm thinking is that we can utilize global variables in order to 
                 new_appointment = Appointment.objects.create (
                     customer_id=request.user.id,
                     technician_id=tech.id,
@@ -283,11 +284,9 @@ def scheduleWithTech(request, pk, date):
                     totalDuration=totalDuration,
                     date=dateSelected.date,
                     totalCharge=cart.get_total_price ( )
-
                 )
 
-                new_appointment.save ()
-
+                new_appointment.save()
                 return redirect ('appointments:confirm', appointment=new_appointment.id)
 
     return render (request, "Scheduling/calendar.html", {"tech": tech, "availableDates": workingDays,
@@ -299,9 +298,10 @@ def confirmAppointment(request, appointment):
     # so in here we need to render a form, where the user will:
     # provide any additional details that they would like to include in their request.
     # upload any additional images, that they would like for the technician to
-
     # here we need to render the form and when the user confirms we can set the timeslots to false.
+
     new_appointment = Appointment.objects.filter (pk=appointment).get ( )
+    # first delete said appointment but store it elsewhere.
     if request.method == "POST":
         if "Confirm" in request.POST:
 
