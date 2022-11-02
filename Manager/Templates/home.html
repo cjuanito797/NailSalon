@@ -1,9 +1,67 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Example</title>
-    </head>
-    <body>
-        <p>This is an example of a simple HTML page with one paragraph.</p>
-    </body>
+  <head>
+    <title>Title of the document</title>
+    <style>
+      .box {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        width: auto;
+        height: flex;
+      }
+      .box div {
+        width: flex;
+        padding: 15px;
+        text-align: center;
+        color: #000000;
+        font-family: arial, sans-serif;
+      }
+      .apt_btn {
+        background-color: green;
+      }
+      .apt {
+        background-color: blue;
+      }
+      .sale {
+        background-color: gray;
+      }
+      .sale_btn {
+        background-color: pink;
+      }
+      #radioContainer {
+        position: relative;
+        width: auto;
+        float:left;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Today Appointment</h2>
+    <div class="box">
+      <div class="apt_btn">Appointment Button
+      </div>
+      <div class="apt">Appointment
+        <div id="radioContainer" >
+          {% for i in appointment %}
+          <br><a>Email:{{i.customer}} Start at:{{i.start_time}} {{i.date}}</a></br>
+          {% endfor %}
+          
+          <input type="radio" name="distance" value="1"/>1<br>
+          <input type="radio" name="distance" value="2"/>2<br>
+          <input type="radio" name="distance" value="3"/>3<br>
+          <input type="radio" name="distance" value="4"/>4<br>
+          <input type="radio" name="distance" value="5"/>5<br>
+          <input checked type="radio" name="distance" value="6"/>6<br>
+          <input type="radio" name="distance" value="7"/>7<br>
+          <input type="radio" name="distance" value="8"/>8<br>
+          <input type="radio" name="distance" value="9"/>9<br>
+      </div>
+      </div>
+      <div class="sale">Sale</div>
+      <div class="sale_btn">Sale Button</div>
+    </div>
+  </body>
 </html>
