@@ -93,14 +93,24 @@ class Appointment (models.Model):
         self.totalDuration = x
         return self.totalDuration
 
+STATUS_OPTION = (
+    ('scheduled','scheduled'),
+    ('working','working'),
+    ('closed','closed'),
+    ('canceled','canceled'),
+)
 
-class Sale (models.Model):
-    service = models.ForeignKey (Service,
-                                 on_delete=models.CASCADE,
-                                 related_name='service')
-    technician = models.ForeignKey (User,
-                                    on_delete=models.CASCADE,
-                                    related_name='technician')
-    appointment = models.ForeignKey (Appointment,
-                                     on_delete=models.CASCADE,
-                                     related_name='appointment')
+class Sale(models.Model):
+    service = models.ForeignKey(Service,
+                                on_delete=models.CASCADE,
+                                related_name='service')
+    technician = models.ForeignKey(User,
+                                on_delete=models.CASCADE,
+                                related_name='technician')
+    appointment = models.ForeignKey(Appointment,
+                                on_delete=models.CASCADE,
+                                related_name='appointment')
+    status = models.CharField(max_length=10,
+                              choices=STATUS_OPTION,
+                              blank=False,
+                              default='scheduled')

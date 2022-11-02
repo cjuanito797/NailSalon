@@ -22,15 +22,27 @@
         }
         .apt_btn {
             background-color: green;
+            float:center;
+            text-align: center;
+            padding: 15px;
         }
         .apt {
             background-color: blue;
+            float:center;
+            text-align: center;
+            padding: 15px;
         }
         .sale {
             background-color: gray;
+            float:center;
+            text-align: center;
+            padding: 15px;
         }
         .sale_btn {
             background-color: pink;
+            float:center;
+            text-align: center;
+            padding: 15px;
         }
         #radioContainer {
             position: relative;
@@ -39,26 +51,80 @@
             float:left;
             overflow-y:scroll;
         }
+        /* The Modal (background) */
+        .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+        }
+        /* The Close Button */
+        .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+        }
         </style>
     </head>
 
     <body>
-        <h2>Today Appointment</h2>
+        <h2>MANAGER CONTROL</h2>
+        
+        
         <form class="box" action="" method="POST">
         {% csrf_token %}
-
-            <div class="apt_btn">Appointment Button
-                <input type="submit" name="appointment_btn" value="Trigger" />
-                <input type="submit" name="appointment_btn" value="Modify" />
-                <input type="submit" name="appointment_btn" value="Cancel" />
+            <div class="apt_btn">Appointment Button<br><br><br>
+                <input type="submit" name="appointment_btn" value="Trigger" /><br><br><br>
+                <button type="button" name="appointment_btn" id="a_modify">Modify</button><br><br><br>
+                <input type="submit" name="appointment_btn" value="Cancel" /><br><br><br>
             </div>
+
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                <span class="close">&times;</span>
+                <a>Technician:</a>
+                <select name="technician_id" id="technician_id">
+                    {% for id, name in technicians %}
+                        <option value="{{ id }}">{{ name.0 }} {{ name.1 }}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+                <a>Start Time:</a>
+                <br><br>
+                <button type="submit" name="appointment_btn" value="Modify">Submit Modification</button>
+                </div>
+            </div>
+            <!-- END Modal -->
 
             <div class="apt">
                 <fieldset id="radioContainer">
                     <legend>Appointments</legend>
                         
                         {% for name, begin, end, price, id, checked in appointments %}
-                            <input {{ checked }} type="radio" name="appointment" value="{{ id }}"/>
+                            <input {{ checked }} type="radio" name="appointment_id" value="{{ id }}"/>
                                 <a>Customer: {{name.0}} {{name.1}}. </a>
                                 <a>Start time: {{begin}}. </a>
                                 <a>End time: {{end}}. </a>
@@ -75,17 +141,18 @@
 
             <div class="sale_btn">Sale Button
                 {% if sales|length == 0 %}
-                    <input type="submit" name="sale_btn" value="Modify" disabled />
+                    <button type="button" name="sale_btn" id="s_modify" disabled>Modify</button>
                     <input type="submit" name="sale_btn" value="Cancel" disabled />
                 {% else %}
-                    <input type="submit" name="sale_btn" value="Modify" />
+                    <button type="button" name="sale_btn" id="s_modify" >Modify</button>
                     <input type="submit" name="sale_btn" value="Cancel" />
                 {% endif %}
             </div>
         </form>
         <script type="text/javascript">
-            if (document.querySelector('input[name="appointment"]')) {
-                document.querySelectorAll('input[name="appointment"]').forEach((elem) => {
+            // Auto Process Radio Check ----------------------------
+            if (document.querySelector('input[name="appointment_id"]')) {
+                document.querySelectorAll('input[name="appointment_id"]').forEach((elem) => {
                     elem.addEventListener("change", function(event) {
                         var item = event.target.value;
                         $.ajax({
@@ -94,17 +161,38 @@
                             dataType: "json",
                             data: {
                                 csrfmiddlewaretoken: '{{ csrf_token }}',
-                                appointment: item
+                                appointment_id: item
                             },
                             success: (data) => {
                                 console.log(data);
                             },
                             error: (error) => {
                                 console.log(error);
-                            }
+                            },
                         });
                     });
-                });
+                });;
+            }
+            // Popup Modify Modal ----------------------------
+            // Get the modal
+            var modal = document.getElementById("myModal");
+            // Get the button that opens the modal
+            var btn = document.getElementById("a_modify");
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+            // When the user clicks on the button, open the modal 
+            btn.onclick = function() {
+            modal.style.display = "block";
+            }
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+            modal.style.display = "none";
+            }
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
             }
         </script>
     </body>
