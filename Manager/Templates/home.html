@@ -1,75 +1,97 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <title>Title of the document</title>
-    <style>
-      .box {
-        display: -webkit-box;
-        display: -moz-box;
-        display: -ms-flexbox;
-        display: -webkit-flex;
-        display: flex;
-        width: auto;
-        height: flex;
-      }
-      .box div {
-        width: flex;
-        padding: 15px;
-        text-align: center;
-        color: #000000;
-        font-family: arial, sans-serif;
-      }
-      .apt_btn {
-        background-color: green;
-      }
-      .apt {
-        background-color: blue;
-      }
-      .sale {
-        background-color: gray;
-      }
-      .sale_btn {
-        background-color: pink;
-      }
-      #radioContainer {
-        position: relative;
-        width: auto;
-        height: 300px;
-        float:left;
-        overflow-y:scroll;
-      }
-    </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <title>Title of the document</title>
+        <style>
+        .box {
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            width: auto;
+            height: flex;
+        }
+        .box div {
+            width: flex;
+            padding: 15px;
+            text-align: center;
+            color: #000000;
+            font-family: arial, sans-serif;
+        }
+        .apt_btn {
+            background-color: green;
+        }
+        .apt {
+            background-color: blue;
+        }
+        .sale {
+            background-color: gray;
+        }
+        .sale_btn {
+            background-color: pink;
+        }
+        #radioContainer {
+            position: relative;
+            width: auto;
+            height: 300px;
+            float:left;
+            overflow-y:scroll;
+        }
+        </style>
     </head>
 
     <body>
         <h2>Today Appointment</h2>
         <div class="box">
             <div class="apt_btn">Appointment Button</div>
-            <div class="apt">Appointment
-                <div id="radioContainer" >
-
-                    {% for name, begin, end, price, id in appointments %}
-                        <input type="radio" name="appointment" value="{{ id }}"/>
-                            <a>Customer:{{name.0}} {{name.1}}. </a>
-                            <a>Start time: {{begin}}. </a>
-                            <a>End time: {{end}}. </a>
-                            <a>Total charge: {{price}}. </a>
-                        <br><br>
-                    {% endfor %}
-
-                    <input type="radio" name="distance" value="1"/>1<br>
-                    <input type="radio" name="distance" value="2"/>2<br>
-                    <input type="radio" name="distance" value="3"/>3<br>
-                    <input type="radio" name="distance" value="4"/>4<br>
-                    <input type="radio" name="distance" value="5"/>5<br>
-                    <input checked type="radio" name="distance" value="6"/>6<br>
-                    <input type="radio" name="distance" value="7"/>7<br>
-                    <input type="radio" name="distance" value="8"/>8<br>
-                    <input type="radio" name="distance" value="9"/>9<br>
-                </div>
+            <div class="apt">
+                
+                    <fieldset id="radioContainer">
+                        <legend>Appointments</legend>
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            {% for name, begin, end, price, id, checked in appointments %}
+                                <input {{ checked }} type="radio" name="appointment" value="{{ id }}"/>
+                                    <a>Customer:{{name.0}} {{name.1}}. </a>
+                                    <a>Start time: {{begin}}. </a>
+                                    <a>End time: {{end}}. </a>
+                                    <a>Total charge: {{price}}. </a>
+                                <br><br>
+                            {% endfor %}
+                            <input type="submit" name="btnsubmit" value="Click" />
+                        </form>
+                    </fieldset>
+                
             </div>
             <div class="sale">Sale</div>
             <div class="sale_btn">Sale Button</div>
         </div>
+        <script type="text/javascript">
+            if (document.querySelector('input[name="appointment"]')) {
+                document.querySelectorAll('input[name="appointment"]').forEach((elem) => {
+                    elem.addEventListener("change", function(event) {
+                        var item = event.target.value;
+                        $.ajax({
+                            url: "/manager/",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                csrfmiddlewaretoken: '{{ csrf_token }}',
+                                appointment: item
+                            },
+                            success: (data) => {
+                                console.log(data);
+                            },
+                            error: (error) => {
+                                console.log(error);
+                            }
+                        });
+                        console.log(item);
+                    });
+                });
+            }
+        </script>
     </body>
 </html>
