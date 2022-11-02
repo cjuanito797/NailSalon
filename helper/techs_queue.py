@@ -59,6 +59,10 @@ def main():
     
     a = _WAIT_QUEUE.pop(0)
     _WORK_QUEUE.append(a)
+    
+    print(_WAIT_QUEUE)
+    print(_WORK_QUEUE)
+    
 '''
 # Function to sort the list of tuples by its second item
 def Sort_Tuple(tup):
@@ -81,18 +85,14 @@ tup =[('for', 24), ('is', 10), ('Geeks', 28),
 print(Sort_Tuple(tup))
 '''
             
-        
-        
-
-    print(_WAIT_QUEUE)
-    print(_WORK_QUEUE)
+  
 
 
 
 
 
 
-    '''
+'''
     process = _Process(date(2022, 11, 12))
     
     onday_techs = []

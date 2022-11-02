@@ -11,3 +11,4 @@ print(Process.close_slots(id=4,date=date(2022, 10, 4)))
 #print(appointment)
 #for i in appointment:
  #   print(i)
+
