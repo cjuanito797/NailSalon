@@ -12,7 +12,10 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def home(request):
     if request.method == "POST":
+        
         id = (int) (request.POST['appointment'])
+        sale_btn = request.POST['sale_btn'] if 'sale_btn' in request.POST else None
+        appointment_btn = request.POST['appointment_btn'] if 'appointment_btn' in request.POST else None
 
         appointment_query = Appointment.objects.all().values_list('customer', 'start_time', 'end_time', 'totalCharge', 'id')
         appointment_list = []
@@ -36,18 +39,24 @@ def home(request):
         
     else:
         appointment_list = Appointment.objects.all()
-        
         appointment_list = Appointment.objects.all().values_list('customer', 'start_time', 'end_time', 'totalCharge', 'id')
-
         appointment_arr = []
         for a in appointment_list:
             appointment = list(a)
             appointment[0] = User.objects.filter(id=a[0]).values_list("first_name", "last_name")[0]
             appointment.append("")
             appointment_arr.append(appointment)
-            
-        
+        appointment_arr[0][5] = "checked"
             
         return render(request, 'home.html', {
             'appointments': appointment_arr,
         })
+        
+def trigger():
+    pass
+
+def modify():
+    pass
+
+def cancel():
+    pass

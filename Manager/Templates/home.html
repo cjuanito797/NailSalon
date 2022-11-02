@@ -13,7 +13,7 @@
             width: auto;
             height: flex;
         }
-        .box div {
+        .box form {
             width: flex;
             padding: 15px;
             text-align: center;
@@ -44,30 +44,45 @@
 
     <body>
         <h2>Today Appointment</h2>
-        <div class="box">
-            <div class="apt_btn">Appointment Button</div>
-            <div class="apt">
-                
-                    <fieldset id="radioContainer">
-                        <legend>Appointments</legend>
-                        <form action="" method="POST">
-                            {% csrf_token %}
-                            {% for name, begin, end, price, id, checked in appointments %}
-                                <input {{ checked }} type="radio" name="appointment" value="{{ id }}"/>
-                                    <a>Customer:{{name.0}} {{name.1}}. </a>
-                                    <a>Start time: {{begin}}. </a>
-                                    <a>End time: {{end}}. </a>
-                                    <a>Total charge: {{price}}. </a>
-                                <br><br>
-                            {% endfor %}
-                            <input type="submit" name="btnsubmit" value="Click" />
-                        </form>
-                    </fieldset>
-                
+        <form class="box" action="" method="POST">
+        {% csrf_token %}
+
+            <div class="apt_btn">Appointment Button
+                <input type="submit" name="appointment_btn" value="Trigger" />
+                <input type="submit" name="appointment_btn" value="Modify" />
+                <input type="submit" name="appointment_btn" value="Cancel" />
             </div>
-            <div class="sale">Sale</div>
-            <div class="sale_btn">Sale Button</div>
-        </div>
+
+            <div class="apt">
+                <fieldset id="radioContainer">
+                    <legend>Appointments</legend>
+                        
+                        {% for name, begin, end, price, id, checked in appointments %}
+                            <input {{ checked }} type="radio" name="appointment" value="{{ id }}"/>
+                                <a>Customer: {{name.0}} {{name.1}}. </a>
+                                <a>Start time: {{begin}}. </a>
+                                <a>End time: {{end}}. </a>
+                                <a>Total charge: {{price}}. </a>
+                            <br><br>
+                        {% endfor %}
+                    
+                </fieldset>
+            </div>
+
+            <div class="sale">Sale
+                <!-- loop through sales list -->
+            </div>
+
+            <div class="sale_btn">Sale Button
+                {% if sales|length == 0 %}
+                    <input type="submit" name="sale_btn" value="Modify" disabled />
+                    <input type="submit" name="sale_btn" value="Cancel" disabled />
+                {% else %}
+                    <input type="submit" name="sale_btn" value="Modify" />
+                    <input type="submit" name="sale_btn" value="Cancel" />
+                {% endif %}
+            </div>
+        </form>
         <script type="text/javascript">
             if (document.querySelector('input[name="appointment"]')) {
                 document.querySelectorAll('input[name="appointment"]').forEach((elem) => {
@@ -88,7 +103,6 @@
                                 console.log(error);
                             }
                         });
-                        console.log(item);
                     });
                 });
             }
