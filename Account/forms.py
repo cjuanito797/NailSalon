@@ -35,6 +35,3 @@ class EditAddress (forms.ModelForm):
         model = User
 
         fields = ("street_num", "city", "state", "zipcode")
-
-class EmailChangeForm (forms.Form):
-    email = forms.CharField ( )

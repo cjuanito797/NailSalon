@@ -6,7 +6,7 @@
 
 {% block head %}
 
-    {% block title %}<title>Change Password</title>{% endblock %}
+    {% block title %}<title>Change Email</title>{% endblock %}
         <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
@@ -141,7 +141,28 @@
 
     <form method = "post">
     {%  csrf_token  %}
+    <tr>
+    <td>
+        <div class="field">
+            <div class="control">
+                <input class="input is-medium is-fullwidth" placeholder="Old Email" type="email" name="old_email"
+                                       autocomplete="current-email" required id="id_old_email">
+            </div>
+        </div>
+        <br>
+    </td>
+  </tr>
 
+  <tr>
+    <td>
+        <div class="field">
+            <div class="control">
+                <input class="input is-medium is-fullwidth" placeholder="New Email" type="email" name="new_email1"
+                                       autocomplete="new-email" required id="id_new_email1">
+            </div>
+        </div>
+    </td>
+  </tr>
     <button class="button is-block is-primary is-large is-fullwidth" type="submit">Change Email</button>
     </form>
             </div>
