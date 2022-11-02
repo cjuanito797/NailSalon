@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+    <head>
     <title>Title of the document</title>
     <style>
       .box {
@@ -37,31 +37,37 @@
         float:left;
       }
     </style>
-  </head>
-  <body>
-    <h2>Today Appointment</h2>
-    <div class="box">
-      <div class="apt_btn">Appointment Button
-      </div>
-      <div class="apt">Appointment
-        <div id="radioContainer" >
-          {% for i in appointment %}
-          <br><a>Email:{{i.customer}} Start at:{{i.start_time}} {{i.date}}</a></br>
-          {% endfor %}
-          
-          <input type="radio" name="distance" value="1"/>1<br>
-          <input type="radio" name="distance" value="2"/>2<br>
-          <input type="radio" name="distance" value="3"/>3<br>
-          <input type="radio" name="distance" value="4"/>4<br>
-          <input type="radio" name="distance" value="5"/>5<br>
-          <input checked type="radio" name="distance" value="6"/>6<br>
-          <input type="radio" name="distance" value="7"/>7<br>
-          <input type="radio" name="distance" value="8"/>8<br>
-          <input type="radio" name="distance" value="9"/>9<br>
-      </div>
-      </div>
-      <div class="sale">Sale</div>
-      <div class="sale_btn">Sale Button</div>
-    </div>
-  </body>
+    </head>
+
+    <body>
+        <h2>Today Appointment</h2>
+        <div class="box">
+            <div class="apt_btn">Appointment Button</div>
+            <div class="apt">Appointment
+                <div id="radioContainer" >
+
+                    {% for name, begin, end, price, id in appointments %}
+                        <input type="radio" name="appointment" value="{{ id }}"/>
+                            <a>Customer:{{name.0}} {{name.1}}. </a>
+                            <a>Start time: {{begin}}. </a>
+                            <a>End time: {{end}}. </a>
+                            <a>Total charge: {{price}}. </a>
+                        <br><br>
+                    {% endfor %}
+
+                    <input type="radio" name="distance" value="1"/>1<br>
+                    <input type="radio" name="distance" value="2"/>2<br>
+                    <input type="radio" name="distance" value="3"/>3<br>
+                    <input type="radio" name="distance" value="4"/>4<br>
+                    <input type="radio" name="distance" value="5"/>5<br>
+                    <input checked type="radio" name="distance" value="6"/>6<br>
+                    <input type="radio" name="distance" value="7"/>7<br>
+                    <input type="radio" name="distance" value="8"/>8<br>
+                    <input type="radio" name="distance" value="9"/>9<br>
+                </div>
+            </div>
+            <div class="sale">Sale</div>
+            <div class="sale_btn">Sale Button</div>
+        </div>
+    </body>
 </html>
