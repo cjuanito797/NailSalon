@@ -100,7 +100,6 @@
                     {% endfor %}
                 </select>
                 <br><br>
-
                 <a>Start Time:</a>
                 <br><br>
                 <button type="submit" name="appointment_btn" value="Modify">Submit Modification</button>
@@ -113,7 +112,7 @@
                     <legend>Appointments</legend>
                         
                         {% for name, begin, end, price, id, checked in appointments %}
-                            <input {{ checked }} type="radio" name="appointment" value="{{ id }}"/>
+                            <input {{ checked }} type="radio" name="appointment_id" value="{{ id }}"/>
                                 <a>Customer: {{name.0}} {{name.1}}. </a>
                                 <a>Start time: {{begin}}. </a>
                                 <a>End time: {{end}}. </a>
@@ -140,8 +139,8 @@
         </form>
         <script type="text/javascript">
             // Auto Process Radio Check ----------------------------
-            if (document.querySelector('input[name="appointment"]')) {
-                document.querySelectorAll('input[name="appointment"]').forEach((elem) => {
+            if (document.querySelector('input[name="appointment_id"]')) {
+                document.querySelectorAll('input[name="appointment_id"]').forEach((elem) => {
                     elem.addEventListener("change", function(event) {
                         var item = event.target.value;
                         $.ajax({
@@ -150,17 +149,17 @@
                             dataType: "json",
                             data: {
                                 csrfmiddlewaretoken: '{{ csrf_token }}',
-                                appointment: item
+                                appointment_id: item
                             },
                             success: (data) => {
                                 console.log(data);
                             },
                             error: (error) => {
                                 console.log(error);
-                            }
+                            },
                         });
                     });
-                });
+                });;
             }
             // Popup Modify Modal ----------------------------
             // Get the modal
