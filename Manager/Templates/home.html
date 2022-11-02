@@ -94,10 +94,10 @@
         
         <form class="box" action="" method="POST">
         {% csrf_token %}
-            <div class="apt_btn">Appointment Button
-                <input type="submit" name="appointment_btn" value="Trigger" />
-                <button type="button" name="appointment_btn" id="a_modify">Modify</button>
-                <input type="submit" name="appointment_btn" value="Cancel" />
+            <div class="apt_btn">Appointment Button<br><br><br>
+                <input type="submit" name="appointment_btn" value="Trigger" /><br><br><br>
+                <button type="button" name="appointment_btn" id="a_modify">Modify</button><br><br><br>
+                <input type="submit" name="appointment_btn" value="Cancel" /><br><br><br>
             </div>
 
             <!-- The Modal -->
@@ -106,7 +106,7 @@
                 <div class="modal-content">
                 <span class="close">&times;</span>
                 <a>Technician:</a>
-                <select name="technician" id="technician">
+                <select name="technician_id" id="technician_id">
                     {% for id, name in technicians %}
                         <option value="{{ id }}">{{ name.0 }} {{ name.1 }}</option>
                     {% endfor %}

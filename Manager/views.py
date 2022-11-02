@@ -7,16 +7,15 @@ from Account.models import Technician, User
 from django.views.decorators.csrf import csrf_exempt
 
 
-
 # Create your views here.
 @csrf_exempt
 def home(request):
     if request.method == "POST":
         id = (int) (request.POST['appointment_id'])
         
+        appointment_control = Control.C_Appointment(request.POST) if 'appointment_btn' in request.POST else None
         sale_control = Control.C_Sale(s_btn=request.POST['sale_btn'], id=id) if 'sale_btn' in request.POST else None
-        appointment_control = Control.C_Appointment(a_btn=request.POST['appointment_btn'], id=id) if 'appointment_btn' in request.POST else None
-        
+       
         packet = display(id)
         return render(request, 'home.html', packet)
     
@@ -59,25 +58,28 @@ class Control:
         pass
     
     class C_Appointment:
-        def __init__(self, a_btn, id) -> None:
-            self.btn = a_btn
-            print(f"appointment: {id}")
-            print(self.btn)
+        def __init__(self, post: dict) -> None:
+            a_btn = post['appointment_btn']
+            appointment_id = post['appointment_id']
+            tech_id = post['technician_id']
+            
+            print(f"appointment: {appointment_id}")
+            print(a_btn)
             if a_btn == 'Trigger':
-                pass
+                self.trigger(appointment_id)
             elif a_btn == 'Cancel':
-                pass
+                self.cancel(appointment_id)
             else:
-                pass
-        
-        def trigger():
-            pass
+                self.modify(tech_id)
+            
+        def trigger(self, appointment_id):
+            print("Triggered")
 
-        def modify():
-            pass
+        def modify(self, tech_id):
+            print(f"tech_id: {tech_id}")
 
-        def cancel():
-            pass
+        def cancel(self, appointment_id):
+            print("Canceled")
         
     class C_Sale:
         def __init__(self, s_btn, id) -> None:
