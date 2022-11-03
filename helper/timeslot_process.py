@@ -31,24 +31,20 @@ class Process:
             if sale_count > 0:
                 return "Appoinment is already triggered!"
             check_date = kargs['date']
-            msg = "Closing timeslot process failed!"
-            try:
-                process = _Process(check_date, appointment_id)
-                # split appointment to sales
-                sale_service = process._split_appointment_to_sales ( )
-                # retrieve all available technicians (using today day)
-                avail_techs_timeslots = process._get_techs_timeslots ( )
-                # find and assign open technician for sales
-                assign_tech = process._assign_chosen_tech (avail_techs_timeslots['tech'], sale_service)
-                # retrieve technician name for return
-                tech_name = User.objects.filter (email=assign_tech).values_list ('first_name', 'last_name')[0]
-                # set return value (tech first, last name)
-                msg = f"{tech_name[0]} {tech_name[1]}" # --return for test
-            except IndexError as ie:
-                traceback.print_exc()
-                logger.error("Closing timeslot process failed!")
-            finally:
-                return msg
+            
+            process = _Process(check_date, appointment_id)
+            # split appointment to sales
+            sale_service = process._split_appointment_to_sales ( )
+            # retrieve all available technicians (using today day)
+            avail_techs_timeslots = process._get_techs_timeslots ( )
+            # find and assign open technician for sales
+            print(avail_techs_timeslots)
+            assign_tech = process._assign_chosen_tech (avail_techs_timeslots['tech'], sale_service)
+            # retrieve technician name for return
+            tech_name = User.objects.filter (email=assign_tech).values_list ('first_name', 'last_name')[0]
+            # set return value (tech first, last name)
+            return f"{tech_name[0]} {tech_name[1]}" # --return for test
+        
         elif len(kargs) == 1:       # move sale status by appointment (by id(appointment))  
             appointment_id = kargs['id']
             sales = Sale.objects.filter(appointment=appointment_id).values_list('status')
@@ -104,6 +100,14 @@ class _Process:
                 self.starttime_object = (Appointment.objects.filter (
                     id=appointment_id, date=self.current_date
                 ).values_list ('start_time', flat=True))[0]
+                tech_id = Appointment.objects.filter (
+                    id=self.__appointment_id, date=check_date  # change date=self.current_date
+                ).values_list('technician_id', flat=True)[0]
+                self.tech = User.objects.filter(id=
+                            Technician.objects.filter(id=tech_id)
+                            .values_list('user', flat=True)[0]).values_list('email', flat=True)[0]
+                Technician.objects.filter(id=tech_id).values_list('user', flat=True)[0]
+                
             except IndexError:
                 msg = f"Appointment id {appointment_id} in {check_date} is not found!!"
                 print(msg)
