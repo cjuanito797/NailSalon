@@ -1,28 +1,31 @@
-from django.shortcuts import render
 
-from .forms import AppointmentID
+from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
 
-from Appointments.models import Appointment, Sale
+from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
-from django.views.decorators.csrf import csrf_exempt
+#from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
-@csrf_exempt
-def home(request):
+#@csrf_exempt
+def home(request, id=None):
     if request.method == "POST":
         id = (int) (request.POST['appointment_id'])
         
         appointment_control = Control.C_Appointment(request.POST) if 'appointment_btn' in request.POST else None
         sale_control = Control.C_Sale(s_btn=request.POST['sale_btn'], id=id) if 'sale_btn' in request.POST else None
        
-        packet = display(id)
-        return render(request, 'home.html', packet)
-    
-    else:
-        packet = display(None)
-        return render(request, 'home.html', packet)
+        packets = {'packet': display(id)}
         
+        return redirect("manager:home_post", id)
+
+    else:
+        packets = {'packet': display(id)}
+        #print(packets)
+        return render(request, 'home.html', packets)
+
+
 def display(id):
     # Query Appointment
     appointment_query = Appointment.objects.all().values_list('customer', 'start_time', 'end_time', 'totalCharge', 'id')
@@ -35,8 +38,6 @@ def display(id):
         else:
             appointment.append("")   
         appointment_list.append(appointment)
-    if id is None:
-        appointment_list[0][5] = "checked"
     # Query Tech    
     tech_query = Technician.objects.all().values_list('user')
     tech_list = []
@@ -44,13 +45,35 @@ def display(id):
         tech = list(t)
         tech.append(User.objects.filter(id=a[0]).values_list("first_name", "last_name")[0])
         tech_list.append(tech)
+    
+    sale_list = []  # [ [id,name],[id,first,last],status ]
+    if id is None:
+        appointment_list[0][5] = "checked"
+    else:
     # Query Sale
-    sale_query = Sale.objects.filter(appointment=id).values_list('technician', 'service')
+        sale_query = Sale.objects.filter(appointment=id).values_list("id", "service", "technician", "status")
+        
+        if len(sale_query) > 0:
+            for s in sale_query:
+                sale = list(s)    
+                sale[1] = Service.objects.filter(id=s[1]).values_list("name", flat=True)[0]
+                sale[2] = User.objects.filter(id=s[2]).values_list("first_name", "last_name", )[0]
+                sale.append("")
+                sale_list.append(sale)
+            sale_list[0][4] = "checked"
     return {
-            'appointments': appointment_list,
-            'sales': sale_query,
-            'technicians': tech_list
-    }
+            "appointments": appointment_list,
+            "technicians": tech_list,
+            "sales": sale_list
+            }
+    
+    '''
+   {% for service, tech, status, checked in sales %}
+                        <input {{ checked }} type="radio" name="sale_id" value="{{ status }}"/>
+                        <a>hello</a>
+                        <br><br>
+                    {% endfor %}
+    '''
         
     
 class Control:

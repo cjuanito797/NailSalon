@@ -10,8 +10,10 @@
             display: -ms-flexbox;
             display: -webkit-flex;
             display: flex;
-            width: auto;
-            height: flex;
+            top: 50%;
+            left: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
         }
         .box form {
             width: flex;
@@ -29,6 +31,7 @@
         .apt {
             background-color: blue;
             float:center;
+            width: 250px;
             text-align: center;
             padding: 15px;
         }
@@ -43,6 +46,11 @@
             float:center;
             text-align: center;
             padding: 15px;
+        }
+        .item {
+            float:left;
+            width: 200px;
+            padding: 5px;
         }
         #radioContainer {
             position: relative;
@@ -70,7 +78,7 @@
         margin: 15% auto; /* 15% from the top and centered */
         padding: 20px;
         border: 1px solid #888;
-        width: 80%; /* Could be more or less, depending on screen size */
+        width: 25%; /* Could be more or less, depending on screen size */
         }
         /* The Close Button */
         .close {
@@ -98,6 +106,9 @@
                 <input type="submit" name="appointment_btn" value="Trigger" /><br><br><br>
                 <button type="button" name="appointment_btn" id="a_modify">Modify</button><br><br><br>
                 <input type="submit" name="appointment_btn" value="Cancel" /><br><br><br>
+                {% for key,value in packet.items %}
+                    <a>{{key}}:{{value|length}}</a>
+                {% endfor %}
             </div>
 
             <!-- The Modal -->
@@ -107,9 +118,9 @@
                 <span class="close">&times;</span>
                 <a>Technician:</a>
                 <select name="technician_id" id="technician_id">
-                    {% for id, name in technicians %}
+                    {% for id, name in packet.technicians %}
                         <option value="{{ id }}">{{ name.0 }} {{ name.1 }}</option>
-                    {% endfor %}
+                    {% endfor %}-->
                 </select>
                 <br><br>
                 <a>Start Time:</a>
@@ -123,24 +134,43 @@
                 <fieldset id="radioContainer">
                     <legend>Appointments</legend>
                         
-                        {% for name, begin, end, price, id, checked in appointments %}
+                        
+                    {#{% for key,value in packet.items%}#}
+                        {% for name, begin, end, price, id, checked in packet.appointments %}
+                        <div class="item">
                             <input {{ checked }} type="radio" name="appointment_id" value="{{ id }}"/>
-                                <a>Customer: {{name.0}} {{name.1}}. </a>
-                                <a>Start time: {{begin}}. </a>
-                                <a>End time: {{end}}. </a>
-                                <a>Total charge: {{price}}. </a>
+                                <a>Customer: {{name.0}} {{name.1}}.</a><br>
+                                <a>Start time: {{begin}}.</a><br>
+                                <a>End time: {{end}}.</a><br>
+                                <a>Total charge: {{price}}.</a><br>
                             <br><br>
+                        </div>
                         {% endfor %}
+                </fieldset>
+            </div>
+
+            <div class="sale">
+                <fieldset id="radioContainer">
+                    <legend>Sales</legend>
+                    {% if packet.sales|length == 0 %}
+                        <a>None</a>
+                    {% endif %}
+
+                    {% for id,service,tech,stat,checked in packet.sales %}
+                    <div class="item">
+                        <input {{ checked }} type="radio" name="sale_id" value="{{ id }}"/>
+                            <a>Technician: {{tech.0}} {{tech.1}}.</a><br>
+                            <a>Service: {{service}}.</a><br>
+                            <a>Status: {{stat}}.</a><br>
+                        <br><br>
+                    </div>
+                    {% endfor %}
                     
                 </fieldset>
             </div>
 
-            <div class="sale">Sale
-                <!-- loop through sales list -->
-            </div>
-
             <div class="sale_btn">Sale Button
-                {% if sales|length == 0 %}
+                {% if packet.sales|length == 0 %}
                     <button type="button" name="sale_btn" id="s_modify" disabled>Modify</button>
                     <input type="submit" name="sale_btn" value="Cancel" disabled />
                 {% else %}
@@ -149,14 +179,16 @@
                 {% endif %}
             </div>
         </form>
+        
         <script type="text/javascript">
             // Auto Process Radio Check ----------------------------
             if (document.querySelector('input[name="appointment_id"]')) {
                 document.querySelectorAll('input[name="appointment_id"]').forEach((elem) => {
                     elem.addEventListener("change", function(event) {
                         var item = event.target.value;
+                        var url = "{% url 'manager:home' %}";
                         $.ajax({
-                            url: "/manager/",
+                            url: "/manager/"+item+"/",
                             type: "POST",
                             dataType: "json",
                             data: {
@@ -170,6 +202,7 @@
                                 console.log(error);
                             },
                         });
+                        window.location.assign(url + item + "/")
                     });
                 });;
             }
