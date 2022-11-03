@@ -6,6 +6,103 @@
         {% block title %}<title>Apple Nail Salon</title>{% endblock %}
         <link rel="stylesheet"
               href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+
+        <style>
+
+            .card-content ul li {
+                list-style-type: disc;
+            }
+
+            .image-container {
+                position: relative;
+                display: grid;
+                width: 100%;
+                height: 550px;
+                margin: 0 auto;
+
+            }
+
+            .pic {
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                height: 100%;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                -webkit-animation: fade 12s infinite;
+                animation: fade 12s infinite;
+            }
+
+            #pic3 {
+                background-image: url("https://c4.wallpaperflare.com/wallpaper/940/833/172/flower-hands-manicure-wallpaper-preview.jpg");
+                animation-direction: normal;
+                animation-delay: 4s;
+                border-radius: 10px;
+            }
+
+            #pic2 {
+                background-image: url("https://media.allure.com/photos/5ec4434bd39c8a00089c20cb/16:9/w_3488,h_1962,c_limit/painting%20nails.jpg");
+                animation-delay: 8s;
+                border-radius: 10px;
+            }
+
+            #pic1 {
+                animation-delay: 12s;
+                background-image: url("https://maplenailsomaha.com/uploads/maplenrkyh8qc/gallery/1.jpg");
+                border-radius: 10px;
+            }
+
+
+            @-webkit-keyframes fade {
+                0% {
+                    opacity: 1;
+                }
+
+                20% {
+                    opacity: 1;
+                }
+
+                34% {
+                    opacity: 0;
+                }
+
+                88% {
+                    opacity: 0;
+                }
+
+                100% {
+                    opacity: 1;
+                }
+
+            }
+
+            @keyframes fade {
+                0% {
+                    opacity: 1;
+                }
+
+                20% {
+                    opacity: 1;
+                }
+
+                34% {
+                    opacity: 0;
+                }
+
+                88% {
+                    opacity: 0;
+                }
+
+                100% {
+                    opacity: 1;
+                }
+
+            }
+
+
+        </style>
     </head>
 
 {% endblock %}
@@ -14,7 +111,8 @@
     <body style="overflow: hidden;">
 
     {% block content %}
-        <section class="hero is-primary is-fullheight has-text-black" style="background-color: #f2efe8; text-decoration-color: black">
+        <section class="hero is-primary is-fullheight has-text-black"
+                 style="background-color: #f2efe8; text-decoration-color: black">
         <!-- Hero head: will stick at the top -->
         <div class="hero-head">
 
@@ -69,16 +167,15 @@
                                     </a>
                                 </div>
                             </div>
-                             <div class="navbar-end">
-                            <div class="navbar-item">
-                                <a class="button is-success" href="{% url 'account:home' %}">
-                                    Book Appointment
-                                </a>
+                            <div class="navbar-end">
+                                <div class="navbar-item">
+                                    <a class="button is-success" href="{% url 'account:home' %}">
+                                        Book Appointment
+                                    </a>
+                                </div>
                             </div>
-                        </div>
 
                         </div>
-
 
 
                         <div class="navbar-end">
@@ -101,12 +198,108 @@
         {% block mainbody %}
             <!-- Hero content: will be in the middle -->
             <div class="hero-body is-align-items-stretch">
-                <div class="container has-text-centered has-text-black">
-                    <p class="title has-text-black">
-                        Site Under Construction
-                    </p>
 
+                <div class="bodyContent has-text-centered" style="margin-left: 0px; width: 100%; padding: 0;" >
+                    <p class="title is-size-2 has-text-black"> Welcome to Apple Nails & Spa</p>
+                    <div class="image-container">
+                        <div class="pic" id="pic1"></div>
+                        <div class="pic" id="pic2"></div>
+                        <div class="pic" id="pic3"></div>
+
+                    </div>
+
+                    <div class="column has-text-centered has-text-black;"
+                         style="position: relative; margin-top: 2%; border-radius: 5px;">
+                        <p class="title is-size-2 has-text-black">About Us</p>
+
+
+                        <div class="p-3 columns is-flex-wrap-wrap" style="margin-left: 25%;">
+                            <div class="card" style="display: inline-block; width: 18rem; margin: 1%; height: 100%;">
+                            <div class="heading has-text-centered">
+                                <div class="box" style="height: 80px;">
+                                    <p class="subtitle is-size-6 has-text-black">A little bit about us</p>
+                                </div>
+                            </div>
+
+                            <div class="hr" style="border: 1px solid grey"></div>
+
+                            <div class="card-content has-text-left" style="height: 230px;">
+                                <p>We are a nail salon and spa located in Omaha, Nebraska. You can read more
+                                about us on our official About Us page.</p>
+                            </div>
+
+                                <footer class="card-footer">
+                                    <a class="button is-primary is-fullwidth" href="{% url 'Account:aboutUs' %}">
+                                        About Us
+                                    </a>
+                                </footer>
+                        </div>
+
+                        <div class="card" style="display: inline-block; width: 18rem; margin: 1%; height: 100%;">
+                            <div class="heading has-text-centered">
+                                <div class="box" style="height: 80px;">
+                                    <p class="subtitle is-size-6 has-text-black">A preview of our services.</p>
+                            </div>
+                            </div>
+
+                            <div class="hr" style="border: 1px solid grey;"></div>
+
+                            <div class="card-content has-text-left" style="height: 230px;">
+                                <p>Some of the services that we offer include: </p>
+                                <ul>
+                                    <li style="margin-left: 15%;">Waxing</li>
+                                    <li style="margin-left: 15%;">Nail Painting</li>
+                                    <li style="margin-left: 15%;">Pedicures</li>
+                                </ul>
+                            </div>
+
+                            <footer class="card-footer">
+                                <a class="button is-primary is-fullwidth" href="{% url 'account:services' %}">
+                                    Our Services
+                                </a>
+                            </footer>
+
+                        </div>
+
+                        <div class="card" style="display: inline-block; width: 18rem; margin: 1%; height: 350px;">
+                            <div class="heading has-text-centered">
+                                <div class="box" style="height: 80px;">
+                                    <p class="subtitle is-size-6 has-text-black">Create an account with us!</p>
+                            </div>
+                            </div>
+
+                            <div class="hr" style="border: 1px solid grey; "></div>
+
+                            <div class="card-content has-text-left" style="height: 230px;">
+                                <p>
+                                    When opening an account with us you get access to the following:
+                                </p>
+
+                                <ul>
+                                    <li style="margin-left: 15%;">Free promotional offers.</li>
+                                    <li style="margin-left: 15%;">Access to appointment history</li>
+                                </ul>
+                            </div>
+
+                            <footer class="card-footer">
+                                <a class="button is-primary is-fullwidth" href="{% url 'account:user_registration' %}">
+                                    Sign Up!
+                                </a>
+                            </footer>
+                        </div>
+
+                        </div>
+
+                    </div>
+                    <div class="column has-text-centered" style="position: relative">
+                    <p class="title is-size-2 has-text-black">
+                        See what our customers have to say.
+                    </p>
                 </div>
+                </div>
+
+
+
             </div>
 
         {% endblock %}
