@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django_behave',
     'Appointments.apps.AppointmentsConfig',
     'cart.apps.CartConfig',
-    'Calendar.apps.CalendarConfig'
+    'Calendar.apps.CalendarConfig',
+    'Manager.apps'
 ]
 
 MIDDLEWARE = [
