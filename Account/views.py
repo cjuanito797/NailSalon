@@ -7,7 +7,7 @@ import calendar
 from django.urls import reverse
 from django.views.generic import FormView
 from django.http import HttpResponse
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, EmailChangeForm
 from .models import Technician, User, Customer
 from django.contrib.auth import logout
 from django.template import loader
@@ -141,7 +141,7 @@ def changePassword (request):
 @login_required(login_url='/login/')
 def changeEmail (request):
     if request.user.is_authenticated:
-        form = PasswordChangeForm (request.user, request.POST)
+        form = EmailChangeForm (request.user, request.POST)
 
         if form.is_valid ( ):
             user = form.save (commit=False)
@@ -152,7 +152,7 @@ def changeEmail (request):
         return render (request, 'account/changeEmail.html', {'form': form})
 
     def get(self, request):
-        form = PasswordChangeForm ( )
+        form = EmailChangeForm ( )
         return render (request, 'account/changeEmail.html', {'form': form})
 
 @login_required(login_url='/login/')
