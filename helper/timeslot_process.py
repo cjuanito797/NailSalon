@@ -61,7 +61,7 @@ class Process:
             date = kargs['date']
             process = _Process(date)
             techs_timeslots = process._get_time_scheduled_techs()
-            fieldname_list = _collect_time_fieldname (9, 0, [32])
+            fieldname_list = collect_time_fieldname (9, 0, [32])
             # tech = [0: email, 1: time_In, 2: time_Out]
             for tech in techs_timeslots:
                 delta_In = datetime.combine(datetime.today(), tech[1])
@@ -77,7 +77,7 @@ class Process:
                 else:
                     hour_In = tech[1].hour
                     minute_In = tech[1].minute
-                    customfield_list = _collect_time_fieldname (hour_In, minute_In, [count])
+                    customfield_list = collect_time_fieldname (hour_In, minute_In, [count])
                     for field in customfield_list:
                         assign = timeSlots.objects.get (tech=tech[0], date=date)
                         setattr (assign, field, True)
@@ -151,7 +151,7 @@ class _Process:
         minute = self.starttime_object.minute
 
         # Prepare all timeslot fieldname depend for total duration of all services
-        fieldname_list = _collect_time_fieldname (hour, minute, count)
+        fieldname_list = collect_time_fieldname (hour, minute, count)
         '''
         for i in count:
             # print("move slot:")
@@ -161,7 +161,7 @@ class _Process:
                     hour += 1
                 else:
                     minute += 15
-                fieldname_list.append (_convert_time_fieldname (hour, minute))
+                fieldname_list.append (convert_time_fieldname (hour, minute))
         '''
 
 
@@ -199,7 +199,7 @@ class _Process:
         return services
 
 
-def _collect_time_fieldname(starthour, startminute, count: list):
+def collect_time_fieldname(starthour, startminute, count: list):
     # move minute back 15 to include the startslot at next count
     startminute -= 15
 
@@ -211,10 +211,10 @@ def _collect_time_fieldname(starthour, startminute, count: list):
                     starthour += 1
                 else:
                     startminute += 15
-                fieldname_list.append (_convert_time_fieldname (starthour, startminute))
+                fieldname_list.append (convert_time_fieldname (starthour, startminute))
     return fieldname_list
 
-def _convert_time_fieldname(hour, minute):
+def convert_time_fieldname(hour, minute):
     hour_string = num_to_word[hour]
     minute_tostring = ("00_" if minute == 0 else str (minute))
     meridiem = ("am" if hour < 12 else "pm")

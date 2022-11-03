@@ -1,24 +1,40 @@
 
+import datetime
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 
 from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
+from helper.timeslot_process import collect_time_fieldname
 #from django.views.decorators.csrf import csrf_exempt
 
+TIME_SLOT = {}
+# Collect time slot fieldname  
+starthour = 9
+startmin = -15
+for i in range (32):
+    if startmin + 15 >= 60:
+        startmin = 0
+        starthour += 1
+    else:
+        startmin += 15
+    TIME_SLOT[i] = datetime.time(starthour,startmin)
+    
 
 # Create your views here.
 #@csrf_exempt
 def home(request, id=None):
     if request.method == "POST":
+        #print(request.POST)
+        
         id = (int) (request.POST['appointment_id'])
         
-        appointment_control = Control.C_Appointment(request.POST) if 'appointment_btn' in request.POST else None
-        sale_control = Control.C_Sale(s_btn=request.POST['sale_btn'], id=id) if 'sale_btn' in request.POST else None
+        Control.C_Appointment(request.POST) if 'appointment_btn' in request.POST else None
+        Control.C_Sale(s_btn=request.POST['sale_btn'], id=id) if 'sale_btn' in request.POST else None
        
         packets = {'packet': display(id)}
-        
-        return redirect("manager:home_post", id)
+        #return render(request, "home_post.html", packets)
+        return redirect("manager:home_post", id=id)
 
     else:
         packets = {'packet': display(id)}
@@ -61,20 +77,13 @@ def display(id):
                 sale.append("")
                 sale_list.append(sale)
             sale_list[0][4] = "checked"
+            
     return {
             "appointments": appointment_list,
             "technicians": tech_list,
-            "sales": sale_list
+            "sales": sale_list,
+            "timeslots": TIME_SLOT
             }
-    
-    '''
-   {% for service, tech, status, checked in sales %}
-                        <input {{ checked }} type="radio" name="sale_id" value="{{ status }}"/>
-                        <a>hello</a>
-                        <br><br>
-                    {% endfor %}
-    '''
-        
     
 class Control:
     def __init__(self) -> None:
@@ -83,23 +92,28 @@ class Control:
     class C_Appointment:
         def __init__(self, post: dict) -> None:
             a_btn = post['appointment_btn']
-            appointment_id = post['appointment_id']
-            tech_id = post['technician_id']
+            self.appointment_id = int(post['appointment_id'])
+            tech_id = int(post['technician_id'])
+            timeslot = int(post['timeslot'])
             
-            print(f"appointment: {appointment_id}")
+            print(f"appointment_id: {self.appointment_id}")
             print(a_btn)
             if a_btn == 'Trigger':
-                self.trigger(appointment_id)
+                self.trigger(self.appointment_id)
             elif a_btn == 'Cancel':
-                self.cancel(appointment_id)
+                self.cancel(self.appointment_id)
             else:
-                self.modify(tech_id)
+                self.modify(tech_id, timeslot)
             
         def trigger(self, appointment_id):
             print("Triggered")
 
-        def modify(self, tech_id):
+        def modify(self, tech_id, timeslot):
             print(f"tech_id: {tech_id}")
+            print(f"timeslot: {TIME_SLOT[timeslot]}")
+            #mod_appoinment = Appointment.objects.get (id=self.appointment_id)
+            #setattr (mod_appoinment, , False)
+            #assign.save ( )
 
         def cancel(self, appointment_id):
             print("Canceled")

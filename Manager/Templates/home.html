@@ -120,10 +120,15 @@
                 <select name="technician_id" id="technician_id">
                     {% for id, name in packet.technicians %}
                         <option value="{{ id }}">{{ name.0 }} {{ name.1 }}</option>
-                    {% endfor %}-->
+                    {% endfor %}
                 </select>
                 <br><br>
                 <a>Start Time:</a>
+                <select name="timeslot" id="timeslot">
+                    {% for key,slot in packet.timeslots.items %}
+                        <option value="{{ key }}">{{slot}}</option>
+                    {% endfor %}
+                </select>
                 <br><br>
                 <button type="submit" name="appointment_btn" value="Modify">Submit Modification</button>
                 </div>
@@ -133,7 +138,6 @@
             <div class="apt">
                 <fieldset id="radioContainer">
                     <legend>Appointments</legend>
-                        
                         
                     {#{% for key,value in packet.items%}#}
                         {% for name, begin, end, price, id, checked in packet.appointments %}
@@ -146,9 +150,10 @@
                             <br><br>
                         </div>
                         {% endfor %}
+
                 </fieldset>
             </div>
-
+            {% block content %}
             <div class="sale">
                 <fieldset id="radioContainer">
                     <legend>Sales</legend>
@@ -168,7 +173,7 @@
                     
                 </fieldset>
             </div>
-
+            {% endblock %}
             <div class="sale_btn">Sale Button
                 {% if packet.sales|length == 0 %}
                     <button type="button" name="sale_btn" id="s_modify" disabled>Modify</button>
@@ -180,15 +185,16 @@
             </div>
         </form>
         
+        
         <script type="text/javascript">
             // Auto Process Radio Check ----------------------------
             if (document.querySelector('input[name="appointment_id"]')) {
                 document.querySelectorAll('input[name="appointment_id"]').forEach((elem) => {
                     elem.addEventListener("change", function(event) {
                         var item = event.target.value;
-                        var url = "{% url 'manager:home' %}";
+                        var url = "/manager/"
                         $.ajax({
-                            url: "/manager/"+item+"/",
+                            url: url,//+item+"/",
                             type: "POST",
                             dataType: "json",
                             data: {
@@ -197,6 +203,7 @@
                             },
                             success: (data) => {
                                 console.log(data);
+                                
                             },
                             error: (error) => {
                                 console.log(error);
