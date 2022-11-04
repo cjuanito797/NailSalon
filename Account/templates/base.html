@@ -6,6 +6,109 @@
         {% block title %}<title>Apple Nail Salon</title>{% endblock %}
         <link rel="stylesheet"
               href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+
+        <style>
+            .grid-container {
+                margin-top: 5%;
+                display: grid;
+                grid-template-columns: 75% 25%;
+                grid-gap: 1%;
+            }
+
+            .card-content ul li {
+                list-style-type: disc;
+            }
+
+            .image-container {
+                position: relative;
+                display: grid;
+                width: 100%;
+                height: 550px;
+                margin: 0 auto;
+
+            }
+
+            .pic {
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                height: 100%;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                -webkit-animation: fade 12s infinite;
+                animation: fade 12s infinite;
+            }
+
+            #pic3 {
+                background-image: url("https://c4.wallpaperflare.com/wallpaper/940/833/172/flower-hands-manicure-wallpaper-preview.jpg");
+                animation-direction: normal;
+                animation-delay: 4s;
+                border-radius: 10px;
+            }
+
+            #pic2 {
+                background-image: url("https://media.allure.com/photos/5ec4434bd39c8a00089c20cb/16:9/w_3488,h_1962,c_limit/painting%20nails.jpg");
+                animation-delay: 8s;
+                border-radius: 10px;
+            }
+
+            #pic1 {
+                animation-delay: 12s;
+                background-image: url("https://maplenailsomaha.com/uploads/maplenrkyh8qc/gallery/1.jpg");
+                border-radius: 10px;
+            }
+
+
+            @-webkit-keyframes fade {
+                0% {
+                    opacity: 1;
+                }
+
+                20% {
+                    opacity: 1;
+                }
+
+                34% {
+                    opacity: 0;
+                }
+
+                88% {
+                    opacity: 0;
+                }
+
+                100% {
+                    opacity: 1;
+                }
+
+            }
+
+            @keyframes fade {
+                0% {
+                    opacity: 1;
+                }
+
+                20% {
+                    opacity: 1;
+                }
+
+                34% {
+                    opacity: 0;
+                }
+
+                88% {
+                    opacity: 0;
+                }
+
+                100% {
+                    opacity: 1;
+                }
+
+            }
+
+
+        </style>
     </head>
 
 {% endblock %}
@@ -14,7 +117,8 @@
     <body style="overflow: hidden;">
 
     {% block content %}
-        <section class="hero is-primary is-fullheight has-text-black" style="background-color: #f2efe8; text-decoration-color: black">
+        <section class="hero is-primary is-fullheight has-text-black"
+                 style="background-color: #f2efe8; text-decoration-color: black">
         <!-- Hero head: will stick at the top -->
         <div class="hero-head">
 
@@ -69,16 +173,15 @@
                                     </a>
                                 </div>
                             </div>
-                             <div class="navbar-end">
-                            <div class="navbar-item">
-                                <a class="button is-success" href="{% url 'account:home' %}">
-                                    Book Appointment
-                                </a>
+                            <div class="navbar-end">
+                                <div class="navbar-item">
+                                    <a class="button is-success" href="{% url 'account:home' %}">
+                                        Book Appointment
+                                    </a>
+                                </div>
                             </div>
-                        </div>
 
                         </div>
-
 
 
                         <div class="navbar-end">
@@ -100,13 +203,97 @@
         </div>
         {% block mainbody %}
             <!-- Hero content: will be in the middle -->
-            <div class="hero-body is-align-items-stretch">
-                <div class="container has-text-centered has-text-black">
-                    <p class="title has-text-black">
-                        Site Under Construction
-                    </p>
+            <div class="hero-body">
+
+                <div class="bodyContent has-text-centered" style="margin-left: 0px; width: 100%; padding: 0;">
+                    <p class="title is-size-2 has-text-black" style="font-family: 'Open Sans';"> Welcome to Apple Nails
+                        & Spa</p>
+                    <div class="image-container">
+                        <div class="pic" id="pic1"></div>
+                        <div class="pic" id="pic2"></div>
+                        <div class="pic" id="pic3"></div>
+
+                    </div>
+
+                    <div class="column"
+                         style="position: relative; margin-top: 2%; border-radius: 5px; background-color: wheat;">
+                        <p class="title is-size-2" style="margin-top: 2%; font-family: 'Open Sans';">About Us.</p>
+                        <p class="subtitle is-size-4" style="margin-bottom: 1%; font-family: 'Open Sans';">You will be
+                            glad you found us for your services.</p>
+                        <div class="hr" style="border: 1px solid white; width: 50%; margin-left: 25%;"></div>
+
+                        <div class="grid-container">
+                            <div class="grid-child-image">
+                                <img src="https://wallpapercave.com/wp/wp6687103.jpg" style="width: 85%;"/>
+                            </div>
+
+                            <div class="grid-child-details has-text-left" style="margin-right: 25%;">
+                                <p class="subtitle is-size-4" style="font-family: 'Open Sans';">
+                                    We are a nail salon located in Omaha, Nebraska. We pride ourselves in serving our
+                                    customers the best that we can. We have been distinguished as one of the best salons
+                                    in Omaha and we offer a variety of services such as:
+
+                                </p>
+
+                                <ul class="has-text-white subtitle is-size-4"
+                                    style="font-family: 'Open Sans'; margin-left: 5%;">
+                                    <li>Manicures</li>
+                                    <li>Pedicures</li>
+                                    <li>Wax Treatments</li>
+                                </ul>
+
+                                <p class="subtitle is-size-4" style="font-family: 'Open Sans'">
+                                    You can read more about our establishment at our official <a
+                                        href="{% url 'account:aboutUs' %}" style="color: white; text-underline: white;"
+                                        class="is-underlined">About Us</a> page.
+                                </p>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column"
+                         style="position: relative; margin-top: 2%; border-radius: 5px; background-color: lightgray;">
+                        <p class="title is-size-2" style="margin-top: 2%; font-family: 'Open Sans';">Our
+                            Memberships.</p>
+                        <p class="subtitle is-size-4" style="margin-bottom: 1%; font-family: 'Open Sans';">Signing up
+                            for a free membership has never been so easy.</p>
+                        <div class="hr" style="border: 1px solid white; width: 50%; margin-left: 25%;"></div>
+
+                        <div class="grid-container">
+                            <div class="grid-child-details" style="margin-left: 35%;">
+                                <p class="subittle is-size-4 has-text-white has-text-left"
+                                   style="font-family: 'Open Sans">Signing up
+                                    for an account has never been easier. As a member of our website you would
+                                    get access to the following items.
+                                </p>
+
+                                <ul class="has-text-white is-size-4" style="font-family: 'Open Sans'; margin-left: 1%;">
+                                    <li>Free promotional offers.</li>
+                                    <li>An appointment history.</li>
+                                    <li>Creation of recurring appointments.</li>
+                                </ul>
+
+                                <p class="subtitle is-size-4 has-text-white has-text-left"
+                                   style="font-family: 'Open Sans';">So what are you waiting for
+                                    sign up now! <a href="{% url 'account:user_registration' %}"
+                                                    class="has-text-white is-underlined">Sign Up</a>
+                                </p>
+
+                            </div>
+
+                            <div class="grid-child-image has-text-left" style="margin-right: 25%;">
+
+                            </div>
+                        </div>
+
+                    </div>
+
 
                 </div>
+
+
             </div>
 
         {% endblock %}
