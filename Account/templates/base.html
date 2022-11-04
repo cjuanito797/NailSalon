@@ -8,6 +8,12 @@
               href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
 
         <style>
+            .grid-container {
+                margin-top: 5%;
+                display: grid;
+                grid-template-columns: 75% 25%;
+                grid-gap: 1%;
+            }
 
             .card-content ul li {
                 list-style-type: disc;
@@ -197,10 +203,11 @@
         </div>
         {% block mainbody %}
             <!-- Hero content: will be in the middle -->
-            <div class="hero-body is-align-items-stretch">
+            <div class="hero-body">
 
-                <div class="bodyContent has-text-centered" style="margin-left: 0px; width: 100%; padding: 0;" >
-                    <p class="title is-size-2 has-text-black"> Welcome to Apple Nails & Spa</p>
+                <div class="bodyContent has-text-centered" style="margin-left: 0px; width: 100%; padding: 0;">
+                    <p class="title is-size-2 has-text-black" style="font-family: 'Open Sans';"> Welcome to Apple Nails
+                        & Spa</p>
                     <div class="image-container">
                         <div class="pic" id="pic1"></div>
                         <div class="pic" id="pic2"></div>
@@ -208,96 +215,83 @@
 
                     </div>
 
-                    <div class="column has-text-centered has-text-black;"
-                         style="position: relative; margin-top: 2%; border-radius: 5px;">
-                        <p class="title is-size-2 has-text-black">About Us</p>
+                    <div class="column"
+                         style="position: relative; margin-top: 2%; border-radius: 5px; background-color: wheat;">
+                        <p class="title is-size-2" style="margin-top: 2%; font-family: 'Open Sans';">About Us.</p>
+                        <p class="subtitle is-size-4" style="margin-bottom: 1%; font-family: 'Open Sans';">You will be
+                            glad you found us for your services.</p>
+                        <div class="hr" style="border: 1px solid white; width: 50%; margin-left: 25%;"></div>
 
-
-                        <div class="p-3 columns is-flex-wrap-wrap" style="margin-left: 25%;">
-                            <div class="card" style="display: inline-block; width: 18rem; margin: 1%; height: 100%;">
-                            <div class="heading has-text-centered">
-                                <div class="box" style="height: 80px;">
-                                    <p class="subtitle is-size-6 has-text-black">A little bit about us</p>
-                                </div>
+                        <div class="grid-container">
+                            <div class="grid-child-image">
+                                <img src="https://wallpapercave.com/wp/wp6687103.jpg" style="width: 85%;"/>
                             </div>
 
-                            <div class="hr" style="border: 1px solid grey"></div>
+                            <div class="grid-child-details has-text-left" style="margin-right: 25%;">
+                                <p class="subtitle is-size-4" style="font-family: 'Open Sans';">
+                                    We are a nail salon located in Omaha, Nebraska. We pride ourselves in serving our
+                                    customers the best that we can. We have been distinguished as one of the best salons
+                                    in Omaha and we offer a variety of services such as:
 
-                            <div class="card-content has-text-left" style="height: 230px;">
-                                <p>We are a nail salon and spa located in Omaha, Nebraska. You can read more
-                                about us on our official About Us page.</p>
-                            </div>
-
-                                <footer class="card-footer">
-                                    <a class="button is-primary is-fullwidth" href="{% url 'Account:aboutUs' %}">
-                                        About Us
-                                    </a>
-                                </footer>
-                        </div>
-
-                        <div class="card" style="display: inline-block; width: 18rem; margin: 1%; height: 100%;">
-                            <div class="heading has-text-centered">
-                                <div class="box" style="height: 80px;">
-                                    <p class="subtitle is-size-6 has-text-black">A preview of our services.</p>
-                            </div>
-                            </div>
-
-                            <div class="hr" style="border: 1px solid grey;"></div>
-
-                            <div class="card-content has-text-left" style="height: 230px;">
-                                <p>Some of the services that we offer include: </p>
-                                <ul>
-                                    <li style="margin-left: 15%;">Waxing</li>
-                                    <li style="margin-left: 15%;">Nail Painting</li>
-                                    <li style="margin-left: 15%;">Pedicures</li>
-                                </ul>
-                            </div>
-
-                            <footer class="card-footer">
-                                <a class="button is-primary is-fullwidth" href="{% url 'account:services' %}">
-                                    Our Services
-                                </a>
-                            </footer>
-
-                        </div>
-
-                        <div class="card" style="display: inline-block; width: 18rem; margin: 1%; height: 350px;">
-                            <div class="heading has-text-centered">
-                                <div class="box" style="height: 80px;">
-                                    <p class="subtitle is-size-6 has-text-black">Create an account with us!</p>
-                            </div>
-                            </div>
-
-                            <div class="hr" style="border: 1px solid grey; "></div>
-
-                            <div class="card-content has-text-left" style="height: 230px;">
-                                <p>
-                                    When opening an account with us you get access to the following:
                                 </p>
 
-                                <ul>
-                                    <li style="margin-left: 15%;">Free promotional offers.</li>
-                                    <li style="margin-left: 15%;">Access to appointment history</li>
+                                <ul class="has-text-white subtitle is-size-4"
+                                    style="font-family: 'Open Sans'; margin-left: 5%;">
+                                    <li>Manicures</li>
+                                    <li>Pedicures</li>
+                                    <li>Wax Treatments</li>
                                 </ul>
+
+                                <p class="subtitle is-size-4" style="font-family: 'Open Sans'">
+                                    You can read more about our establishment at our official <a
+                                        href="{% url 'account:aboutUs' %}" style="color: white; text-underline: white;"
+                                        class="is-underlined">About Us</a> page.
+                                </p>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column"
+                         style="position: relative; margin-top: 2%; border-radius: 5px; background-color: lightgray;">
+                        <p class="title is-size-2" style="margin-top: 2%; font-family: 'Open Sans';">Our
+                            Memberships.</p>
+                        <p class="subtitle is-size-4" style="margin-bottom: 1%; font-family: 'Open Sans';">Signing up
+                            for a free membership has never been so easy.</p>
+                        <div class="hr" style="border: 1px solid white; width: 50%; margin-left: 25%;"></div>
+
+                        <div class="grid-container">
+                            <div class="grid-child-details" style="margin-left: 35%;">
+                                <p class="subittle is-size-4 has-text-white has-text-left"
+                                   style="font-family: 'Open Sans">Signing up
+                                    for an account has never been easier. As a member of our website you would
+                                    get access to the following items.
+                                </p>
+
+                                <ul class="has-text-white is-size-4" style="font-family: 'Open Sans'; margin-left: 1%;">
+                                    <li>Free promotional offers.</li>
+                                    <li>An appointment history.</li>
+                                    <li>Creation of recurring appointments.</li>
+                                </ul>
+
+                                <p class="subtitle is-size-4 has-text-white has-text-left"
+                                   style="font-family: 'Open Sans';">So what are you waiting for
+                                    sign up now! <a href="{% url 'account:user_registration' %}"
+                                                    class="has-text-white is-underlined">Sign Up</a>
+                                </p>
+
                             </div>
 
-                            <footer class="card-footer">
-                                <a class="button is-primary is-fullwidth" href="{% url 'account:user_registration' %}">
-                                    Sign Up!
-                                </a>
-                            </footer>
-                        </div>
+                            <div class="grid-child-image has-text-left" style="margin-right: 25%;">
 
+                            </div>
                         </div>
 
                     </div>
-                    <div class="column has-text-centered" style="position: relative">
-                    <p class="title is-size-2 has-text-black">
-                        See what our customers have to say.
-                    </p>
-                </div>
-                </div>
 
+
+                </div>
 
 
             </div>
