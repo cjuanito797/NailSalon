@@ -7,6 +7,4 @@ app_name = 'manager'
 
 urlpatterns = [
     path('', views.home, name="home"),
-    path('<int:id>/', views.home, name="home_post")
-    
 ]
