@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head %}
+    {% block title %}<title>Confirm Appointment</title>{% endblock %}
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
+{% endblock %}
+
+{% block navigation %}
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{% url 'account:home' %}">
+                <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'account:gallery' %}">
+                    Gallery
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:services' %}">
+                    Our Services
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:aboutUs' %}">
+                    About Us
+                </a>
+
+                {% if request.user.is_authenticated %}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link has-text-black">
+                            My Account
+                        </a>
+
+                        <div class="navbar-dropdown" style="color: black;">
+                            <a class="navbar-item">
+                                My Appointment History
+                            </a>
+                            <a class="navbar-item">
+                                My Profile
+                            </a>
+                            <a class="navbar-item" style="color: black;">
+                                My Promotions
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{% url 'account:security' %}">
+                                Security Settings
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link has-text-black">
+                        More
+                    </a>
+
+                    <div class="navbar-dropdown" style="color: black;">
+                        <a class="navbar-item">
+                            Meet the team
+                        </a>
+                        <a class="navbar-item">
+                            Career Opportunities
+                        </a>
+                        <a class="navbar-item" style="color: black;">
+                            Promotions
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Report an issue
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+
+                        <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
+                            <img src={% static "shopping_bag.png"%} style=""/>
+                            {% with total_items=cart|length %}
+                                {% if cart|length > 0 %}
+                                    ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
+
+                                {% else %}
+                                    Empty
+                                {% endif %}
+                            {% endwith %}
+                        </a>
+
+                        &nbsp;
+                        &nbsp;
+
+                        <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                            Book Appointment
+                        </a>
+
+                        <a class="button is-light" href="{% url 'account:logout' %}">
+                            Sign Out
+                        </a>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block mainbody %}
+
+    <section class="hero is-fullheight">
+        <div class='column has-text-centered is-half' style="position: relative; width: 100%;">
+            <div class='child'>
+                <div class="box has-text-left">
+                    <!--make the progress bar display a green check mark for the first step, and give them the option to continue.
+                    this design will need to be consistent throughout all of the pages -->
+                    <a href="{% url 'appointments:service_list' %}">
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 0%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="carbon:shopping-bag" width="50"></iconify-icon>
+                            <p>Add service(s) below</p>
+                        </div>
+                    </a>
+
+                    <a href="{% url 'cart:cart_detail' %}">
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+                            <p>Confirm your services</p>
+                        </div>
+                    </a>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="bi:person-check-fill" width="50"></iconify-icon>
+                        <p>Select Technician</p>
+
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; ">
+                        <iconify-icon icon="akar-icons:calendar" width="50"></iconify-icon>
+                        <p>Select Date & Time</p>
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block; padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+                        <p>Confirm your appointment</p>
+                    </div>
+
+
+                    <div class="stepsNumbers" style="display: flex; align-items: center;">
+                        {% if cart|length > 0 %}
+                            <iconify-icon icon="bi:1-circle-fill" width="25"
+                                          style="margin-left: 6%; color: lightgreen;"></iconify-icon>
+                        {% else %}
+                            <iconify-icon icon="bi:1-circle" width="25"
+                                          style="margin-left: 6%;"></iconify-icon>
+
+                        {% endif %}
+
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:2-circle-fill" width="25" style="color: lightgreen"></iconify-icon>
+
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:3-circle-fill" width="25" style="color: lightgreen"></iconify-icon>
+
+                        <div class="hr" style="border: 1px solid black; width: 17%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:4-circle-fill" width="25"></iconify-icon>
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:5-circle" width="25"></iconify-icon>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-container">
+
+            <div class="grid-child-categories" style="margin-top: 12%;">
+                <nav class="panel">
+                    <p class="panel-heading has-text-centered" style="background-color: lightpink">
+                        Select A Time Below for {{ date }}
+                    </p>
+                    <div class="panel-block">
+                        <p class="control has-icons-left">
+                            <span class="icon is-left">
+      </span>
+                        </p>
+                    </div>
+
+
+                    <div class="navbar has-text-centered" style="color: black; display: grid;">
+                        <form method="post" class="post-form">
+                            {% csrf_token %}
+
+                            <p class="subtitle is-size-3 has-text-black">
+                                Morning
+                            </p>
+                            <hr class="navbar-divider">
+                            <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                                {% for time in morning %}
+                                    <input type="submit" name="start_time" class="button is-info"
+                                           value="{{ time.0 }}" style="width: 25%; margin-top: 1%;">
+                                    &nbsp;
+                                    <br>
+
+                                {% endfor %}
+
+                            </div>
+
+                            <p class="subtitle is-size-3 has-text-black">
+                                Afternoon
+                            </p>
+                            <hr class="navbar-divider">
+                            <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                                {% for time in afternoon %}
+                                    <input type="submit" name="start_time" class="button is-info" style="width: 25%; margin-top: 1%;"
+                                           value="{{ time.0 }}">
+
+                                    &nbsp;
+                                    <br>
+
+
+                                {% endfor %}
+
+                            </div>
+
+                            <p class="subtitle is-size-3 has-text-black">
+                                Evening
+                            </p>
+                            <hr class="navbar-divider">
+                            <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                                {% for time in evening %}
+
+                                    <input type="submit" name="start_time" class="button is-info" style="width: 25%; margin-top: 1%;"
+                                           value="{{ time.0 }}">
+
+                                    &nbsp;
+                                    <br>
+
+                                {% endfor %}
+                            </div>
+                        </form>
+                    </div>
+
+                </nav>
+            </div>
+
+
+            <div class="grid-child-services has-text-centered">
+
+                <p class="subtitle is-size-3 has-text-black">
+                    Availability
+                </p>
+                <div class="box"
+                     style="border-radius: 5px; width: 75%; margin-left: 12%; overflow-y: scroll;  overflow-x: hidden; height: 30%;">
+
+                    {% for day in availableDates %}
+
+                        <a href="{% url 'appointments:schedule' tech.id day.id %}"
+                           class="button is-fullwidth is-spaced is-size-5 has-text-centered"
+                           style="margin-top: 1%;">{{ day.date }}</a>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </section>
+
+{% endblock %}

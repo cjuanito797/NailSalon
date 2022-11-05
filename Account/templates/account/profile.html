@@ -2,12 +2,12 @@
 
 {% load static %}
 
+<!DOCTYPE html>
 
-{% block title %}<title>Choose Technician Below</title>{% endblock %}
+{% block title %}<title>Profile</title>{% endblock %}
 
 {% block navigation %}
-
-<nav class="navbar" role="navigation" aria-label="main navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="{% url 'account:home' %}">
                 <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
@@ -45,14 +45,14 @@
                             <a class="navbar-item">
                                 My Appointment History
                             </a>
-                            <a class="navbar-item">
+                            <a class="navbar-item" href="{% url 'account:profile' %}">
                                 My Profile
                             </a>
                             <a class="navbar-item" style="color: black;">
                                 My Promotions
                             </a>
                             <hr class="navbar-divider">
-                            <a class="navbar-item">
+                            <a class="navbar-item" href="{% url 'account:security' %}">
                                 Security Settings
                             </a>
                         </div>
@@ -67,13 +67,13 @@
 
                     <div class="navbar-dropdown" style="color: black;">
                         <a class="navbar-item">
-                            About
+                            Meet the team
                         </a>
                         <a class="navbar-item">
-                            Jobs
+                            Career Opportunities
                         </a>
                         <a class="navbar-item" style="color: black;">
-                            Contact
+                            Promotions
                         </a>
                         <hr class="navbar-divider">
                         <a class="navbar-item">
@@ -109,7 +109,7 @@
                             Book Appointment
                         </a>
 
-                        <a class="button is-light" href="{% url 'account:customerView' %}">
+                        <a class="button is-light" href="{% url 'account:logout' %}">
                             Sign Out
                         </a>
 
@@ -119,48 +119,24 @@
             </div>
         </div>
     </nav>
+
 {% endblock %}
 
 {% block mainbody %}
-    <section class="section">
-    {% if messages %}
-        {% for message in messages %}
+    <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
+        <div class="container has-text-centered">
+            <p class="title has-text-black">
+                {{ this_user.first_name }}'s Profile
+            </p>
+        </div>
+    </div>
 
-            <artcile class="message is-danger is-size-5-desktop">
-                <div class="message-header">
-                    <p>Please Correct Error Below</p>
-                </div>
-                <div class="message-body">
-                    {{ message }}
-                </div>
-            </artcile>
-        {% endfor %}
+    <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
 
-    {% endif %}
+                <a class="button is-info" href="{% url 'account:edit_address' %}">
+                    Edit Address
+                </a>
 
-    </section>
-    <h1>Choose from our technicians below.</h1>
-    <form method="POST" class="post-form">
-
-    {% csrf_token %}
-    {% for tech in techs %}
-        <input type="radio" id="tech_{{ tech.id }}" name="tech" value="{{ tech.id }}">
-        <label for="tech_{{ tech.id }}"></label>
-
-        <p>{{ tech.user.first_name }} {{ tech.user.last_name }}</p>
-        <p>{{ tech.user.email }}</p>
-        <p>{{ tech.bio }}</p>
-        <p>{{ tech.age }}</p>
-
-    {% endfor %}
-
-        <p><input type="submit" name="schedule_with" value="Schedule Now!"></p>
-        <p><input type="submit" name="schedule_random" value="Random"></p>
-
-
-
-
-    </form>
+    </div>
 
 {% endblock %}
-

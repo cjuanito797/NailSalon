@@ -1,0 +1,17 @@
+DELETE FROM Appointments_appointment;
+DELETE FROM sqlite_sequence where name = 'Appointments_appointment';
+DELETE FROM Appointments_service;
+DELETE FROM sqlite_sequence where name = 'Appointments_service';
+DELETE FROM Appointments_category;
+DELETE FROM sqlite_sequence where name = 'Appointments_category';
+DELETE FROM Account_customer;
+DELETE FROM sqlite_sequence where name = 'Account_customer';
+DELETE FROM Account_technician;
+DELETE FROM sqlite_sequence where name = 'Account_technician';
+DELETE FROM Account_user;
+DELETE FROM sqlite_sequence where name = 'Account_user';
+DELETE FROM Scheduling_technicianschedule;
+DELETE FROM sqlite_sequence where name = 'Scheduling_technicianschedule';
+
+
+python .\helper\test.py. 

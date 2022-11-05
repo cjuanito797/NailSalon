@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./Templates/home.css">
+        <title>MANAGER CONTROL</title>
+    </head>
+    <body>
+        <h2>MANAGER CONTROL</h2>
+        
+        <div class="master">
+            {% for a in packet.appointments %}
+            <form class="appointment" method="POST">
+            {% csrf_token %}
+                <button type="button" class="collapsible">
+                Customer: {{a.customer.first_name}} {{a.customer.last_name}}.<br>
+                Start time: {{a.start_time}}.<br>
+                End time: {{a.end_time}}.<br>
+                Total charge: {{a.totalCharge}}.
+                </button> 
+                <div class="a_control">
+                    <input type="hidden" name="appointment_id" value="{{ a.id }}" />
+                    <button type="submit" name="appointment_btn" value="Trigger">Trigger</button>
+                    <button type="button" name="appointment_btn" id="a_modify" value="{{ a.id }}">Modify</button>
+                    <button type="submit" name="appointment_btn" value="Cancel">Cancel</button>
+                </div>
+            </form>
+            <div class="content">
+                {% if a.sales|length > 0 %}
+                <form method="POST">
+                {% csrf_token %}
+                    <div class="master_sale">
+                        {% for s in a.sales %}
+                        <div class="sale">
+                            <input {{ s.check }} type="radio" name="sale_id" value="{{ s.id }}"/>
+                            <a>Technician: {{s.technician.first_name}} {{s.technician.last_name}}.</a><br>
+                            <a>Service: {{s.service}}.</a><br>
+                            <a>Status: {{s.status}}.</a><br>
+                        </div>
+                        
+                        {% endfor %} 
+                    </div>
+                    <div class="s_control">
+                        <button type="button" name="sale_btn" id="s_modify">Modify</button>
+                        <button type="submit" name="sale_btn" value="Cancel">Cancel</button>
+                    </div>
+                </form>
+                {% else %}
+                <a class="nosale">NO POSTED SALE</a>
+                {% endif %} 
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- The Modal -->
+        <form id="modal" class="modal" method="POST">
+        <input type="hidden" name="" value="" />
+            {% csrf_token %}
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <a>Technician:</a>
+                <select name="technician_id" id="technician_id">
+                    {% for t in packet.technicians %}
+                        <option value="{{ t.id }}">{{ t.name.first_name }} {{ t.name.last_name }}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+                <a>Start Time:</a>
+                <select name="timeslot" id="timeslot">
+                    {% for key,slot in packet.timeslots.items %}
+                        <option value="{{ key }}">{{slot}}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+                <button type="submit" name="sale_btn" id="modal_btn" value="Modify">Submit Modification</button>
+            </div>
+        </form>
+        <!-- END Modal -->
+        
+        <script src="./Templates/home.js"></script>
+    </body>
+</html>

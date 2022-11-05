@@ -30,8 +30,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
+    "django.contrib.admin",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django_behave',
     'Appointments.apps.AppointmentsConfig',
     'cart.apps.CartConfig',
-    'Calendar.apps.CalendarConfig'
+    'Calendar.apps.CalendarConfig',
+    'Manager.apps'
 ]
 
 MIDDLEWARE = [
@@ -58,10 +59,9 @@ ROOT_URLCONF = "NailSalon.urls"
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates']
-        ,
-        "APP_DIRS": True,
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join (BASE_DIR, 'templates'), ],
+        'APP_DIRS': True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -118,7 +118,7 @@ TIME_INPUT_FORMATS = ('%I:%M %p')
 
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '../customerView/'
-LOGIN_URL = 'login'
+LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = '/'
 
 CART_SESSION_ID = 'cart'
@@ -130,3 +130,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 TEST_RUNNER = 'django_behave'
 
+# SMTP Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'cjuangas17@gmail.com'
+EMAIL_HOST_PASSWORD = 'frdkmcgbeiwpjrzh'

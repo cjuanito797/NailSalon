@@ -1,0 +1,67 @@
+{% extends 'account/customerView.html' %}
+
+{% load static %}
+{% block title %}<title>Security Settings</title>{% endblock %}
+
+<!DOCTYPE html>
+
+{% block mainbody %}
+
+    <section class="hero is-fullheight">
+
+    <section class="hero-head has-text-centered">
+        <p  class="title has-text-black">
+            View Your Security Settings Below.
+        </p>
+    </section>
+    <div class="hero-body" style="display: inline-block; padding: 15px; margin: auto;">
+
+            <section class="section has-text-left">
+                <h1 class="title has-text-black">Change Email</h1>
+                ____________________________________________________
+                <br>
+                <br>
+                Changes the email associated with this account.
+                <br>
+                <br>
+                Current Email: {{ this_user.email }}
+                <br>
+                <br>
+                <a class="button is-info" href="{% url 'account:changeEmail' %}">
+                    Change Email
+                </a>
+            </section>
+
+            <section class="section has-text-left">
+                <h1 class="title has-text-black">Change Password</h1>
+                ____________________________________________________
+                <br>
+                <br>
+                Changes the password associated with this account.
+                <br>
+                <br>
+                <a class="button is-info" href="{% url 'account:changePassword' %}">
+                    Change Password
+                </a>
+            </section>
+
+            <section class="section has-text-left">
+                <h1 class="title has-text-dark">Delete Account</h1>
+                ____________________________________________________
+                <br>
+                <br>
+                Permanently deletes your account. This cannot be undone.
+                <br>
+                <br>
+                <a class="button is-danger" onclick="return confirm('Are you sure you would like to delete your account?')" href="{% url 'account:deleteAccount' %}">
+                    Delete Account
+                </a>
+            </section>
+
+    </div>
+    </section>
+
+{% endblock %}
+
+
+</html>

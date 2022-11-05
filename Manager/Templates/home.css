@@ -1,0 +1,98 @@
+.collapsible {
+    background-color: #777;
+    cursor: pointer;
+    padding: 15px;
+    width: 100%;
+    text-align: left;
+    border-style: outset;
+}
+.active{
+    background-color: #555;
+    border-top: 5px solid green;
+    border-style: inset;
+    border-left: 5px solid green;
+    
+}
+.collapsible:hover {
+    background-color: #666;
+}
+.master{
+    border-style: solid;
+    background-color: #555;
+    overflow-y: scroll;
+    height: 500px;
+}
+.content{
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #555;
+}
+
+.a_control{
+    padding-bottom: 5px;
+    display: none;
+}
+.appointment{
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+.master_sale{
+    background-color: #f1f1f1;
+    overflow-y: scroll;
+    height: 170px;
+    border: 2px solid blue;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+.sale{
+    padding-top: 20px;
+    padding-left: 20px;
+    
+}
+.nosale{
+    color: blue;
+}
+.s_control{
+    padding-top: 5px;
+    padding-bottom: 10px;
+}
+button{
+    font-size: medium;
+}
+/* ----- Modal style-----*/
+/* The Modal (background) */
+.modal {
+display: none; /* Hidden by default */
+position: fixed; /* Stay in place */
+z-index: 1; /* Sit on top */
+left: 0;
+top: 0;
+width: 100%; /* Full width */
+height: 100%; /* Full height */
+overflow: auto; /* Enable scroll if needed */
+background-color: rgb(0,0,0); /* Fallback color */
+background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+/* Modal Content/Box */
+.modal-content {
+background-color: #fefefe;
+margin: 15% auto; /* 15% from the top and centered */
+padding: 20px;
+border: 1px solid #888;
+width: 25%; /* Could be more or less, depending on screen size */
+}
+/* The Close Button */
+.close {
+color: #aaa;
+float: right;
+font-size: 28px;
+font-weight: bold;
+}
+.close:hover, .close:focus {
+color: black;
+text-decoration: none;
+cursor: pointer;
+}
+/* -----end Modal style-----*/
