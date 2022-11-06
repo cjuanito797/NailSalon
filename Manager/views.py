@@ -1,8 +1,12 @@
+import calendar
 import datetime
+import json
+from webbrowser import get
 from django.shortcuts import render, redirect
 
 from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
+from Scheduling.models import TechnicianSchedule
 
 TIME_SLOT = {}
 # Collect time slot fieldname  
@@ -16,9 +20,8 @@ for i in range (32):
         startmin += 15
     TIME_SLOT[i] = datetime.time(starthour,startmin)
     
-
 # Create your views here.
-def home(request, id=None):
+def home(request):
     if request.method == "POST":
         #print(request.POST)
         
@@ -27,26 +30,49 @@ def home(request, id=None):
         if 'sale_id' and 'sale_btn' in request.POST:
             Control.C_Sale(request.POST)
             
-        '''
-        id = (int) (request.POST['appointment_id'])
-        
-        Control.C_Appointment(request.POST) if 'appointment_btn' in request.POST else None
-        Control.C_Sale(s_btn=request.POST['sale_btn'], id=id) if 'sale_btn' in request.POST else None
-       
-        packets = {'packet': display(id)}
-        print(packets)
-        #return render(request, "home_post.html", packets)
-        return redirect("manager:home_post", id=id)
-        '''
         return redirect("manager:home")
     else:
         packets = {'packet': display()}
         return render(request, 'home.html', packets)
 
+''' # Data return structure
+appointment:
+[{   id, 
+    customer: {first_name,last_name},
+    start_time,
+    end_time,
+    totalCharge,
+    sales: [
+        id,
+        service,
+        technician: {first_name,last_name},
+        status,
+        check,
+    ],
+}]
+    
+technician:
+[{   id,
+    name: {first_name,last_name},
+    email,
+}]
+
+scheduled:
+[{
+    email,
+    name: {first_name,last_name},
+}]
+'''
+
 def display():
     # Appointment Query
-    appointment_query = Appointment.objects.all().values('id', 'customer', 'start_time', 'end_time', 'totalCharge')
-
+    appointment_query = Appointment.objects.all().values(
+        'id', 
+        'customer', 
+        'start_time', 
+        'end_time', 
+        'totalCharge'
+        )
     appointment_list = []
     for a in appointment_query:
         a['customer'] = list(User.objects.filter(id=a['customer']).values("first_name", "last_name"))[0]
@@ -54,7 +80,7 @@ def display():
 
     # Sale Query (attach into appointment_list)
     for a in appointment_list:
-        s_list = list(Sale.objects.filter(appointment_id=a['id']).values("id", "service", "technician", "status"))
+        s_list = list(Sale.objects.filter(appointment_id=7).values("id", "service", "technician", "status"))
         sale_list = []
         if len(s_list) > 0:
             for sale in s_list:
@@ -71,17 +97,22 @@ def display():
     for t in tech_query:
         tech = {}
         tech['id'] = t
-        tech['name'] = list(User.objects.filter(id=t).values("first_name", "last_name"))[0]
+        u_data = list(User.objects.filter(id=t).values("first_name", "last_name", "email"))[0]
+        tech['name'] = {'first_name': u_data['last_name'],'last_name': u_data['last_name']}
+        tech['email'] = u_data['email']
         tech_list.append(tech)
-        
+    
+    # Scheduled Tech
+    scheduled_techlist = get_scheduled_tech()
+    
     # include TIMESLOT
     return {
         "appointments": appointment_list,
         "technicians": tech_list,
+        "scheduled": scheduled_techlist,
         "timeslots": TIME_SLOT
         }
 
- 
 
 class Control:
     def __init__(self) -> None:
@@ -141,6 +172,33 @@ class Control:
 
         def cancel(self):
             print('Cancled')
+
+def get_scheduled_tech():
+    check_date = datetime.date.today()      # INSERT DAY HERE
+    current_date = check_date
+    dayOfWeek = calendar.day_name[current_date.weekday ( )]
+    dayOfWeek_field_name = "{0}_availability".format (
+        calendar.day_name[current_date.weekday ( )].lower ( )
+    )  # string concat to match field_name for filter
+
+    timeIn_field_name = "{0}_time_In".format (dayOfWeek.lower())
+    timeOut_field_name = "{0}_time_Out".format (dayOfWeek.lower())
+
+    # filter {field_name(provide as custom string): True} (dict)
+    scheduled_tech = list(TechnicianSchedule.objects.filter (
+        **{dayOfWeek_field_name: True}
+    ).values_list ('tech'))
+
+    scheduled_techlist = []
+    for t_email in scheduled_tech:
+        t_list = {'email':'', 'name':{}}
+        t_list['name'] = list(User.objects.filter(
+                email=t_email[0]).values(
+                    'first_name','last_name'))[0]
+        t_list['email'] = t_email[0]
+        scheduled_techlist.append(t_list)
+    return(scheduled_techlist)
+
 
 
 '''

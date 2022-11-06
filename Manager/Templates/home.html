@@ -2,12 +2,50 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        
         <link rel="stylesheet" href="./Templates/home.css">
         <title>MANAGER CONTROL</title>
     </head>
     <body>
         <h2>MANAGER CONTROL</h2>
-        
+        <!-- Master Control -->
+        <div class="master_control">
+            <button type="button" id="attendant">Technician Attendant</button>
+            <button>Test2</button>
+        </div>
+
+        <div class="master_checkin">
+            <div class="checkin_grid"> 
+                {% for t in packet.scheduled %}
+                <button type="button" class="checkin_btn" value="{{t.email}}">
+                    {{t.name.first_name}} {{t.name.last_name}}
+                    <input type="time" class="checkin_time" name="" id="{{t.email}}" value="" readonly >
+                </button>
+                {% endfor %}
+            </div>
+
+            <div class="checkin_control">
+                <button type="button" id="reset_checkin">Reset</button>
+                <button type="button" id="add_checkin">Add</button>
+            </div>
+            
+            <div id="model_addCheckin">
+                <div class="addCheckin-content">
+                    <span class="close">&times;</span>
+                    <a>Technician:</a>
+                    <select name="technician_id" id="technician_id">
+                        {% for t in packet.technicians %}
+                        <option value="{{ t.id }}">{{ t.name.first_name }} {{ t.name.last_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <br><br>
+                    <button type="button" name="add_checkin" id="modal_btn" value="Add">Commit Add</button> 
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Appointment/Sale Control -->
         <div class="master">
             {% for a in packet.appointments %}
             <form class="appointment" method="POST">
@@ -50,11 +88,12 @@
                 {% endif %} 
             </div>
             {% endfor %}
+
         </div>
         
-        <!-- The Modal -->
-        <form id="modal" class="modal" method="POST">
-        <input type="hidden" name="" value="" />
+        <!-- Modify Modal -->
+        <form id="modal" method="POST">
+            <input type="hidden" name="" value="" />
             {% csrf_token %}
             <!-- Modal content -->
             <div class="modal-content">
@@ -76,8 +115,9 @@
                 <button type="submit" name="sale_btn" id="modal_btn" value="Modify">Submit Modification</button>
             </div>
         </form>
-        <!-- END Modal -->
-        
-        <script src="./Templates/home.js"></script>
+
+        <script src="./Templates/javascript/home_collapses.js"></script>
+        <script src="./Templates/javascript/home_modals.js"></script>
+        <script src="./Templates/javascript/home_checkin_control.js"></script>
     </body>
 </html>
