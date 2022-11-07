@@ -98,7 +98,7 @@ def display():
         tech = {}
         tech['id'] = t
         u_data = list(User.objects.filter(id=t).values("first_name", "last_name", "email"))[0]
-        tech['name'] = {'first_name': u_data['last_name'],'last_name': u_data['last_name']}
+        tech['name'] = {'first_name': u_data['first_name'],'last_name': u_data['last_name']}
         tech['email'] = u_data['email']
         tech_list.append(tech)
     

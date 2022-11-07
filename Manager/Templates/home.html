@@ -2,12 +2,14 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <link rel="stylesheet" href="./Templates/home.css">
         <title>MANAGER CONTROL</title>
     </head>
     <body>
+        
         <h2>MANAGER CONTROL</h2>
+
         <!-- Master Control -->
         <div class="master_control">
             <button type="button" id="attendant">Technician Attendant</button>
@@ -17,16 +19,17 @@
         <div class="master_checkin">
             <div class="checkin_grid"> 
                 {% for t in packet.scheduled %}
-                <button type="button" class="checkin_btn" value="{{t.email}}">
+                <button type="button" class="checkin_btn" value="{{t.email}}"> <!-- ** SECURITY EXPOSE -->
                     {{t.name.first_name}} {{t.name.last_name}}
-                    <input type="time" class="checkin_time" name="" id="{{t.email}}" value="" readonly >
+                    <br><span class="clock" id=""></span>
                 </button>
                 {% endfor %}
             </div>
 
             <div class="checkin_control">
-                <button type="button" id="reset_checkin">Reset</button>
-                <button type="button" id="add_checkin">Add</button>
+                <button type="button" id="reset_checkin" class="checkin_contr_btn">Reset</button>
+                <button type="button" id="add_checkin" class="checkin_contr_btn">Add Technician</button>
+                <button type="butoon" id="submit_checkin" class="checkin_contr_btn">Submit</button>
             </div>
             
             <div id="model_addCheckin">
@@ -35,14 +38,13 @@
                     <a>Technician:</a>
                     <select name="technician_id" id="technician_id">
                         {% for t in packet.technicians %}
-                        <option value="{{ t.id }}">{{ t.name.first_name }} {{ t.name.last_name }}</option>
+                        <option value="{{ t.email }}">{{ t.name.first_name }} {{ t.name.last_name }}</option>   <!-- ** SECURITY EXPOSE -->
                         {% endfor %}
                     </select>
                     <br><br>
-                    <button type="button" name="add_checkin" id="modal_btn" value="Add">Commit Add</button> 
+                    <button type="button" onclick="addTech()" >Commit Add</button> 
                 </div>
             </div>
-            
         </div>
 
         <!-- Appointment/Sale Control -->
@@ -115,6 +117,17 @@
                 <button type="submit" name="sale_btn" id="modal_btn" value="Modify">Submit Modification</button>
             </div>
         </form>
+
+
+        <!-- pass django data to js -->
+        {{ packet.scheduled|json_script:"scheduled" }}
+        {{ packet.technicians|json_script:"technicians" }}
+        <script>
+            var technicians_data = JSON.parse(document.getElementById('technicians').textContent);
+            var scheduled_data = JSON.parse(document.getElementById('scheduled').textContent);
+            //console.log(scheduled_data);
+            //console.log(technicians_data);
+        </script>
 
         <script src="./Templates/javascript/home_collapses.js"></script>
         <script src="./Templates/javascript/home_modals.js"></script>

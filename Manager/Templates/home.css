@@ -133,6 +133,6 @@ button{
     width: 25em;
     border: none;
 }
-#reset_checkin, #add_checkin {
+.checkin_contr_btn {
     background-color: aqua;
 }

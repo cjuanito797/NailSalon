@@ -17,7 +17,6 @@ for (i = 0; i < coll.length; i++){
 var ap = document.getElementsByClassName("appointment");
 for (i = 0; i < ap.length; i++){
     ap[i].addEventListener("mouseover", function(){
-        var appointments = this.firstElementChild;
         var a_control = this.lastElementChild;
             a_control.style.display = "block";
     });
