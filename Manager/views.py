@@ -35,6 +35,18 @@ def home(request):
         packets = {'packet': display()}
         return render(request, 'home.html', packets)
 
+def attendance(request):
+    if request.method == "POST":
+        #print(request.POST)
+        records = (json.loads(request.POST['data']))["records"]
+        for r in records:
+            print(r)
+        return redirect("manager:home")
+    else:
+        print("bad")
+        return redirect("manager:home")
+
+
 ''' # Data return structure
 appointment:
 [{   id, 
