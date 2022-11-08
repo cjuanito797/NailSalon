@@ -2,7 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
 
 from . import views
-
+from django.contrib.auth import views as auth_views
 app_name = 'account'
 
 urlpatterns = [
@@ -20,6 +20,7 @@ urlpatterns = [
     path("securitySettings/", views.securitySettings, name='security'),
     path("editAddress/", views.edit_address, name='edit_address'),
     path("deleteAccount/", views.deleteAccount, name='deleteAccount'),
-    path("changeEmail/", views.changeEmail, name='changeEmail')
+    path("changeEmail/", views.changeEmail, name='changeEmail'),
+
 
 ]

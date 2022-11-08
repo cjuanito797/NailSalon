@@ -1,125 +1,109 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <title>Title of the document</title>
-        <style>
-        .box {
-            display: -webkit-box;
-            display: -moz-box;
-            display: -ms-flexbox;
-            display: -webkit-flex;
-            display: flex;
-            top: 50%;
-            left: 50%;
-            position: fixed;
-            transform: translate(-50%, -50%);
-        }
-        .box form {
-            width: flex;
-            padding: 15px;
-            text-align: center;
-            color: #000000;
-            font-family: arial, sans-serif;
-        }
-        .apt_btn {
-            background-color: green;
-            float:center;
-            text-align: center;
-            padding: 15px;
-        }
-        .apt {
-            background-color: blue;
-            float:center;
-            width: 250px;
-            text-align: center;
-            padding: 15px;
-        }
-        .sale {
-            background-color: gray;
-            float:center;
-            text-align: center;
-            padding: 15px;
-        }
-        .sale_btn {
-            background-color: pink;
-            float:center;
-            text-align: center;
-            padding: 15px;
-        }
-        .item {
-            float:left;
-            width: 200px;
-            padding: 5px;
-        }
-        #radioContainer {
-            position: relative;
-            width: auto;
-            height: 300px;
-            float:left;
-            overflow-y:scroll;
-        }
-        /* The Modal (background) */
-        .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
-        /* Modal Content/Box */
-        .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto; /* 15% from the top and centered */
-        padding: 20px;
-        border: 1px solid #888;
-        width: 25%; /* Could be more or less, depending on screen size */
-        }
-        /* The Close Button */
-        .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-        }
-        </style>
+        <link rel="stylesheet" href="./Templates/home.css">
+        <title>MANAGER CONTROL</title>
     </head>
-
     <body>
+        
         <h2>MANAGER CONTROL</h2>
-        
-        
-        <form class="box" action="" method="POST">
-        {% csrf_token %}
-            <div class="apt_btn">Appointment Button<br><br><br>
-                <input type="submit" name="appointment_btn" value="Trigger" /><br><br><br>
-                <button type="button" name="appointment_btn" id="a_modify">Modify</button><br><br><br>
-                <input type="submit" name="appointment_btn" value="Cancel" /><br><br><br>
-                {% for key,value in packet.items %}
-                    <a>{{key}}:{{value|length}}</a>
+
+        <!-- Master Control -->
+        <div class="master_control">
+            <button type="button" id="attendant">Technician Attendant</button>
+            <button>Test2</button>
+        </div>
+
+        <div class="master_checkin">
+            <div class="checkin_grid"> 
+                {% for t in packet.scheduled %}
+                <button type="button" class="checkin_btn" value="{{t.email}}"> <!-- ** SECURITY EXPOSE -->
+                    {{t.name.first_name}} {{t.name.last_name}}
+                    <br><span class="clock" id=""></span>
+                </button>
                 {% endfor %}
             </div>
 
-            <!-- The Modal -->
-            <div id="myModal" class="modal">
-                <!-- Modal content -->
-                <div class="modal-content">
+            <div class="checkin_control">
+                <button type="button" onclick="resetAttendance()" id="reset_checkin" class="checkin_contr_btn">Reset</button>
+                <button type="button" id="add_checkin" class="checkin_contr_btn">Add Technician</button>
+                <button type="button" onclick="postAttendance()" id="submit_checkin" class="checkin_contr_btn">Submit</button>
+            </div>
+            
+            <div id="model_addCheckin">
+                <div class="addCheckin-content">
+                    <span class="close">&times;</span>
+                    <a>Technician:</a>
+                    <select name="technician_id" id="technician_id">
+                        {% for t in packet.technicians %}
+                        <option value="{{ t.email }}">{{ t.name.first_name }} {{ t.name.last_name }}</option>   <!-- ** SECURITY EXPOSE -->
+                        {% endfor %}
+                    </select>
+                    <br><br>
+                    <button type="button" onclick="addTech()" >Commit Add</button> 
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment/Sale Control -->
+        <div class="master" id="scroll-container">
+            {% for a in packet.appointments %}
+            <form class="appointment" method="POST">
+            {% csrf_token %}
+                <button type="button" class="collapsible">
+                Customer: {{a.customer.first_name}} {{a.customer.last_name}}.<br>
+                Start time: {{a.start_time}}.<br>
+                End time: {{a.end_time}}.<br>
+                Total charge: {{a.totalCharge}}.
+                </button> 
+                <div class="a_control">
+                    <input type="hidden" name="appointment_id" value="{{ a.id }}" />
+                    <button type="submit" name="appointment_btn" value="Trigger">Trigger</button>
+                    <button type="button" name="appointment_btn" id="a_modify" value="{{ a.id }}">Modify</button>
+                    <button type="submit" name="appointment_btn" value="Cancel">Cancel</button>
+                </div>
+            </form>
+            <div class="content">
+                {% if a.sales|length > 0 %}
+                <form method="POST">
+                {% csrf_token %}
+                    <div class="master_sale">
+                        {% for s in a.sales %}
+                        <div class="sale">
+                            <input {{ s.check }} type="radio" name="sale_id" value="{{ s.id }}"/>
+                            <a>Technician: {{s.technician.first_name}} {{s.technician.last_name}}.</a><br>
+                            <a>Service: {{s.service}}.</a><br>
+                            <a>Status: {{s.status}}.</a><br>
+                        </div>
+                        
+                        {% endfor %} 
+                    </div>
+                    <div class="s_control">
+                        <button type="button" name="sale_btn" id="s_modify">Modify</button>
+                        <button type="submit" name="sale_btn" value="Cancel">Cancel</button>
+                    </div>
+                </form>
+                {% else %}
+                <a class="nosale">NO POSTED SALE</a>
+                {% endif %} 
+            </div>
+            {% endfor %}
+
+        </div>
+        
+        <!-- Modify Modal -->
+        <form id="modal" method="POST">
+            <input type="hidden" name="" value="" />
+            {% csrf_token %}
+            <!-- Modal content -->
+            <div class="modal-content">
                 <span class="close">&times;</span>
                 <a>Technician:</a>
                 <select name="technician_id" id="technician_id">
-                    {% for id, name in packet.technicians %}
-                        <option value="{{ id }}">{{ name.0 }} {{ name.1 }}</option>
+                    {% for t in packet.technicians %}
+                        <option value="{{ t.id }}">{{ t.name.first_name }} {{ t.name.last_name }}</option>
                     {% endfor %}
                 </select>
                 <br><br>
@@ -130,110 +114,23 @@
                     {% endfor %}
                 </select>
                 <br><br>
-                <button type="submit" name="appointment_btn" value="Modify">Submit Modification</button>
-                </div>
-            </div>
-            <!-- END Modal -->
-
-            <div class="apt">
-                <fieldset id="radioContainer">
-                    <legend>Appointments</legend>
-                        
-                    {#{% for key,value in packet.items%}#}
-                        {% for name, begin, end, price, id, checked in packet.appointments %}
-                        <div class="item">
-                            <input {{ checked }} type="radio" name="appointment_id" value="{{ id }}"/>
-                                <a>Customer: {{name.0}} {{name.1}}.</a><br>
-                                <a>Start time: {{begin}}.</a><br>
-                                <a>End time: {{end}}.</a><br>
-                                <a>Total charge: {{price}}.</a><br>
-                            <br><br>
-                        </div>
-                        {% endfor %}
-
-                </fieldset>
-            </div>
-            {% block content %}
-            <div class="sale">
-                <fieldset id="radioContainer">
-                    <legend>Sales</legend>
-                    {% if packet.sales|length == 0 %}
-                        <a>None</a>
-                    {% endif %}
-
-                    {% for id,service,tech,stat,checked in packet.sales %}
-                    <div class="item">
-                        <input {{ checked }} type="radio" name="sale_id" value="{{ id }}"/>
-                            <a>Technician: {{tech.0}} {{tech.1}}.</a><br>
-                            <a>Service: {{service}}.</a><br>
-                            <a>Status: {{stat}}.</a><br>
-                        <br><br>
-                    </div>
-                    {% endfor %}
-                    
-                </fieldset>
-            </div>
-            {% endblock %}
-            <div class="sale_btn">Sale Button
-                {% if packet.sales|length == 0 %}
-                    <button type="button" name="sale_btn" id="s_modify" disabled>Modify</button>
-                    <input type="submit" name="sale_btn" value="Cancel" disabled />
-                {% else %}
-                    <button type="button" name="sale_btn" id="s_modify" >Modify</button>
-                    <input type="submit" name="sale_btn" value="Cancel" />
-                {% endif %}
+                <button type="submit" name="sale_btn" id="modal_btn" value="Modify">Submit Modification</button>
             </div>
         </form>
-        
-        
-        <script type="text/javascript">
-            // Auto Process Radio Check ----------------------------
-            if (document.querySelector('input[name="appointment_id"]')) {
-                document.querySelectorAll('input[name="appointment_id"]').forEach((elem) => {
-                    elem.addEventListener("change", function(event) {
-                        var item = event.target.value;
-                        var url = "/manager/"
-                        $.ajax({
-                            url: url,//+item+"/",
-                            type: "POST",
-                            dataType: "json",
-                            data: {
-                                csrfmiddlewaretoken: '{{ csrf_token }}',
-                                appointment_id: item
-                            },
-                            success: (data) => {
-                                console.log(data);
-                                
-                            },
-                            error: (error) => {
-                                console.log(error);
-                            },
-                        });
-                        window.location.assign(url + item + "/")
-                    });
-                });;
-            }
-            // Popup Modify Modal ----------------------------
-            // Get the modal
-            var modal = document.getElementById("myModal");
-            // Get the button that opens the modal
-            var btn = document.getElementById("a_modify");
-            // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
-            // When the user clicks on the button, open the modal 
-            btn.onclick = function() {
-            modal.style.display = "block";
-            }
-            // When the user clicks on <span> (x), close the modal
-            span.onclick = function() {
-            modal.style.display = "none";
-            }
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
+
+
+        <!-- pass django data to js -->
+        {{ packet.scheduled|json_script:"scheduled" }}
+        {{ packet.technicians|json_script:"technicians" }}
+        <script>
+            var technicians_data = JSON.parse(document.getElementById('technicians').textContent);
+            var scheduled_data = JSON.parse(document.getElementById('scheduled').textContent);
+            //console.log(scheduled_data);
+            //console.log(technicians_data);
         </script>
+
+        <script src="./Templates/javascript/home_collapses.js"></script>
+        <script src="./Templates/javascript/home_modals.js"></script>
+        <script src="./Templates/javascript/home_checkin_control.js"></script>
     </body>
 </html>
