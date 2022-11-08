@@ -35,6 +35,18 @@ def home(request):
         packets = {'packet': display()}
         return render(request, 'home.html', packets)
 
+def attendance(request):
+    if request.method == "POST":
+        #print(request.POST)
+        records = (json.loads(request.POST['data']))["records"]
+        for r in records:
+            print(r)
+        return redirect("manager:home")
+    else:
+        print("bad")
+        return redirect("manager:home")
+
+
 ''' # Data return structure
 appointment:
 [{   id, 
@@ -98,7 +110,7 @@ def display():
         tech = {}
         tech['id'] = t
         u_data = list(User.objects.filter(id=t).values("first_name", "last_name", "email"))[0]
-        tech['name'] = {'first_name': u_data['last_name'],'last_name': u_data['last_name']}
+        tech['name'] = {'first_name': u_data['first_name'],'last_name': u_data['last_name']}
         tech['email'] = u_data['email']
         tech_list.append(tech)
     
