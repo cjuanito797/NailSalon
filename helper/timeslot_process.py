@@ -112,6 +112,20 @@ class _Process:
                 msg = f"Appointment id {appointment_id} in {check_date} is not found!!"
                 print(msg)
 
+    # CONSIDERING: -remove- scheduled is not always correct to based on
+    def _get_time_scheduled_techs(self):
+        timeIn_field_name = "{0}_time_In".format (self.dayOfWeek.lower())
+        timeOut_field_name = "{0}_time_Out".format (self.dayOfWeek.lower())
+
+        # filter {field_name(provide as custom string): True} (dict)
+        time_scheduled = list(TechnicianSchedule.objects.filter (
+            **{self.dayOfWeek_field_name: True}
+        ).values_list ('tech', timeIn_field_name, timeOut_field_name))
+
+        return time_scheduled
+
+    # DEFINITELY: -keep- all techs (either scheduled or not) always has a timeslot
+    #need FIX if -remove- _get_time_scheduled_techs
     def _get_techs_timeslots(self):
         # (0: tech email; 1: timeIn; 2: timeOut)
         time_scheduled = self._get_time_scheduled_techs()
@@ -129,17 +143,8 @@ class _Process:
             if slots['tech'] == self.tech:
                 return slots
 
-    def _get_time_scheduled_techs(self):
-        timeIn_field_name = "{0}_time_In".format (self.dayOfWeek.lower())
-        timeOut_field_name = "{0}_time_Out".format (self.dayOfWeek.lower())
-
-        # filter {field_name(provide as custom string): True} (dict)
-        time_scheduled = list(TechnicianSchedule.objects.filter (
-            **{self.dayOfWeek_field_name: True}
-        ).values_list ('tech', timeIn_field_name, timeOut_field_name))
-
-        return time_scheduled
-
+    # DEFINITELY: -fix-
+    #this def should not create sale
     def _assign_chosen_tech(self, tech_email, sale_service):
         # count number of timefield for each service
         count = []
@@ -164,8 +169,6 @@ class _Process:
                 fieldname_list.append (convert_time_fieldname (hour, minute))
         '''
 
-
-
         # Create new Sales
         for s in sale_service:
             Sale.objects.create(
@@ -181,6 +184,9 @@ class _Process:
 
         return tech_email
 
+    # DEFINITELY: -fix- 
+    #_split_appointment_to_sales need to actually create sale in the database
+    #which REQUIRE service and tech (random or chose)
     def _split_appointment_to_sales(self):
         test_date = self.current_date  # --test input data
         # test_date = self.current_date

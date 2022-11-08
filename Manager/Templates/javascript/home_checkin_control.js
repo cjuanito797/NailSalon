@@ -94,7 +94,7 @@ function checkGrid_enableBtn(runtime){                //runtime=1 : function loa
             }
 
             const submit_checkin = document.getElementById("submit_checkin");
-            submit_checkin.setAttribute("disabled", "false");
+            submit_checkin.removeAttribute("disabled");
         }
     }
 }
@@ -196,12 +196,9 @@ function postAttendance(){
             for (i = 0; i < confirm_btnList.length; i++){
                 confirm_btnList[i].remove();
             }
-            for (i = 0; i < scheduled_data.length; i++){
-                console.log(i);
-            }
-            //run this function to hide grid if list button is empty
+            //recheck grid for display(grid and submit btn)
             checkGrid_enableBtn(1);
-            //Ajax post after Json the data
+            //Ajax post after the data
             data = JSON.stringify(attendance_data)
             csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
             var url = "/manager/"
