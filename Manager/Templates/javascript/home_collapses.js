@@ -11,7 +11,6 @@ for (i = 0; i < coll.length; i++){
         } else {
             content.style.display = "block";
         }
-        this.scrollIntoView()
     });
 }
 var ap = document.getElementsByClassName("appointment");

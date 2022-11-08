@@ -119,7 +119,10 @@ button{
     
     border: solid;
     display: grid;
-    grid-auto-flow: column;;
+    grid-auto-flow: column;
+}
+.checkin_grid_hidden {
+    display: none;
 }
 .checkin_btn {
     align-self: center;

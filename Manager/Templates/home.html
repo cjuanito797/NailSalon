@@ -29,7 +29,7 @@
             <div class="checkin_control">
                 <button type="button" onclick="resetAttendance()" id="reset_checkin" class="checkin_contr_btn">Reset</button>
                 <button type="button" id="add_checkin" class="checkin_contr_btn">Add Technician</button>
-                <button type="butoon" onclick="postAttendance()" id="submit_checkin" class="checkin_contr_btn">Submit</button>
+                <button type="button" onclick="postAttendance()" id="submit_checkin" class="checkin_contr_btn">Submit</button>
             </div>
             
             <div id="model_addCheckin">
@@ -48,7 +48,7 @@
         </div>
 
         <!-- Appointment/Sale Control -->
-        <div class="master">
+        <div class="master" id="scroll-container">
             {% for a in packet.appointments %}
             <form class="appointment" method="POST">
             {% csrf_token %}

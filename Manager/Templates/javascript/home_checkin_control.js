@@ -16,7 +16,7 @@ function clock() {
     }
     setInterval(clock, 1000);
     
-  }
+}
 function timeFormat(i) {
     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10    
     return i;
@@ -62,17 +62,44 @@ function clockTech(){
 
         }
     }
+    attendance_data['records'].push(record);
     
-
-    attendance_data['records'].push(record)
 }
 
-// Tech Attendant Checkin---------------------
-var checkin_btn = document.getElementsByClassName("checkin_btn");
-for (var i = 0; i < checkin_btn.length; i++){
-    checkin_btn[i].addEventListener("click", clockTech);
-    //checkin_btn[i].time_field = checkin_btn[i].firstElementChild;
+window.onload = checkGrid_enableBtn(0);
+// Tech Attendant Checkin | Disable grid if all empty---runtime=0 : window.onload---------------
+function checkGrid_enableBtn(runtime){                //runtime=1 : function load
+    var checkin_btn = document.getElementsByClassName("checkin_btn");
+    //if this function call by window load, just enable buttons
+    if (runtime == 0){
+        for (var i = 0; i < checkin_btn.length; i++){
+            checkin_btn[i].addEventListener("click", clockTech);
+        }
+    //if function call by other function, then check length of buttons list
+    //list == 0, change class name for buttons container div (to hide it)
+    //list >= 0, enable div and buttons in the list.
+    } else {
+        if (checkin_btn.length == 0){
+            const div_grid = document.getElementsByClassName("checkin_grid")[0];
+            div_grid.setAttribute("class", "checkin_grid_hidden");
+            
+            const submit_checkin = document.getElementById("submit_checkin");
+            submit_checkin.setAttribute("disabled", "true");
+        }else{
+            const div_grid = document.getElementsByClassName("checkin_grid")[0];
+            div_grid.setAttribute("class", "checkin_grid");
+            for (var i = 0; i < checkin_btn.length; i++){
+                checkin_btn[i].addEventListener("click", clockTech);
+                //checkin_btn[i].time_field = checkin_btn[i].firstElementChild;
+            }
+
+            const submit_checkin = document.getElementById("submit_checkin");
+            submit_checkin.setAttribute("disabled", "false");
+        }
+    }
 }
+
+
 
 // Add Tech (new) into attendance list
 function addTech(){     
@@ -93,7 +120,7 @@ function addTech(){
         for (i = 0; i < technicians_data.length; i++){
             if (selected_tech == technicians_data[i][key]){ // ** SECURITY EXPOSE
                 key = "name";
-                var name_arr = Object.values(technicians_data[i][key])
+                var name_arr = Object.values(technicians_data[i][key]);
                 if (confirm(`"Add ${name_arr[0]} ${name_arr[1]} into attendance list?"`)){
                     //create button for new tech
                     const new_elem = document.createElement("button");
@@ -110,10 +137,18 @@ function addTech(){
                     new_elem.appendChild(document.createElement("br"));
                     new_elem.appendChild(time_field);
 
-                    //include button into div
-                    const div_grid = document.getElementsByClassName("checkin_grid")[0];
-                    div_grid.appendChild(new_elem);
-
+                    //include button into div (open div if div empty)
+                    var div_grid = document.getElementsByClassName("checkin_grid");
+                    if (div_grid.length == 0){
+                        div_grid = document.getElementsByClassName("checkin_grid_hidden")[0];
+                        div_grid.setAttribute("class", "checkin_grid");
+                        div_grid.appendChild(new_elem);
+                        const submit_checkin = document.getElementById("submit_checkin");
+                        submit_checkin.removeAttribute("disabled");
+                    }else{
+                        div_grid[0].appendChild(new_elem);
+                    }
+                    
                     //push new tech data into schedule
                     scheduled_data.push({
                         "email": selected_tech,     // ** SECURITY EXPOSE
@@ -133,17 +168,40 @@ function addTech(){
 }
 
 function resetAttendance(){
-    alert("hi")
+    //clear (reset) confirm data
+    confirm_txt = "";
+    attendance_data = {"records": []};
+    
+    //unblock buttons, set time_field (by change class)
+    //then clear confirm button data
+    for (i = 0; i < confirm_btnList.length; i++){
+        confirm_btnList[i].disabled = false;
+        confirm_btnList[i].lastElementChild.setAttribute("class", "clock");
+    }
+    confirm_btnList = [];
+
 }
 
+for (i = 0; i < scheduled_data.length; i++){
+    console.log(i);
+}
 function postAttendance(){
+    //alert if nothing to submit
     if (attendance_data['records'].length === 0){
         alert("Nothing to submit!!")
     } else {
+        //if user confirm to submit
         if (confirm(confirm_txt)){
+            //remove buttons in list from display
             for (i = 0; i < confirm_btnList.length; i++){
                 confirm_btnList[i].remove();
             }
+            for (i = 0; i < scheduled_data.length; i++){
+                console.log(i);
+            }
+            //run this function to hide grid if list button is empty
+            checkGrid_enableBtn(1);
+            //Ajax post after Json the data
             data = JSON.stringify(attendance_data)
             csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
             var url = "/manager/"
@@ -163,6 +221,7 @@ function postAttendance(){
                     console.log(error);
                 },
             });
+            resetAttendance();
         }else{
             console.log("no")
         }
