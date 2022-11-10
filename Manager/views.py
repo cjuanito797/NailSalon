@@ -4,6 +4,7 @@ import json
 from webbrowser import get
 from django.shortcuts import render, redirect
 
+from .forms import NewTechnicianForm
 from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
 from Scheduling.models import TechnicianSchedule
@@ -46,6 +47,22 @@ def attendance(request):
         print("bad")
         return redirect("manager:home")
 
+def newtech(request):
+    if request.method == 'POST':
+        form = NewTechnicianForm(request.POST)
+        if form.is_valid():
+            print(request.POST)
+            return redirect("manager:home")
+        else:
+            print(request.POST)
+            return redirect("manager:home")
+            #packets = {'packet': display()}
+            #return render(request, 'home.html', packets)
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        
+        packets = {'packet': display()}
+        return render(request, 'home.html', packets)
 
 ''' # Data return structure
 appointment:
