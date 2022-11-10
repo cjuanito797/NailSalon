@@ -59,7 +59,6 @@ function newtech(){
     modal_newtech.style.display = "block";
     const state_dropdown = document.getElementById("state");
         let states = Object.keys(location_data);
-
         for (i = 0; i < states.length; i++){
             //create option for states dropdown
             const new_elem = document.createElement("option");
@@ -75,8 +74,9 @@ function state_onchange(value){
     for (i = 0; i < city_name.length; i++){
         //create option for cities dropdown
         const new_elem = document.createElement("option");
-
+        
         new_elem.setAttribute("value", city_name[i]);
+        console.log(new_elem.value);
         new_elem.appendChild(document.createTextNode(city_name[i]));
         city_dropdown.appendChild(new_elem);
     }
@@ -85,7 +85,7 @@ function city_onchange(value){
     console.log(value)
     const zipcode_dropdown = document.getElementById("zipcode");
 
-    
+
     let zipcode= location_data[value]["cities"];
     let city_name = (Object.keys(state_info));
     for (i = 0; i < city_name.length; i++){

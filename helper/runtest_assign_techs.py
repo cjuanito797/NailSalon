@@ -23,7 +23,9 @@ from datetime import date
 import calendar
 
 
-print(datetime.time(3,3,3))
+all_email = (User.objects.all().values_list("email"))
+for i in all_email:
+    print(i[0])
 
 
 

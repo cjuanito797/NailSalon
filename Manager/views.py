@@ -3,6 +3,7 @@ import datetime
 import json
 from webbrowser import get
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from .forms import NewTechnicianForm
 from Appointments.models import Appointment, Sale, Service
@@ -51,18 +52,25 @@ def newtech(request):
     if request.method == 'POST':
         form = NewTechnicianForm(request.POST)
         if form.is_valid():
-            print(request.POST)
-            return redirect("manager:home")
+            print(request.POST['email'])
+            all_email = User.objects.all().values_list("email")
+            for i in all_email:
+                if request.POST['email'] == i[0]:
+                    messages.success(request, f"Technician is added successfully!")
+                    tech_info = request.POST
+                    print(tech_info)
+                    return redirect("manager:home")
+                    #messages.error(request, f"Email \"{request.POST['email']}\" is already exist!")
+                    #return redirect("manager:newtech")
+            messages.error(request, f"Email \"{request.POST['email']}\" is NOT exist!")
+            return redirect("manager:newtech")
         else:
-            print(request.POST)
-            return redirect("manager:home")
-            #packets = {'packet': display()}
-            #return render(request, 'home.html', packets)
-    # if a GET (or any other method) we'll create a blank form
+            print(form.errors.as_data())
+            messages.error(request, f"Invalid data input!!")
+            return redirect("manager:newtech")
     else:
-        
-        packets = {'packet': display()}
-        return render(request, 'home.html', packets)
+        form = NewTechnicianForm()
+        return render(request, 'newtech.html', {"form":form})
 
 ''' # Data return structure
 appointment:
