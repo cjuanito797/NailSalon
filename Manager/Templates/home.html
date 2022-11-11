@@ -60,8 +60,15 @@
 
         <!-- Appointment/Sale Control -->
         <div class="master" id="scroll-container">
+            <select name="apt_date" id="apt_date" onchange="sort_appointment()">
+                <option value="all" selected>-- Display All --</option>
+                {% for d in packet.apt_date %}
+                    <option value="{{ d }}">{{ d }}</option>
+                {% endfor %}
+            </select>
+
             {% for a in packet.appointments %}
-            <form class="appointment" method="POST">
+            <form class="appointment" method="POST" id="{{ a.date }}">
             {% csrf_token %}
                 <button type="button" class="collapsible">
                 Customer: {{a.customer.first_name}} {{a.customer.last_name}}.<br>
@@ -76,7 +83,7 @@
                     <button type="submit" name="appointment_btn" value="Cancel">Cancel</button>
                 </div>
             </form>
-            <div class="content">
+            <div class="content" id="{{ a.date }}">
                 {% if a.sales|length > 0 %}
                 <form method="POST">
                 {% csrf_token %}

@@ -10,17 +10,9 @@ from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
 from Scheduling.models import TechnicianSchedule
 
-TIME_SLOT = {}
-# Collect time slot fieldname  
-starthour = 9
-startmin = -15
-for i in range (32):
-    if startmin + 15 >= 60:
-        startmin = 0
-        starthour += 1
-    else:
-        startmin += 15
-    TIME_SLOT[i] = datetime.time(starthour,startmin)
+from helper.timeslot_process import Process
+from helper.manager_control import C_Appointment, C_Sale, TIME_SLOT
+
     
 # Create your views here.
 def home(request):
@@ -28,10 +20,21 @@ def home(request):
         #print(request.POST)
         
         if 'appointment_id' and 'appointment_btn' in request.POST:
-            Control.C_Appointment(request, request.POST)
-        if 'sale_id' and 'sale_btn' in request.POST:
-            Control.C_Sale(request.POST)
+            control = C_Appointment(request.POST)
             
+            if request.POST['appointment_btn'] == 'Trigger':
+                mess = control.trigger()
+                for m in mess:
+                   messages.success(request, m)
+            elif request.POST['appointment_btn'] == 'Cancel':
+                mess = control.cancel()
+                print(mess)
+            else:
+                mess = control.modify()
+                for m in mess:
+                   messages.success(request, m)
+                
+        
         return redirect("manager:home")
     else:
         packets = {'packet': display()}
@@ -85,12 +88,16 @@ def display():
         'customer', 
         'start_time', 
         'end_time', 
-        'totalCharge'
+        'totalCharge',
+        'date'
         )
     appointment_list = []
+    apt_date_list = []
     for a in appointment_query:
         a['customer'] = list(User.objects.filter(id=a['customer']).values("first_name", "last_name"))[0]
         appointment_list.append(a)
+        if a['date'] not in apt_date_list:
+            apt_date_list.append(a['date'])
 
     # Sale Query (attach into appointment_list)
     for a in appointment_list:
@@ -117,119 +124,19 @@ def display():
         tech_list.append(tech)
     
     # Scheduled Tech
-    scheduled_techlist = get_scheduled_tech()
+    scheduled_techlist = _get_scheduled_tech()
     
     # include TIMESLOT
     return {
+        "apt_date": apt_date_list,
         "appointments": appointment_list,
         "technicians": tech_list,
         "scheduled": scheduled_techlist,
         "timeslots": TIME_SLOT
-        }
-
-
-class Control:
-    def __init__(self) -> None:
-        pass
-    
-    class C_Appointment:
-        def __init__(self, request, post: dict) -> None:
-            self.request = request
-            a_btn = post['appointment_btn']
-            self.appointment_id = int(post['appointment_id'])
-            self.appointment_obj = Appointment.objects.get(id=self.appointment_id)
-            self.sale_list = list(Sale.objects.filter(appointment_id=self.appointment_id)
-                                .values("id"))
-    
-            print(f"appointment_id: {self.appointment_id}")
-            
-            if a_btn == 'Trigger':
-                self.trigger()
-            elif a_btn == 'Cancel':
-                self.cancel()
-            else:
-                self.modify(int(post['technician_id']), int(post['timeslot']))
-            
-            
-        def trigger(self):
-            print("Triggered")
-            if len(self.sale_list) > 0:
-                pass
-            else:
-                pass
-
-        def modify(self, tech_id, timeslot):
-            print("Modify")
-            print(f'u_tech_id: {tech_id}')
-            print(f'timeslot: {TIME_SLOT[timeslot]}')
-          
-            tech_obj = Technician.objects.get(id=tech_id)
-
-            return_mess = ""
-            if len(self.sale_list) > 0:
-                self.appointment_obj.technician = tech_obj
-                self.appointment_obj.start_time = TIME_SLOT[timeslot]
-                self.appointment_obj.save()
-                count = 0
-                for s in self.sale_list:
-                    sale_obj = Sale.objects.get(id=s['id'])
-                    sale_obj.technician = tech_obj
-                    sale_obj.save()
-                    count += 1
-                return_mess = f'Appointment is modifed. {count} sale(s) have been modified.'
-            else:
-                #retrieve services' id attach in appointment
-                service_ids = Appointment.objects.filter (
-                    id=self.appointment_id).values_list (
-                        'services', flat=True)
-                #get service info for each id 
-                count = 0
-                for si in service_ids:
-                    Sale.objects.create(
-                        service=Service.objects.get(id=si),
-                        technician=tech_obj,
-                        appointment=self.appointment_obj
-                    )
-                    count += 1
-                return_mess = f'Appointment is modifed. {count} are created.'
-            
-            return return_mess
-            
-            
-            '''
-            tech_id = Technician.objects.filter(user_id=u_tech_id).values_list('id', flat=True)[0]
-            Appointment.objects.filter(id=self.appointment_id).update(
-                start_time=TIME_SLOT[timeslot],
-                technician=tech_id)
-            '''
-
-        def cancel(self):
-            print("Cancel")
-            '''
-            sale_count = Sale.objects.filter(appointment=appointment_id).count()
-            if sale_count == 0:
-                Appointment.objects.filter(id=self.appointment_id).delete()
-            '''
+        }      
         
-    class C_Sale:
-        def __init__(self, post: dict) -> None:
-            s_btn = post['sale_btn']
-            self.sale_id = int(post['sale_id'])
-            print(f"sale_id: {self.sale_id}")
-            
-            if s_btn == 'Cancel':
-                self.cancel()
-            else:
-                self.modify(int(post['technician_id']))
-            
-        def modify(self, u_tech_id):
-            print("Modify")
-            print(f'u_tech_id: {u_tech_id}')
 
-        def cancel(self):
-            print('Cancled')
-
-def get_scheduled_tech():
+def _get_scheduled_tech():
     check_date = datetime.date.today()      # INSERT DAY HERE
     current_date = check_date
     dayOfWeek = calendar.day_name[current_date.weekday ( )]

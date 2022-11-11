@@ -23,6 +23,22 @@ from Scheduling.models import TechnicianSchedule
 
 import calendar
 
-tech_query = list(Technician.objects.all().values('id', 'user'))
-for t in tech_query:
-    print(t['user'])
+appointment_query = Appointment.objects.all().values(
+        'id', 
+        'customer', 
+        'start_time', 
+        'end_time', 
+        'totalCharge',
+        'date'
+        )
+appointment_list = []
+apt_date_list = []
+for a in appointment_query:
+    a['customer'] = list(User.objects.filter(id=a['customer']).values("first_name", "last_name"))[0]
+    appointment_list.append(a)
+    if a['date'] not in apt_date_list:
+        apt_date_list.append(a['date'])
+    
+
+            
+

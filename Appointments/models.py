@@ -67,7 +67,6 @@ class Appointment (models.Model):
     services = models.ManyToManyField ("Appointments.Service",
                                        related_name='services',
                                        default=None,
-
                                        )
     customer = models.ForeignKey ("Account.User",
                                   on_delete=models.CASCADE,
@@ -106,7 +105,8 @@ class Sale(models.Model):
                                 related_name='service')
     technician = models.ForeignKey("Account.Technician",
                                 on_delete=models.CASCADE,
-                                related_name='technician')
+                                related_name='technician',
+                                blank=False)
     appointment = models.ForeignKey(Appointment,
                                 on_delete=models.CASCADE,
                                 related_name='appointment')
@@ -115,6 +115,4 @@ class Sale(models.Model):
                               blank=False,
                               default='scheduled')
     
-    def __str__(self):
-        return self.name
 
