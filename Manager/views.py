@@ -3,35 +3,37 @@ import datetime
 import json
 from webbrowser import get
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
+from .forms import NewTechnicianForm
 from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
 from Scheduling.models import TechnicianSchedule
 
+from helper.timeslot_process import Process
+from helper.manager_control import C_Appointment, C_Sale, TIME_SLOT
 
-
-TIME_SLOT = {}
-# Collect time slot fieldname  
-starthour = 9
-startmin = -15
-for i in range (32):
-    if startmin + 15 >= 60:
-        startmin = 0
-        starthour += 1
-    else:
-        startmin += 15
-    TIME_SLOT[i] = datetime.time(starthour,startmin)
-    
 # Create your views here.
 def home(request):
     if request.method == "POST":
         #print(request.POST)
         
         if 'appointment_id' and 'appointment_btn' in request.POST:
-            Control.C_Appointment(request.POST)
-        if 'sale_id' and 'sale_btn' in request.POST:
-            Control.C_Sale(request.POST)
+            control = C_Appointment(request.POST)
             
+            if request.POST['appointment_btn'] == 'Trigger':
+                mess = control.trigger()
+                for m in mess:
+                   messages.success(request, m)
+            elif request.POST['appointment_btn'] == 'Cancel':
+                mess = control.cancel()
+                print(mess)
+            else:
+                mess = control.modify()
+                for m in mess:
+                   messages.success(request, m)
+                
+        
         return redirect("manager:home")
     else:
         packets = {'packet': display()}
@@ -85,16 +87,20 @@ def display():
         'customer', 
         'start_time', 
         'end_time', 
-        'totalCharge'
+        'totalCharge',
+        'date'
         )
     appointment_list = []
+    apt_date_list = []
     for a in appointment_query:
         a['customer'] = list(User.objects.filter(id=a['customer']).values("first_name", "last_name"))[0]
         appointment_list.append(a)
+        if a['date'] not in apt_date_list:
+            apt_date_list.append(a['date'])
 
     # Sale Query (attach into appointment_list)
     for a in appointment_list:
-        s_list = list(Sale.objects.filter(appointment_id=7).values("id", "service", "technician", "status"))
+        s_list = list(Sale.objects.filter(appointment_id=a['id']).values("id", "service", "technician", "status"))
         sale_list = []
         if len(s_list) > 0:
             for sale in s_list:
@@ -106,88 +112,30 @@ def display():
         a['sales'] = sale_list
 
     # Tech Query
-    tech_query = list(Technician.objects.all().values_list('user', flat=True))
+    tech_query = list(Technician.objects.all().values('id', 'user'))
     tech_list=[]
     for t in tech_query:
         tech = {}
-        tech['id'] = t
-        u_data = list(User.objects.filter(id=t).values("first_name", "last_name", "email"))[0]
+        tech['id'] = t['id']
+        u_data = list(User.objects.filter(id=t['user']).values("first_name", "last_name", "email"))[0]
         tech['name'] = {'first_name': u_data['first_name'],'last_name': u_data['last_name']}
         tech['email'] = u_data['email']
         tech_list.append(tech)
     
     # Scheduled Tech
-    scheduled_techlist = get_scheduled_tech()
+    scheduled_techlist = _get_scheduled_tech()
     
     # include TIMESLOT
     return {
+        "apt_date": apt_date_list,
         "appointments": appointment_list,
         "technicians": tech_list,
         "scheduled": scheduled_techlist,
         "timeslots": TIME_SLOT
-        }
-
-
-class Control:
-    def __init__(self) -> None:
-        pass
-    
-    class C_Appointment:
-        def __init__(self, post: dict) -> None:
-            a_btn = post['appointment_btn']
-            self.appointment_id = int(post['appointment_id'])
-    
-            print(f"appointment_id: {self.appointment_id}")
-            
-            if a_btn == 'Trigger':
-                self.trigger()
-            elif a_btn == 'Cancel':
-                self.cancel()
-            else:
-                self.modify(int(post['technician_id']), int(post['timeslot']))
-            
-            
-        def trigger(self):
-            print("Triggered")
-
-        def modify(self, u_tech_id, timeslot):
-            print("Modify")
-            print(f'u_tech_id: {u_tech_id}')
-            print(f'timeslot: {TIME_SLOT[timeslot]}')
-            '''
-            tech_id = Technician.objects.filter(user_id=u_tech_id).values_list('id', flat=True)[0]
-            Appointment.objects.filter(id=self.appointment_id).update(
-                start_time=TIME_SLOT[timeslot],
-                technician=tech_id)
-            '''
-
-        def cancel(self):
-            print("Cancel")
-            '''
-            sale_count = Sale.objects.filter(appointment=appointment_id).count()
-            if sale_count == 0:
-                Appointment.objects.filter(id=self.appointment_id).delete()
-            '''
+        }      
         
-    class C_Sale:
-        def __init__(self, post: dict) -> None:
-            s_btn = post['sale_btn']
-            self.sale_id = int(post['sale_id'])
-            print(f"sale_id: {self.sale_id}")
-            
-            if s_btn == 'Cancel':
-                self.cancel()
-            else:
-                self.modify(int(post['technician_id']))
-            
-        def modify(self, u_tech_id):
-            print("Modify")
-            print(f'u_tech_id: {u_tech_id}')
 
-        def cancel(self):
-            print('Cancled')
-
-def get_scheduled_tech():
+def _get_scheduled_tech():
     check_date = datetime.date.today()      # INSERT DAY HERE
     current_date = check_date
     dayOfWeek = calendar.day_name[current_date.weekday ( )]
@@ -213,6 +161,29 @@ def get_scheduled_tech():
         scheduled_techlist.append(t_list)
     return(scheduled_techlist)
 
+def newtech(request):
+    if request.method == 'POST':
+        form = NewTechnicianForm(request.POST)
+        if form.is_valid():
+            print(request.POST['email'])
+            all_email = User.objects.all().values_list("email")
+            for i in all_email:
+                if request.POST['email'] == i[0]:
+                    messages.success(request, f"Technician is added successfully!")
+                    tech_info = request.POST
+                    print(tech_info)
+                    return redirect("manager:home")
+                    #messages.error(request, f"Email \"{request.POST['email']}\" is already exist!")
+                    #return redirect("manager:newtech")
+            messages.error(request, f"Email \"{request.POST['email']}\" is NOT exist!")
+            return redirect("manager:newtech")
+        else:
+            print(form.errors.as_data())
+            messages.error(request, f"Invalid data input!!")
+            return redirect("manager:newtech")
+    else:
+        form = NewTechnicianForm()
+        return render(request, 'newtech.html', {"form":form})
 
 
 '''

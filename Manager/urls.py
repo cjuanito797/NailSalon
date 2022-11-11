@@ -8,4 +8,5 @@ app_name = 'manager'
 urlpatterns = [
     path('', views.home, name="home"),
     path('attendance/', views.attendance, name="attendance"),
+    path('newtech/',views.newtech, name='newtech',)
 ]

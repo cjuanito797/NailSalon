@@ -1,5 +1,10 @@
 window.csrftoken="{{csrftoken}}";
+<<<<<<< HEAD
 //window.onload = clock();
+=======
+window.onload = clock();
+/*
+>>>>>>> 2390f1179d452af5c6c8e350de0949f45f49038e
 function clock() {
     const today = new Date();
     let hour = today.getHours();
@@ -8,11 +13,10 @@ function clock() {
     hour = timeFormat(hour);
     min = timeFormat(min);
     sec = timeFormat(sec);
-    
-    var clocks = document.getElementsByClassName("clock");
-    
-    for (let clock of clocks){
-        clock.textContent = hour + ":" + min + ":" + sec;
+    const clock_fields = document.getElementsByClassName("clock");
+    for (let field of clock_fields){
+        console.log(field);
+        field.textContent = hour + ":" + min + ":" + sec;
     }
     setInterval(clock, 1000);
     
@@ -20,6 +24,15 @@ function clock() {
 function timeFormat(i) {
     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10    
     return i;
+}*/
+function clock(){
+    setInterval(() => display_clock(new Date().toLocaleTimeString()),1000);
+}
+function display_clock(string){
+    const clock_fields = document.getElementsByClassName("clock");
+    for (let field of clock_fields){
+        field.textContent = string;
+    }
 }
 
 var attendance_data = {"records": []};
@@ -45,21 +58,19 @@ function clockTech(){
             "sec": sec
         } 
     }
-
     //prepare info for confirm step
     for (i = 0; i < technicians_data.length; i++){
-        var key = "email"
+        var key = "email";
         if (technicians_data[i][key] == this.value){
             key = "name";
             const name_arr = Object.values(technicians_data[i][key])
             const temp_txt = `Technician: ${name_arr[0]} ${name_arr[1]}\n` + 
-                            `Clocked time: ${timeFormat(hour)}:${timeFormat(min)}:${timeFormat(sec)}`;
+                            `Clocked time: ${hour}:${min}:${sec}`;
             if (confirm_txt.length == 0 ){
                 confirm_txt += temp_txt;
             }else{
                 confirm_txt += "\n\n".concat(temp_txt);
             }
-
         }
     }
     attendance_data['records'].push(record);
@@ -92,7 +103,7 @@ function checkGrid_enableBtn(runtime){                //runtime=1 : function loa
                 checkin_btn[i].addEventListener("click", clockTech);
                 //checkin_btn[i].time_field = checkin_btn[i].firstElementChild;
             }
-
+            
             const submit_checkin = document.getElementById("submit_checkin");
             submit_checkin.removeAttribute("disabled");
         }
@@ -182,9 +193,6 @@ function resetAttendance(){
 
 }
 
-for (i = 0; i < scheduled_data.length; i++){
-    console.log(i);
-}
 function postAttendance(){
     //alert if nothing to submit
     if (attendance_data['records'].length === 0){
@@ -198,7 +206,7 @@ function postAttendance(){
             }
             //recheck grid for display(grid and submit btn)
             checkGrid_enableBtn(1);
-            //Ajax post after the data
+            //Ajax post after Json the data
             data = JSON.stringify(attendance_data)
             csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
             var url = "/manager/"
@@ -219,8 +227,6 @@ function postAttendance(){
                 },
             });
             resetAttendance();
-        }else{
-            console.log("no")
         }
     }
 }
