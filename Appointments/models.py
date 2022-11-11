@@ -104,7 +104,7 @@ class Sale(models.Model):
     service = models.ForeignKey(Service,
                                 on_delete=models.CASCADE,
                                 related_name='service')
-    technician = models.ForeignKey(User,
+    technician = models.ForeignKey("Account.Technician",
                                 on_delete=models.CASCADE,
                                 related_name='technician')
     appointment = models.ForeignKey(Appointment,
@@ -114,3 +114,7 @@ class Sale(models.Model):
                               choices=STATUS_OPTION,
                               blank=False,
                               default='scheduled')
+    
+    def __str__(self):
+        return self.name
+

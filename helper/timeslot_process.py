@@ -38,7 +38,6 @@ class Process:
             # retrieve all available technicians (using today day)
             avail_techs_timeslots = process._get_techs_timeslots ( )
             # find and assign open technician for sales
-            print(avail_techs_timeslots)
             assign_tech = process._assign_chosen_tech (avail_techs_timeslots['tech'], sale_service)
             # retrieve technician name for return
             tech_name = User.objects.filter (email=assign_tech).values_list ('first_name', 'last_name')[0]

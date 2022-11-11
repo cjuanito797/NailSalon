@@ -28,7 +28,7 @@ def home(request):
         #print(request.POST)
         
         if 'appointment_id' and 'appointment_btn' in request.POST:
-            Control.C_Appointment(request.POST)
+            Control.C_Appointment(request, request.POST)
         if 'sale_id' and 'sale_btn' in request.POST:
             Control.C_Sale(request.POST)
             
@@ -48,29 +48,6 @@ def attendance(request):
         print("bad")
         return redirect("manager:home")
 
-def newtech(request):
-    if request.method == 'POST':
-        form = NewTechnicianForm(request.POST)
-        if form.is_valid():
-            print(request.POST['email'])
-            all_email = User.objects.all().values_list("email")
-            for i in all_email:
-                if request.POST['email'] == i[0]:
-                    messages.success(request, f"Technician is added successfully!")
-                    tech_info = request.POST
-                    print(tech_info)
-                    return redirect("manager:home")
-                    #messages.error(request, f"Email \"{request.POST['email']}\" is already exist!")
-                    #return redirect("manager:newtech")
-            messages.error(request, f"Email \"{request.POST['email']}\" is NOT exist!")
-            return redirect("manager:newtech")
-        else:
-            print(form.errors.as_data())
-            messages.error(request, f"Invalid data input!!")
-            return redirect("manager:newtech")
-    else:
-        form = NewTechnicianForm()
-        return render(request, 'newtech.html', {"form":form})
 
 ''' # Data return structure
 appointment:
@@ -117,7 +94,7 @@ def display():
 
     # Sale Query (attach into appointment_list)
     for a in appointment_list:
-        s_list = list(Sale.objects.filter(appointment_id=7).values("id", "service", "technician", "status"))
+        s_list = list(Sale.objects.filter(appointment_id=a['id']).values("id", "service", "technician", "status"))
         sale_list = []
         if len(s_list) > 0:
             for sale in s_list:
@@ -129,12 +106,12 @@ def display():
         a['sales'] = sale_list
 
     # Tech Query
-    tech_query = list(Technician.objects.all().values_list('user', flat=True))
+    tech_query = list(Technician.objects.all().values('id', 'user'))
     tech_list=[]
     for t in tech_query:
         tech = {}
-        tech['id'] = t
-        u_data = list(User.objects.filter(id=t).values("first_name", "last_name", "email"))[0]
+        tech['id'] = t['id']
+        u_data = list(User.objects.filter(id=t['user']).values("first_name", "last_name", "email"))[0]
         tech['name'] = {'first_name': u_data['first_name'],'last_name': u_data['last_name']}
         tech['email'] = u_data['email']
         tech_list.append(tech)
@@ -156,9 +133,13 @@ class Control:
         pass
     
     class C_Appointment:
-        def __init__(self, post: dict) -> None:
+        def __init__(self, request, post: dict) -> None:
+            self.request = request
             a_btn = post['appointment_btn']
             self.appointment_id = int(post['appointment_id'])
+            self.appointment_obj = Appointment.objects.get(id=self.appointment_id)
+            self.sale_list = list(Sale.objects.filter(appointment_id=self.appointment_id)
+                                .values("id"))
     
             print(f"appointment_id: {self.appointment_id}")
             
@@ -172,11 +153,49 @@ class Control:
             
         def trigger(self):
             print("Triggered")
+            if len(self.sale_list) > 0:
+                pass
+            else:
+                pass
 
-        def modify(self, u_tech_id, timeslot):
+        def modify(self, tech_id, timeslot):
             print("Modify")
-            print(f'u_tech_id: {u_tech_id}')
+            print(f'u_tech_id: {tech_id}')
             print(f'timeslot: {TIME_SLOT[timeslot]}')
+          
+            tech_obj = Technician.objects.get(id=tech_id)
+
+            return_mess = ""
+            if len(self.sale_list) > 0:
+                self.appointment_obj.technician = tech_obj
+                self.appointment_obj.start_time = TIME_SLOT[timeslot]
+                self.appointment_obj.save()
+                count = 0
+                for s in self.sale_list:
+                    sale_obj = Sale.objects.get(id=s['id'])
+                    sale_obj.technician = tech_obj
+                    sale_obj.save()
+                    count += 1
+                return_mess = f'Appointment is modifed. {count} sale(s) have been modified.'
+            else:
+                #retrieve services' id attach in appointment
+                service_ids = Appointment.objects.filter (
+                    id=self.appointment_id).values_list (
+                        'services', flat=True)
+                #get service info for each id 
+                count = 0
+                for si in service_ids:
+                    Sale.objects.create(
+                        service=Service.objects.get(id=si),
+                        technician=tech_obj,
+                        appointment=self.appointment_obj
+                    )
+                    count += 1
+                return_mess = f'Appointment is modifed. {count} are created.'
+            
+            return return_mess
+            
+            
             '''
             tech_id = Technician.objects.filter(user_id=u_tech_id).values_list('id', flat=True)[0]
             Appointment.objects.filter(id=self.appointment_id).update(
@@ -236,6 +255,29 @@ def get_scheduled_tech():
         scheduled_techlist.append(t_list)
     return(scheduled_techlist)
 
+def newtech(request):
+    if request.method == 'POST':
+        form = NewTechnicianForm(request.POST)
+        if form.is_valid():
+            print(request.POST['email'])
+            all_email = User.objects.all().values_list("email")
+            for i in all_email:
+                if request.POST['email'] == i[0]:
+                    messages.success(request, f"Technician is added successfully!")
+                    tech_info = request.POST
+                    print(tech_info)
+                    return redirect("manager:home")
+                    #messages.error(request, f"Email \"{request.POST['email']}\" is already exist!")
+                    #return redirect("manager:newtech")
+            messages.error(request, f"Email \"{request.POST['email']}\" is NOT exist!")
+            return redirect("manager:newtech")
+        else:
+            print(form.errors.as_data())
+            messages.error(request, f"Invalid data input!!")
+            return redirect("manager:newtech")
+    else:
+        form = NewTechnicianForm()
+        return render(request, 'newtech.html', {"form":form})
 
 
 '''
