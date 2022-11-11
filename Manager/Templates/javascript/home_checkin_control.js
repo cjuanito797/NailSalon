@@ -1,5 +1,5 @@
 window.csrftoken="{{csrftoken}}";
-window.onload = clock();
+//window.onload = clock();
 function clock() {
     const today = new Date();
     let hour = today.getHours();

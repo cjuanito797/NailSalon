@@ -8,6 +8,8 @@ from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
 from Scheduling.models import TechnicianSchedule
 
+
+
 TIME_SLOT = {}
 # Collect time slot fieldname  
 starthour = 9
@@ -258,4 +260,3 @@ def display2(id):
             "timeslots": TIME_SLOT
             }
 ''' 
-

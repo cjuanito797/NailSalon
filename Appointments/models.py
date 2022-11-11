@@ -44,7 +44,7 @@ class Service (models.Model):
     slug = models.SlugField (max_length=30, db_index=True)
     price = models.DecimalField (max_digits=10, decimal_places=2)
     duration = models.DurationField (blank=False)
-    image = models.ImageField (upload_to="services/%Y/%m/%d", blank=False)
+    image = models.ImageField (upload_to='images/')
 
     class Meta:
         ordering = ('name',)
