@@ -38,7 +38,6 @@ class Process:
             # retrieve all available technicians (using today day)
             avail_techs_timeslots = process._get_techs_timeslots ( )
             # find and assign open technician for sales
-            print(avail_techs_timeslots)
             assign_tech = process._assign_chosen_tech (avail_techs_timeslots['tech'], sale_service)
             # retrieve technician name for return
             tech_name = User.objects.filter (email=assign_tech).values_list ('first_name', 'last_name')[0]
@@ -47,12 +46,27 @@ class Process:
         
         elif len(kargs) == 1:       # move sale status by appointment (by id(appointment))  
             appointment_id = kargs['id']
-            sales = Sale.objects.filter(appointment=appointment_id).values_list('status')
+            sales = Sale.objects.filter(appointment=appointment_id).values('id', 'status')
             
             #appointment already assigned -> move status
             if sales.count() > 0:
-                for sale in sales:
-                    print(sale[0])
+                return_count = {'working': 0, 'closed': 0, 'canceled': 0}
+                for s in sales:
+                    if s['status'] == 'scheduled':
+                        sale = Sale.objects.get(id=s['id'])
+                        sale.status = 'working'
+                        sale.save()
+                        return_count['working'] += 1
+                    elif s['status'] == 'working':
+                        sale = Sale.objects.get(id=s['id'])
+                        sale.status = 'closed'
+                        sale.save()
+                        return_count['closed'] += 1
+                    elif s['status'] == 'closed':
+                        return_count['closed'] += 1
+                    elif s['status'] == 'canceled':
+                        return_count['canceled'] += 1
+                return return_count
             #appointment not assign -> get random tech -> set status to working
             else:   
                 print('no')        

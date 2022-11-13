@@ -6,10 +6,10 @@ for (i = 0; i < coll.length; i++){
         this.classList.toggle("active");
         var content = (this.parentElement).nextElementSibling;
         var a_control = this.nextElementSibling;
-        if (content.style.display === "block"){
-            content.style.display = "none";
-        } else {
+        if (content.style.display !== "block" && this.classList.contains("active")){
             content.style.display = "block";
+        } else {
+            content.style.display = "none";
         }
     });
 }
@@ -25,3 +25,40 @@ for (i = 0; i < ap.length; i++){
     });
 }
 // Display Appointment Collapsible Button-----------------END
+
+// Display/Hide Appointment on dates
+function sort_appointment(){
+    //get selected value
+    const dropdown = document.getElementById("apt_date");
+    const selectedValue = dropdown.options[dropdown.selectedIndex].value;
+    //get all elements
+    const all_appointments = document.getElementsByClassName("appointment")
+    const all_contents = document.getElementsByClassName("content")
+    //if selected value = "all", then display all appointment and hide their content
+    if (selectedValue == "all"){
+        for (i = 0; i < all_appointments.length; i++){
+            all_appointments[i].style.display = "block";
+            all_contents[i].style.display = "none";
+            
+        }
+    //if not 'all', then loop through appointment
+    }else{
+        for (i = 0; i < all_appointments.length; i++){
+            //if this appointment id = selected value, then display the appointment
+            if (all_appointments[i].id == selectedValue){
+                all_appointments[i].style.display = "block";
+                all_contents[i].style.display = "none";
+            //else, hide the appointment, and remove "active class" (remove click color)
+            }else{
+                all_appointments[i].classList.remove("active");
+                all_appointments[i].style.display = "none";
+                all_contents[i].style.display = "none";
+            }
+        }
+    }
+    //remove all "active class" (remove click color)
+    for (i = 0; i < coll.length; i++){
+        coll[i].classList.remove("active");
+    }
+    
+}

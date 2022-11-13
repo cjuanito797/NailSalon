@@ -1,20 +1,31 @@
 <!DOCTYPE html>
 <html>
     <head>
+        {% block head %}
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <link rel="stylesheet" href="./Templates/home.css">
         <title>MANAGER CONTROL</title>
+        {% endblock %}
     </head>
+    
     <body>
         
         <h2>MANAGER CONTROL</h2>
-
+        {% block content %}
         <!-- Master Control -->
         <div class="master_control">
             <button type="button" id="attendant">Technician Attendant</button>
             <button type="button" onclick="newtech()">New Technician</button>
         </div>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
         <div class="master_checkin">
             <div class="checkin_grid"> 
@@ -49,8 +60,15 @@
 
         <!-- Appointment/Sale Control -->
         <div class="master" id="scroll-container">
+            <select name="apt_date" id="apt_date" onchange="sort_appointment()">
+                <option value="all" selected>-- Display All --</option>
+                {% for d in packet.apt_date %}
+                    <option value="{{ d }}">{{ d }}</option>
+                {% endfor %}
+            </select>
+
             {% for a in packet.appointments %}
-            <form class="appointment" method="POST">
+            <form class="appointment" method="POST" id="{{ a.date }}">
             {% csrf_token %}
                 <button type="button" class="collapsible">
                 Customer: {{a.customer.first_name}} {{a.customer.last_name}}.<br>
@@ -65,7 +83,7 @@
                     <button type="submit" name="appointment_btn" value="Cancel">Cancel</button>
                 </div>
             </form>
-            <div class="content">
+            <div class="content" id="{{ a.date }}">
                 {% if a.sales|length > 0 %}
                 <form method="POST">
                 {% csrf_token %}
@@ -117,51 +135,7 @@
                 <button type="submit" name="sale_btn" id="modal_btn" value="Modify">Submit Modification</button>
             </div>
         </form>
-
-        <!-- Add New Technician Modal -->
-        <form action="/manager/newtech/" id="modal_newtech" method="POST">
-            {% csrf_token %}
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>New Technician</h2>
-                <label for="email"><b>Email</b></label>
-                <input type="text" placeholder="Enter Email" name="email" required>
-                <br><br>
-
-                <label for="first_name"><b>First Name: </b></label>
-                <input type="text" placeholder="First name" name="first_name" required>
-                <br><br>
-
-                <label for="last_name"><b>Last Name: </b></label>
-                <input type="text" placeholder="Last name" name="last_name" required>
-                <br><br>
-
-                <label for="address"><b>Address: </b></label>
-                <input type="text" placeholder="Address" name="address" required>
-                <br><br>
-
-                <label for="state_dropdown"><b>State: </b></label>
-                <select id="state" onchange="state_onchange(this.value)">
-                    <option value="" selected="selected">-- SELECT STATE --</option>
-                </select>
-                <br><br>
-
-                <label for="city_dropdown"><b>City: </b></label>
-                <select id="city">
-                    <option value="" selected="selected">-- SELECT CITY --</option>
-                </select>
-                <br><br>
-
-                <label for="zipcode"><b>Zipcode: </b></label>
-                <input type="text" pattern="[0-9]{5}" placeholder="zipcode" name="zipcode" required>
-                <br><br>
-
-                <button type="submit" name="newtech" id="newtech_submit" value="">Submit</button>
-            </div>
-            
-            
-        </form>
-
+        
         <!-- pass django data to js -->
         {{ packet.scheduled|json_script:"scheduled" }}
         {{ packet.technicians|json_script:"technicians" }}
@@ -175,5 +149,6 @@
         <script src="./Templates/javascript/home_collapses.js"></script>
         <script src="./Templates/javascript/home_modals.js"></script>
         <script src="./Templates/javascript/home_checkin_control.js"></script>
+        {% endblock %}
     </body>
 </html>
