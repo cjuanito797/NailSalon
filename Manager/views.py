@@ -8,7 +8,7 @@ from django.contrib import messages
 from .forms import NewTechnicianForm
 from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
-from Scheduling.models import TechnicianSchedule
+from Scheduling.models import TechnicianSchedule, timeSlots
 
 from helper.timeslot_process import Process
 from helper.manager_control import C_Appointment, C_Sale, TIME_SLOT
@@ -33,24 +33,22 @@ def home(request):
                 mess = control.modify()
                 for m in mess:
                    messages.success(request, m)
+                   
+        elif 'sale_id' and 'sale_btn' in request.POST:
+            control = C_Sale(request.POST)
+            if request.POST['sale_btn'] == 'Cancel':
+                mess = control.cancel()
+                print(mess)
+            else:
+                mess = control.modify()
+                for m in mess:
+                   messages.success(request, m)
                 
         
         return redirect("manager:home")
     else:
         packets = {'packet': display()}
         return render(request, 'home.html', packets)
-
-def attendance(request):
-    if request.method == "POST":
-        #print(request.POST)
-        records = (json.loads(request.POST['data']))["records"]
-        for r in records:
-            print(r)
-        return redirect("manager:home")
-    else:
-        print("bad")
-        return redirect("manager:home")
-
 
 ''' # Data return structure
 appointment:
@@ -82,7 +80,76 @@ scheduled:
 '''
 
 def display():
-    # Appointment Query
+    # Appointment and appointments' Dates Query
+    temp_query = appointments_and_dates_query()
+    temp_appointment_list = temp_query[0]
+    apt_date_list = temp_query[1]
+    
+    # Sale Query (attach into appointment_list)
+    appointment_list = sale_query(temp_appointment_list)
+
+    # Tech Query
+    tech_list=tech_query()
+    
+    # Scheduled Tech
+    scheduled_techlist = _get_scheduled_tech()
+    
+    # include TIMESLOT
+    return {
+        "apt_date": apt_date_list,
+        "appointments": appointment_list,
+        "technicians": tech_list,
+        "scheduled": scheduled_techlist,
+        "timeslots": TIME_SLOT
+        }      
+
+
+# OTHER MANAGEMENT FUNCTIONS ---------------------------------
+def attendance(request):
+    if request.method == "POST":
+        #print(request.POST)
+        records = (json.loads(request.POST['data']))["records"]
+        for r in records:
+            
+            hour = r['clocked']['hour']
+            min = r['clocked']['min']
+            sec = r['clocked']['sec']
+            
+            milisec = r['clocked']['milisec']
+            
+            #NEED TO CHANGE DATE
+            tech_timeslot = timeSlots.objects.get(tech=r['email'], date=datetime.date(2022,12,11))
+            tech_timeslot.arrive_time = datetime.time(hour, min, sec, milisec)
+            tech_timeslot.save()
+            
+        return redirect("manager:home")
+    else:
+        return redirect("manager:home")
+      
+def newtech(request):
+    if request.method == 'POST':
+        form = NewTechnicianForm(request.POST)
+        if form.is_valid():
+            print(request.POST['email'])
+            all_email = User.objects.all().values_list("email")
+            for i in all_email:
+                if request.POST['email'] == i[0]:
+                    messages.success(request, f"Technician is added successfully!")
+                    tech_info = request.POST
+                    return redirect("manager:home")
+            messages.error(request, f"Email \"{request.POST['email']}\" is NOT exist!")
+            return redirect("manager:newtech")
+        else:
+            print(form.errors.as_data())
+            messages.error(request, f"Invalid data input!!")
+            messages.error(request, f"{str(form.errors.as_data())}")
+            return redirect("manager:newtech")
+    else:
+        form = NewTechnicianForm()
+        return render(request, 'newtech.html', {"form":form})
+
+# DISPLAY QUERY FUNCTIONS ---------------------------------
+def appointments_and_dates_query():
     appointment_query = Appointment.objects.all().values(
         'id', 
         'customer', 
@@ -98,8 +165,10 @@ def display():
         appointment_list.append(a)
         if a['date'] not in apt_date_list:
             apt_date_list.append(a['date'])
+            
+    return (appointment_list, apt_date_list)
 
-    # Sale Query (attach into appointment_list)
+def sale_query(appointment_list: list):
     for a in appointment_list:
         s_list = list(Sale.objects.filter(appointment_id=a['id']).values("id", "service", "technician", "status"))
         sale_list = []
@@ -111,8 +180,10 @@ def display():
                 sale_list.append(sale)
             sale_list[0]['check'] = "checked"
         a['sales'] = sale_list
+        
+    return appointment_list
 
-    # Tech Query
+def tech_query():
     tech_query = list(Technician.objects.all().values('id', 'user'))
     tech_list=[]
     for t in tech_query:
@@ -122,19 +193,11 @@ def display():
         tech['name'] = {'first_name': u_data['first_name'],'last_name': u_data['last_name']}
         tech['email'] = u_data['email']
         tech_list.append(tech)
-    
-    # Scheduled Tech
-    scheduled_techlist = _get_scheduled_tech()
-    
-    # include TIMESLOT
-    return {
-        "apt_date": apt_date_list,
-        "appointments": appointment_list,
-        "technicians": tech_list,
-        "scheduled": scheduled_techlist,
-        "timeslots": TIME_SLOT
-        }      
         
+    return tech_list
+
+def attendance_techlist():
+    pass
 
 def _get_scheduled_tech():
     check_date = datetime.date.today()      # INSERT DAY HERE
@@ -162,29 +225,7 @@ def _get_scheduled_tech():
         scheduled_techlist.append(t_list)
     return(scheduled_techlist)
 
-def newtech(request):
-    if request.method == 'POST':
-        form = NewTechnicianForm(request.POST)
-        if form.is_valid():
-            print(request.POST['email'])
-            all_email = User.objects.all().values_list("email")
-            for i in all_email:
-                if request.POST['email'] == i[0]:
-                    messages.success(request, f"Technician is added successfully!")
-                    tech_info = request.POST
-                    print(tech_info)
-                    return redirect("manager:home")
-                    #messages.error(request, f"Email \"{request.POST['email']}\" is already exist!")
-                    #return redirect("manager:newtech")
-            messages.error(request, f"Email \"{request.POST['email']}\" is NOT exist!")
-            return redirect("manager:newtech")
-        else:
-            print(form.errors.as_data())
-            messages.error(request, f"Invalid data input!!")
-            return redirect("manager:newtech")
-    else:
-        form = NewTechnicianForm()
-        return render(request, 'newtech.html', {"form":form})
+
 
 
 '''
