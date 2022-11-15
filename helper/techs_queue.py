@@ -15,29 +15,31 @@ _WAIT_QUEUE = []
 _WORK_QUEUE = []
 
 
-def build_fresh_wait_queue(today: date, onday_techs: list): # change to queue of all tech of the day()
-    today_date = today
+def build_fresh_wait_queue(today_date: date): # change to queue of all tech of the day()
     timeslots = []
+    #test = []
+    temp = list(timeSlots.objects.filter(date=today_date).values('tech', 'arrive_time'))
+    for t in temp:
+        if t['arrive_time'] != None:
+            t['arrive_time'] = a = datetime.combine(date.min, t['arrive_time']) - datetime.min
+            timeslots.append(t)
+        
+    lines = "_WAIT\n"
+    sorted_list = sorted(timeslots, key=lambda x: x['arrive_time'])
+    for sl in sorted_list:
+        lines += f"{sl['tech']}:0\n"
+    lines += "_WORK\n"
+    f = open("helper/temp1", "w")
+    f.write(lines)
+    f.close()
     
-    for tech in onday_techs:
-        timeslots.append(timeSlots.objects.filter(tech=tech, date=today_date).values_list('tech', 'arrive_time')[0])
-    print(timeslots)
-    
-    
-    timeslots_list = []
-    for ts in timeslots:
-        #print(datetime.combine(datetime.today(), ts[1]))
-        timeslots_list.append((ts[0], (str)(datetime.combine(datetime.today(), ts[1]))))
-    
-    sorted_list = sorted(timeslots_list, key=lambda x: x[1])
-    for i in sorted_list:
-        _WAIT_QUEUE.append(i[0])
+    read_temp()
+        
+        
         
 def build_wait_queue():
     a = Sale.objects.filter(status='working').values_list('technician', 'status')[0]
     print(a)
-
-
 
 
 # Split formatted string data into tuple  "email:priority" -> ("email", priority)
@@ -53,16 +55,13 @@ def to_tuple(line:str) -> tuple:
             break
         else:
             z = 1
-            if (z==1):
+            if (z==1) and c != ":" :
                 temp_num = c
-    
     return ( ((''.join(temp_str)), int(temp_num)) )
 # Function to sort the list of tuples by its second item
 def Sort_Tuple(lst):
     global _WAIT_QUEUE
     _WAIT_QUEUE = (sorted(lst, key = lambda x: x[1]))
-
-
 
 def read_temp():
     f = open("helper/temp1", "r")
@@ -125,10 +124,10 @@ def work_to_wait(email):
 
 def main():
     global _WAIT_QUEUE
-    read_temp()
     
-    wait_to_work()
-    work_to_wait('c@email.com')
+    build_fresh_wait_queue(date(2022,12,11))
+    print(_WAIT_QUEUE)
+    
 
 
 

@@ -1,6 +1,10 @@
 window.csrftoken="{{csrftoken}}";
+<<<<<<< HEAD
+//window.onload = clock();
+=======
 window.onload = clock();
 /*
+>>>>>>> 2390f1179d452af5c6c8e350de0949f45f49038e
 function clock() {
     const today = new Date();
     let hour = today.getHours();
@@ -39,6 +43,7 @@ function clockTech(){
     const hour = (new Date().getHours());
     const min =  (new Date().getMinutes());
     const sec = (new Date().getSeconds());
+    const milisec = (new Date().getMilliseconds());
     //change field_time class
     this.lastElementChild.setAttribute("class", "clocked");
     //disable button
@@ -51,7 +56,8 @@ function clockTech(){
         "clocked": {
             "hour": hour,
             "min": min,
-            "sec": sec
+            "sec": sec,
+            "milisec": milisec
         } 
     }
     //prepare info for confirm step

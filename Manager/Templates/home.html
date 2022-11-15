@@ -8,12 +8,55 @@
         <title>MANAGER CONTROL</title>
         {% endblock %}
     </head>
-    
+    <nav class="navbar if" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{% url 'account:home' %}">
+                <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'account:gallery' %}">
+                    Gallery
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:services' %}">
+                    Our Services
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:aboutUs' %}">
+                    About Us
+                </a>
+
+                <a class="navbar-item" href="{% url 'manager:newtech' %}">
+                    New Technician
+                </a>
+
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <a class="button is-success" href="{% url 'account:home' %}">
+                            Book Appointment
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </nav>
     <body>
-        
         <h2>MANAGER CONTROL</h2>
-        {% block content %}
+        <div style="overflow:hidden; width: 250px; height: 120px;" ><iframe src='https://wttr.in/omaha'width="300" height="140" style="border:0; "></iframe></div>
         <!-- Master Control -->
+        {% block content %}
         <div class="master_control">
             <button type="button" id="attendant">Technician Attendant</button>
             <button type="button" onclick="newtech()">New Technician</button>
@@ -59,7 +102,7 @@
         </div>
 
         <!-- Appointment/Sale Control -->
-        <div class="master" id="scroll-container">
+        <div class="master" id="scroll-container" style="width: 450px; text-align: center; ">
             <select name="apt_date" id="apt_date" onchange="sort_appointment()">
                 <option value="all" selected>-- Display All --</option>
                 {% for d in packet.apt_date %}

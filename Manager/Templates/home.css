@@ -29,6 +29,7 @@
     background-color: #555;
     overflow-y: scroll;
     height: 500px;
+    text-align: center;
 }
 .content{
     padding: 0 18px;

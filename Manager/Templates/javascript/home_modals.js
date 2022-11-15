@@ -107,8 +107,6 @@ add_checkin.onclick = function(){
     add_checkinModal.style.display = "block";
 }
 
-
-
 // close when user click outside of the modal
 window.onclick = function(event) {
     if (event.target == add_checkinModal) {
