@@ -43,6 +43,7 @@ function clockTech(){
     const hour = (new Date().getHours());
     const min =  (new Date().getMinutes());
     const sec = (new Date().getSeconds());
+    const milisec = (new Date().getMilliseconds());
     //change field_time class
     this.lastElementChild.setAttribute("class", "clocked");
     //disable button
@@ -55,7 +56,8 @@ function clockTech(){
         "clocked": {
             "hour": hour,
             "min": min,
-            "sec": sec
+            "sec": sec,
+            "milisec": milisec
         } 
     }
     //prepare info for confirm step
