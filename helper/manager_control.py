@@ -23,8 +23,9 @@ class C_Appointment:
     def __init__(self, post: dict) -> list:
         a_btn = post['appointment_btn']
         self.appointment_id = int(post['appointment_id'])
-        self.sale_list = list(Sale.objects.filter(appointment_id=self.appointment_id)
-                            .values("id"))
+        #self.sale_list = list(Sale.objects.filter(appointment_id=self.appointment_id)
+         #                   .values("id"))
+        self.sale_list = Sale.objects.filter(appointment_id=self.appointment_id).values('id', 'status')
         
         if a_btn == 'Modify':
             self.tech_id = int(post['technician_id'])
@@ -87,12 +88,30 @@ class C_Appointment:
         return return_mess
         
     def cancel(self):
-        print("Cancel")
-        '''
-        sale_count = Sale.objects.filter(appointment=appointment_id).count()
-        if sale_count == 0:
+        print("Appointment Cancel")
+        return_mess = []
+        
+        # If appointment contain sale => turn all sales status to canceled
+        if len(self.sale_list) > 0:
+            cancel_count = 0
+            for s in self.sale_list:
+                sale = Sale.objects.get(id=s['id'])
+                sale.status = 'canceled'
+                sale.save()
+                cancel_count += 1
+            # {'working': 0, 'closed': 0, 'canceled': 0}
+            return_mess.append("Working sales: 0")
+            return_mess.append(f"Closed sales: 0")
+            return_mess.append(f"Canceled sales: {cancel_count}")
+            
+        
+        # no sale => delete that appointment
+        else:
             Appointment.objects.filter(id=self.appointment_id).delete()
-        '''
+            return_mess.append("Appointment is deleted!")
+            
+        return return_mess
+        
     
 class C_Sale:
     def __init__(self, post: dict) -> None:

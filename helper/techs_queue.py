@@ -8,7 +8,6 @@ os.environ.setdefault ('DJANGO_SETTINGS_MODULE', 'NailSalon.settings')
 django.setup ( )
 
 from Scheduling.models import timeSlots
-from timeslot_process import _Process
 from Appointments.models import Sale
 
 _WAIT_QUEUE = []
@@ -17,7 +16,6 @@ _WORK_QUEUE = []
 
 def build_fresh_wait_queue(today_date: date): # change to queue of all tech of the day()
     timeslots = []
-    #test = []
     temp = list(timeSlots.objects.filter(date=today_date).values('tech', 'arrive_time'))
     for t in temp:
         if t['arrive_time'] != None:
@@ -34,7 +32,6 @@ def build_fresh_wait_queue(today_date: date): # change to queue of all tech of t
     f.close()
     
     read_temp()
-        
         
         
 def build_wait_queue():
@@ -64,11 +61,12 @@ def Sort_Tuple(lst):
     _WAIT_QUEUE = (sorted(lst, key = lambda x: x[1]))
 
 def read_temp():
+    global _WAIT_QUEUE
+    global _WORK_QUEUE
     f = open("helper/temp1", "r")
     lines = f.readlines()
     f.close()
     read_flag = 0
-    wait_tuple_list = []
     for line in lines:
         line = line.replace('\n', '')
         if (line == "_WAIT"):
@@ -117,15 +115,18 @@ def work_to_wait(email):
     else:
         return 0
 
+def get_WAIT_queue():
+    read_temp()
+    return _WAIT_QUEUE
 
-
-
-
+def get_WORK_queue():
+    read_temp()
+    return _WORK_QUEUE
 
 def main():
-    global _WAIT_QUEUE
-    
     build_fresh_wait_queue(date(2022,12,11))
+    
+    global _WAIT_QUEUE
     print(_WAIT_QUEUE)
     
 

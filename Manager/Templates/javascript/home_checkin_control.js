@@ -1,10 +1,6 @@
 window.csrftoken="{{csrftoken}}";
-<<<<<<< HEAD
-//window.onload = clock();
-=======
 window.onload = clock();
 /*
->>>>>>> 2390f1179d452af5c6c8e350de0949f45f49038e
 function clock() {
     const today = new Date();
     let hour = today.getHours();
