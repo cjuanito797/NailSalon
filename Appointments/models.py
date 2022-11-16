@@ -82,7 +82,11 @@ class Appointment (models.Model):
     start_time = models.TimeField ( )
     end_time = models.TimeField ( )
     date = models.DateField ( )
-    details = models.TextField (blank=True, null=True)
+    details = models.TextField (default=True, null=True)
+    image = models.ImageField(upload_to='images/',
+                                       blank=True,
+                                       default=None,
+                                       null=True)
     #completed = models.BooleanField(default=False, null=True)
 
     def getTotalDuration(self):
