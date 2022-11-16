@@ -14,11 +14,11 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Appointment)
 class AppointmentModel(admin.ModelAdmin):
-    list_display = ['customer', 'technician', 'start_time', 'end_time', 'date']
+    list_display = ['customer', 'technician', 'start_time', 'end_time', 'date', 'details']
 
-    list_display = ['customer', 'technician', 'start_time', 'end_time', 'date']
+    list_display = ['customer', 'technician', 'start_time', 'end_time', 'date', 'details']
 
-    list_display = ['customer', 'technician', 'start_time', 'end_time', 'date']
+    list_display = ['customer', 'technician', 'start_time', 'end_time', 'date', 'details']
     
 @admin.register(Sale)
 class SaleAdmin(admin.ModelAdmin):

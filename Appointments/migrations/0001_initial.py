@@ -32,6 +32,7 @@ class Migration(migrations.Migration):
                 ("start_time", models.TimeField()),
                 ("end_time", models.TimeField()),
                 ("date", models.DateField()),
+                ("details", models.TextField (blank=True, null=True)),
                 (
                     "customer",
                     models.ForeignKey(

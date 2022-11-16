@@ -82,7 +82,7 @@ class Appointment (models.Model):
     start_time = models.TimeField ( )
     end_time = models.TimeField ( )
     date = models.DateField ( )
-    #details = models.TextField (blank=True, null=True)
+    details = models.TextField (blank=True, null=True)
     #completed = models.BooleanField(default=False, null=True)
 
     def getTotalDuration(self):
