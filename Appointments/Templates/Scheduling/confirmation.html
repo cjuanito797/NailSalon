@@ -124,7 +124,13 @@
 
 {% block mainbody %}
 <form method="post" class="post-form">
-
+<section class="hero-head has-text-centered">
+        <p  class="title has-text-black">
+            <br>
+            <br>
+            Schedule Confirmed
+        </p>
+    </section>
     {% csrf_token %}
 
     <input type="submit" class="button is-info" value="Confirm" name="Confirm">

@@ -14,10 +14,6 @@ class Migration(migrations.Migration):
             model_name='appointment',
             name='completed',
         ),
-        migrations.RemoveField(
-            model_name='appointment',
-            name='details',
-        ),
         migrations.AddField(
             model_name='sale',
             name='status',
