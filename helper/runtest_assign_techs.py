@@ -20,31 +20,17 @@ from datetime import date, timedelta, datetime
 from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
 from Scheduling.models import TechnicianSchedule, timeSlots
+import techs_queue
 
 import calendar
 
 
 def main():
-    build_fresh_wait_queue(date(2022,12,11))
-
-
-def build_fresh_wait_queue(today_date: date): # change to queue of all tech of the day()
-    timeslots = []
-    #test = []
-    temp = list(timeSlots.objects.filter(date=today_date).values('tech', 'arrive_time'))
-    for t in temp:
-        if t['arrive_time'] != None:
-            t['arrive_time'] = a = datetime.combine(date.min, t['arrive_time']) - datetime.min
-            timeslots.append(t)
-        
-    lines = "_WAIT:\n"
-    sorted_list = sorted(timeslots, key=lambda x: x['arrive_time'])
-    for sl in sorted_list:
-        lines += f"{sl['tech']}:0\n"
-    lines += "_WORD:\n"
-    print(lines)
-            
-    
+    sale_list = list(Sale.objects.filter(appointment_id=9)
+                            .values("id"))
+    sales = Sale.objects.filter(appointment=9).values('id', 'status')
+    print(sale_list)
+    print(len(sales))
 
     
 

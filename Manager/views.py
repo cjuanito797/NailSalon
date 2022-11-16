@@ -12,27 +12,28 @@ from Scheduling.models import TechnicianSchedule, timeSlots
 
 from helper.timeslot_process import Process
 from helper.manager_control import C_Appointment, C_Sale, TIME_SLOT
+import helper.techs_queue as queue
 
 # Create your views here.
 def home(request):
     if request.method == "POST":
         #print(request.POST)
-        
+        # Appointments Control
         if 'appointment_id' and 'appointment_btn' in request.POST:
             control = C_Appointment(request.POST)
-            
             if request.POST['appointment_btn'] == 'Trigger':
                 mess = control.trigger()
                 for m in mess:
                    messages.success(request, m)
             elif request.POST['appointment_btn'] == 'Cancel':
                 mess = control.cancel()
-                print(mess)
+                for m in mess:
+                   messages.warning(request, m)
             else:
                 mess = control.modify()
                 for m in mess:
                    messages.success(request, m)
-                   
+        # Sales Control
         elif 'sale_id' and 'sale_btn' in request.POST:
             control = C_Sale(request.POST)
             if request.POST['sale_btn'] == 'Cancel':
@@ -91,7 +92,8 @@ def display():
     tech_list=tech_query()
     
     # Scheduled Tech
-    scheduled_techlist = _get_scheduled_tech()
+    scheduled_techlist = attendance_techlist()
+    print(scheduled_techlist)
     
     # include TIMESLOT
     return {
@@ -121,6 +123,8 @@ def attendance(request):
             tech_timeslot.arrive_time = datetime.time(hour, min, sec, milisec)
             tech_timeslot.save()
             
+            #if this run after 9:00 then "Append" into _wait Queue
+            
         return redirect("manager:home")
     else:
         return redirect("manager:home")
@@ -147,7 +151,7 @@ def newtech(request):
         form = NewTechnicianForm()
         return render(request, 'newtech.html', {"form":form})
 
-# DISPLAY QUERY FUNCTIONS ---------------------------------
+# DISPLAY QUERY FUNCTIONS ------------------------------------
 def appointments_and_dates_query():
     appointment_query = Appointment.objects.all().values(
         'id', 
@@ -192,11 +196,22 @@ def tech_query():
         tech['name'] = {'first_name': u_data['first_name'],'last_name': u_data['last_name']}
         tech['email'] = u_data['email']
         tech_list.append(tech)
-        
     return tech_list
 
 def attendance_techlist():
-    pass
+    wait_queue = queue.get_WAIT_queue()
+    print(wait_queue)
+    if len(wait_queue) <= 0:
+        return _get_scheduled_tech()
+    else:
+        scheduled_techs = _get_scheduled_tech()
+        for w in wait_queue:
+            for s in scheduled_techs:
+                if w[0] == s['email']:
+                    scheduled_techs.remove(s)
+        
+        return scheduled_techs
+                
 
 def _get_scheduled_tech():
     check_date = datetime.date.today()      # INSERT DAY HERE
@@ -223,52 +238,3 @@ def _get_scheduled_tech():
         t_list['email'] = t_email[0]
         scheduled_techlist.append(t_list)
     return(scheduled_techlist)
-
-
-
-
-'''
-def display2(id):
-    # Query Appointment
-    appointment_query = Appointment.objects.all().values_list('customer', 'start_time', 'end_time', 'totalCharge', 'id')
-    appointment_list = []
-    for a in appointment_query:
-        appointment = list(a)
-        appointment[0] = User.objects.filter(id=a[0]).values_list("first_name", "last_name")[0]
-        if appointment[4] == id:
-            appointment.append("checked")
-        else:
-            appointment.append("")   
-        appointment_list.append(appointment)
-    # Query Tech    
-    tech_query = Technician.objects.all().values_list('user')
-    #print(User.objects.filter(id=a[0]).values())
-    tech_list = []
-    for t in tech_query:
-        tech = list(t)
-        tech.append(User.objects.filter(id=t[0]).values_list("first_name", "last_name")[0])
-        tech_list.append(tech)
-    
-    sale_list = []  # [ [id,name],[id,first,last],status ]
-    if id is None:
-        appointment_list[0][5] = "checked"
-    else:
-    # Query Sale
-        sale_query = Sale.objects.filter(appointment=id).values_list("id", "service", "technician", "status")
-        
-        if len(sale_query) > 0:
-            for s in sale_query:
-                sale = list(s)    
-                sale[1] = Service.objects.filter(id=s[1]).values_list("name", flat=True)[0]
-                sale[2] = User.objects.filter(id=s[2]).values_list("first_name", "last_name", )[0]
-                sale.append("")
-                sale_list.append(sale)
-            sale_list[0][4] = "checked"
-            
-    return {
-            "appointments": appointment_list,
-            "technicians": tech_list,
-            "sales": sale_list,
-            "timeslots": TIME_SLOT
-            }
-''' 
