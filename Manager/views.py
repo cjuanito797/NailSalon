@@ -18,32 +18,39 @@ import helper.techs_queue as queue
 def home(request):
     if request.method == "POST":
         #print(request.POST)
+        
         # Appointments Control
         if 'appointment_id' and 'appointment_btn' in request.POST:
             control = C_Appointment(request.POST)
+            # TRIGGER appointment
             if request.POST['appointment_btn'] == 'Trigger':
                 mess = control.trigger()
                 for m in mess:
                    messages.success(request, m)
+            # CANCEL appointment
             elif request.POST['appointment_btn'] == 'Cancel':
                 mess = control.cancel()
                 for m in mess:
                    messages.warning(request, m)
+            # MODIFY appointment
             else:
                 mess = control.modify()
                 for m in mess:
                    messages.success(request, m)
+                   
         # Sales Control
         elif 'sale_id' and 'sale_btn' in request.POST:
             control = C_Sale(request.POST)
+            
             if request.POST['sale_btn'] == 'Cancel':
                 mess = control.cancel()
-                print(mess)
+                for m in mess:
+                   messages.warning(request, m)
+            # MODIY sale
             else:
                 mess = control.modify()
                 for m in mess:
                    messages.success(request, m)
-                
         
         return redirect("manager:home")
     else:
@@ -200,12 +207,18 @@ def tech_query():
 
 def attendance_techlist():
     wait_queue = queue.get_WAIT_queue()
+    work_queue = queue.get_WORK_queue()
     print(wait_queue)
-    if len(wait_queue) <= 0:
+    print(work_queue)
+    if len(wait_queue)+len(work_queue) <= 0:
         return _get_scheduled_tech()
     else:
         scheduled_techs = _get_scheduled_tech()
         for w in wait_queue:
+            for s in scheduled_techs:
+                if w[0] == s['email']:
+                    scheduled_techs.remove(s)
+        for w in work_queue:
             for s in scheduled_techs:
                 if w[0] == s['email']:
                     scheduled_techs.remove(s)

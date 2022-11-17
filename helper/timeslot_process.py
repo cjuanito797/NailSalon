@@ -109,23 +109,18 @@ class _Process:
 
         self.tech = "jlizarraga@unomaha.edu"    #FOR TESTING
         if appointment_id is not None:
-            try:
-                self.__appointment_id = appointment_id
-                self.starttime_object = (Appointment.objects.filter (
-                    id=appointment_id, date=self.current_date
-                ).values_list ('start_time', flat=True))[0]
-                tech_id = Appointment.objects.filter (
-                    id=self.__appointment_id, date=check_date  # change date=self.current_date
-                ).values_list('technician_id', flat=True)[0]
-                self.tech = User.objects.filter(id=
-                            Technician.objects.filter(id=tech_id)
-                            .values_list('user', flat=True)[0]).values_list('email', flat=True)[0]
-                Technician.objects.filter(id=tech_id).values_list('user', flat=True)[0]
-                
-            except IndexError:
-                msg = f"Appointment id {appointment_id} in {check_date} is not found!!"
-                print(msg)
-
+            self.__appointment_id = appointment_id
+            self.starttime_object = (Appointment.objects.filter (
+                id=appointment_id, date=self.current_date
+            ).values_list ('start_time', flat=True))[0]
+            tech_id = Appointment.objects.filter (
+                id=self.__appointment_id, date=check_date  # change date=self.current_date
+            ).values_list('technician_id', flat=True)[0]
+            self.tech = User.objects.filter(id=
+                        Technician.objects.filter(id=tech_id)
+                        .values_list('user', flat=True)[0]).values_list('email', flat=True)[0]
+            Technician.objects.filter(id=tech_id).values_list('user', flat=True)[0]
+            
     # CONSIDERING: -remove- scheduled is not always correct to based on
     def _get_time_scheduled_techs(self):
         timeIn_field_name = "{0}_time_In".format (self.dayOfWeek.lower())
@@ -217,6 +212,7 @@ class _Process:
                 (Service.objects.filter (id=i).values ('id', 'name', 'price', 'duration'))[0]
             )
         return services
+
 
 
 def collect_time_fieldname(starthour, startminute, count: list):
