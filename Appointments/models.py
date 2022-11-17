@@ -65,11 +65,6 @@ class Service (models.Model):
 
 
 class Appointment (models.Model):
-    services = models.ManyToManyField ("Appointments.Service",
-                                       related_name='services',
-                                       default=None,
-                                       )
-
     customer = models.ForeignKey ("Account.User",
                                   on_delete=models.CASCADE,
                                   default=None,
