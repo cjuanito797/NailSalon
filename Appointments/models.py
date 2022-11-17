@@ -65,6 +65,10 @@ class Service (models.Model):
 
 
 class Appointment (models.Model):
+    services = models.ManyToManyField ("Appointments.Service",
+                                       related_name='services',
+                                       default=None,
+                                       )
     customer = models.ForeignKey ("Account.User",
                                   on_delete=models.CASCADE,
                                   default=None,
@@ -107,15 +111,15 @@ class Appointment (models.Model):
         self.totalDuration = x
         return self.totalDuration
 
-
 class Sale (models.Model):
     service = models.ForeignKey (Service,
                                  on_delete=models.CASCADE,
                                  related_name='service')
 
-    technician = models.ForeignKey (User,
-                                    on_delete=models.CASCADE,
-                                    related_name='technician')
+    technician = models.ForeignKey("Account.Technician",
+                            on_delete=models.CASCADE,
+                            related_name='technician',
+                            blank=False)
 
     appointment = models.ForeignKey (Appointment,
                                      on_delete=models.CASCADE,

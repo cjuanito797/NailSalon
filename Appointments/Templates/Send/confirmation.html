@@ -2,8 +2,6 @@
 
 {% load static %}
 
-<!DOCTYPE html>
-
 {% block title %}<title>You're All Set</title>{% endblock %}
 
 {% block navigation %}
@@ -149,7 +147,11 @@
         </div>
     </div>
 
-
+<script type="text/javascript">
+        setTimeout(function() {
+            window.location.href = "/customerView/";
+        }, 4000);
+    </script>
 
 {% endblock %}
 

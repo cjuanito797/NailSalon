@@ -382,6 +382,7 @@ def confirmAppointment(request):
 
             return redirect ('appointments:confirmation')
 
+
     # if the user changes their mind, delete the appointment and return to the calendar page with appropriate params.
     return render (request, "Scheduling/confirmation.html")
 

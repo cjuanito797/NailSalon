@@ -7,14 +7,11 @@
 
     <script>
         var check = function () {
-            if (document.getElementById('id_password1').value === document.getElementById('id_password2').value)
-            {
+            if (document.getElementById('id_password1').value === document.getElementById('id_password2').value) {
                 document.getElementById('message').style.color = 'green';
                 document.getElementById('message').innerHTML = 'Passwords Match! &#x2713;';
-            }
-        else
-            {
-                if(!(document.getElementById('id_password2').value.length == 0)  && document.getElementById('id_password1').value !== document.getElementById('id_password2').value) {
+            } else {
+                if (!(document.getElementById('id_password2').value.length == 0) && document.getElementById('id_password1').value !== document.getElementById('id_password2').value) {
                     document.getElementById('message').style.color = 'red';
                     document.getElementById('message').innerHTML = 'Passwords do not match! &#10006;';
                 }
@@ -112,7 +109,7 @@
                             <img src="../../static/shopping_bag.png" style=""/>
                             {% with total_items=cart|length %}
                                 {% if cart|length > 0 %}
-                                        ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
+                                    ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
 
                                 {% else %}
                                     Empty
@@ -131,7 +128,6 @@
                             Sign Out
                         </a>
 
-
                     </div>
                 </div>
             </div>
@@ -145,11 +141,11 @@
     <div class="Banner">
         <h1>Edit your address below</h1>
         <div id="form">
-        <form method="post">
-            {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="save btn btn-default">Update</button>
-    </form>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="save btn btn-default">Update</button>
+            </form>
         </div>
     </div>
 {% endblock %}
