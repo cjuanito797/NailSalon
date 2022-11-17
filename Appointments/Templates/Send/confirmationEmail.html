@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>E-mail</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+</head>
+<body>
+<section class="hero has-text-centered-desktop-only is-fullheight" style="background-color: oldlace;">
+    <img src="https://scontent-dfw5-1.xx.fbcdn.net/v/t1.6435-9/102922554_1314594355412390_5465168596300474414_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=4vRUAefwY9wAX85z7wM&_nc_ht=scontent-dfw5-1.xx&oh=00_AfDOVQHqR0qAJSW4xWeewGUJrMOhcKwoebpX6FDxQt4SLg&oe=6394DBE2"
+         style="width: 50%; margin-left: 25%;"
+    />
+
+    <div class="column">
+        <p class="subtitle is-size-4">Hello there {{ username }}. We are just confirming your appointment on {{ date }}
+        starting at {{ time }} with {{ technician }} for the following services, please be sure to have your payment ready upon arrival.
+        We have you booked for the following services</p>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <td>Service</td>
+                <td>Price</td>
+                <td>Description</td>
+            </tr>
+            </thead>
+
+            {% for service in saleItems %}
+            <tr>
+            <td>{{ service.service.name }}</td>
+            <td>${{ service.service.price }}</td>
+            <td>{{ service.service.description }}</td>
+            </tr>
+
+            {% endfor %}
+        </table>
+
+        <br>
+        Subtotal: ${{ subTotal }}
+        <br>
+        Grandtotal: ${{ grandTotal }}
+    </div>
+
+
+</section>
+
+</body>
+</html>

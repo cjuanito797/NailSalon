@@ -1,7 +1,7 @@
 from django.db import models
 from Account.models import Technician, User
 from django.urls import reverse
-
+import decimal
 
 class Category (models.Model):
     name = models.CharField (max_length=200,
@@ -68,6 +68,7 @@ class Appointment (models.Model):
                                        related_name='services',
                                        default=None,
                                        )
+
     customer = models.ForeignKey ("Account.User",
                                   on_delete=models.CASCADE,
                                   default=None,
@@ -78,7 +79,7 @@ class Appointment (models.Model):
                                     null=True,
                                     blank=False)
     totalDuration = models.IntegerField ( )
-    totalCharge = models.DecimalField (max_digits=10, decimal_places=2)
+    totalCharge = models.FloatField(max_length=10,)
     start_time = models.TimeField ( )
     end_time = models.TimeField ( )
     date = models.DateField ( )
@@ -88,6 +89,20 @@ class Appointment (models.Model):
                                        default=None,
                                        null=True)
     #completed = models.BooleanField(default=False, null=True)
+    STATUS_OPTION = (
+        ('scheduled', 'scheduled'),
+        ('working', 'working'),
+        ('closed', 'closed'),
+        ('canceled', 'canceled'),
+    )
+    status = models.CharField (choices=STATUS_OPTION, default='scheduled', max_length=10)
+
+    # details = models.TextField (blank=True, null=True)
+    # completed = models.BooleanField(default=False, null=True)
+
+    def getTotalCharge(self):
+        tax = 1.09
+        return self.totalCharge * decimal.Decimal(tax)
 
     def getTotalDuration(self):
         x = 0
@@ -96,12 +111,6 @@ class Appointment (models.Model):
         self.totalDuration = x
         return self.totalDuration
 
-STATUS_OPTION = (
-    ('scheduled','scheduled'),
-    ('working','working'),
-    ('closed','closed'),
-    ('canceled','canceled'),
-)
 
 class Sale(models.Model):
     service = models.ForeignKey(Service,
@@ -120,3 +129,27 @@ class Sale(models.Model):
                               default='scheduled')
     
 
+class Sale (models.Model):
+    service = models.ForeignKey (Service,
+                                 on_delete=models.CASCADE,
+                                 related_name='service')
+
+    technician = models.ForeignKey (User,
+                                    on_delete=models.CASCADE,
+                                    related_name='technician')
+
+    appointment = models.ForeignKey (Appointment,
+                                     on_delete=models.CASCADE,
+                                     related_name='appointment')
+
+    STATUS_OPTION = (
+        ('scheduled', 'scheduled'),
+        ('working', 'working'),
+        ('closed', 'closed'),
+        ('canceled', 'canceled'),
+    )
+
+    status = models.CharField (max_length=10,
+                               choices=STATUS_OPTION,
+                               blank=False,
+                               default='scheduled')

@@ -12,15 +12,19 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name']
     prepopulated_fields = {'slug': ('name', )}
 
+class saleItemInline(admin.StackedInline):
+    model = Sale
+    extra = 0
+
 @admin.register(Appointment)
 class AppointmentModel(admin.ModelAdmin):
     list_display = ['customer', 'technician', 'start_time', 'end_time', 'date', 'details', 'image']
 
-    list_display = ['customer', 'technician', 'start_time', 'end_time', 'date', 'details', 'image']
-
-    list_display = ['customer', 'technician', 'start_time', 'end_time', 'date', 'details', 'image']
     
 @admin.register(Sale)
 class SaleAdmin(admin.ModelAdmin):
     list_display = ['service', 'technician', 'appointment', 'status']
-    
+
+    inlines = [
+        saleItemInline,
+    ]
