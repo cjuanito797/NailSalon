@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Service, Appointment, Category
+from .models import Service, Appointment, Category, Sale
 
 # Register your models here.
 @admin.register(Service)
@@ -12,10 +12,17 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name']
     prepopulated_fields = {'slug': ('name', )}
 
+class saleItemInline(admin.StackedInline):
+    model = Sale
+    extra = 0
+
 @admin.register(Appointment)
 class AppointmentModel(admin.ModelAdmin):
-    list_display = ['customer', 'start_time', 'end_time', 'date']
+    list_display = ['customer', 'start_time', 'end_time', 'date', 'status']
 
-    list_display = ['customer', 'start_time', 'end_time', 'date']
+    inlines = [
+        saleItemInline,
+    ]
 
-    list_display = ['customer', 'start_time', 'end_time', 'date']
+
+

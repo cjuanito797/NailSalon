@@ -15,17 +15,18 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from .forms import EditAddress
+from Appointments.models import Appointment, Sale
+
 
 # Create your views here.
 def home(request):
     if request.user.is_authenticated:
-        if (request.session.get('is_signedIn'), True):
+        if (request.session.get ('is_signedIn'), True):
             return redirect (reverse ('account:customerView'))
         else:
-            print("User is not logged in!")
+            print ("User is not logged in!")
     else:
         return render (request, "base.html")
-
 
 
 def availableTechs(request):
@@ -68,8 +69,6 @@ def user_login(request):
                              password=cd['password'])
         request.session['is_signedIn'] = True
 
-
-
         # here we should redirect a user to seperate views depending on whether they are a customer, tech or admin.
         if user is not None:
             if user.is_active:
@@ -97,8 +96,8 @@ def aboutUs(request):
 
 
 @never_cache
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='/login/')
+@cache_control (no_cache=True, must_revalidate=True, no_store=True)
+@login_required (login_url='/login/')
 def profile(request):
     if request.user.is_authenticated:
         if (request.session.get ('is_signedIn'), True):
@@ -112,24 +111,26 @@ def profile(request):
 
             return HttpResponse (template.render (context, request))
         else:
-            print("User is not signed in!")
-            return redirect('account:home')
+            print ("User is not signed in!")
+            return redirect ('account:home')
     else:
         return redirect ('account:home')
 
-@login_required(login_url='/login/')
-def securitySettings(request):
-    return render(request, "account/securitySettings.html")
 
-@login_required(login_url='/login/')
-def changePassword (request):
+@login_required (login_url='/login/')
+def securitySettings(request):
+    return render (request, "account/securitySettings.html")
+
+
+@login_required (login_url='/login/')
+def changePassword(request):
     if request.user.is_authenticated:
         form = PasswordChangeForm (request.user, request.POST)
 
         if form.is_valid ( ):
             user = form.save (commit=False)
             form.save ( )
-            update_session_auth_hash(request, user)
+            update_session_auth_hash (request, user)
 
             return redirect ('account:user_login')
         return render (request, 'account/changePassword.html', {'form': form})
@@ -138,15 +139,16 @@ def changePassword (request):
         form = PasswordChangeForm ( )
         return render (request, 'account/changePassword.html', {'form': form})
 
-@login_required(login_url='/login/')
-def changeEmail (request):
+
+@login_required (login_url='/login/')
+def changeEmail(request):
     if request.user.is_authenticated:
         form = EmailChangeForm (request.user, request.POST)
 
         if form.is_valid ( ):
             user = form.save (commit=False)
             form.save ( )
-            update_session_auth_hash(request, user)
+            update_session_auth_hash (request, user)
 
             return redirect ('account:user_login')
         return render (request, 'account/changeEmail.html', {'form': form})
@@ -155,11 +157,13 @@ def changeEmail (request):
         form = EmailChangeForm ( )
         return render (request, 'account/changeEmail.html', {'form': form})
 
-@login_required(login_url='/login/')
+
+@login_required (login_url='/login/')
 def deleteAccount(request):
     this_user = User.objects.get (pk=request.user.id)
-    this_user.delete()
-    return render(request, "account/deleteAccount.html")
+    this_user.delete ( )
+    return render (request, "account/deleteAccount.html")
+
 
 @never_cache
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
@@ -169,7 +173,7 @@ def logout(request):
         request.session['is_signedIn'] = False
         logout (request)
         del request.session['is_signedIn']
-        request.session.flush()
+        request.session.flush ( )
         return HttpResponseRedirect ("/")
 
 
@@ -181,11 +185,24 @@ def customerView(request):
         if (request.session.get ('is_signedIn'), True):
             username = request.user.email
             this_user = User.objects.get (pk=request.user.id)
+            # get the future appointments pertaining to the user.
+            my_appointments = Appointment.objects.filter (customer_id=this_user.id, status__exact='scheduled').all ( )
+            apptCount = my_appointments.count ( )
 
-            return render(request, "account/customerView.html", {'this_user': this_user})
+            # build a query set for all of the sale items in the customers upcoming appointments
+            saleItems = []
+            for x in my_appointments:
+                # get a query set of sale items, for each  appointment.
+                sales = Sale.objects.filter (appointment_id=x.id).all ( )
+                for sale in sales:
+                    saleItems.append (sale)
+
+            return render (request, "account/customerView.html",
+                           {'this_user': this_user, 'my_appointments': my_appointments, 'apptCount': apptCount,
+                            'sale_items': saleItems})
         else:
-            print("User is not signed in!")
-            return redirect('account:home')
+            print ("User is not signed in!")
+            return redirect ('account:home')
     else:
         return redirect ('account:home')
 

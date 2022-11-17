@@ -98,7 +98,7 @@
                     <div class="buttons">
 
                         <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
-                            <img src={% static "shopping_bag.png"%} style=""/>
+                            <img src={% static "shopping_bag.png" %} style=""/>
                             {% with total_items=cart|length %}
                                 {% if cart|length > 0 %}
                                     ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
@@ -229,7 +229,8 @@
                                 Morning
                             </p>
                             <hr class="navbar-divider">
-                            <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                            <div class="p-3 columns "
+                                 style="display: flex; align-items: center; flex-wrap: wrap; height: 185px;">
                                 {% for time in morning %}
                                     <input type="submit" name="start_time" class="button is-info"
                                            value="{{ time.0 }}" style="width: 25%; margin-top: 1%;">
@@ -244,9 +245,11 @@
                                 Afternoon
                             </p>
                             <hr class="navbar-divider">
-                            <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                            <div class="p-3 columns "
+                                 style="display: flex; align-items: center; flex-wrap: wrap; height: 185px;">
                                 {% for time in afternoon %}
-                                    <input type="submit" name="start_time" class="button is-info" style="width: 25%; margin-top: 1%;"
+                                    <input type="submit" name="start_time" class="button is-info"
+                                           style="width: 25%; margin-top: 1%;"
                                            value="{{ time.0 }}">
 
                                     &nbsp;
@@ -261,10 +264,12 @@
                                 Evening
                             </p>
                             <hr class="navbar-divider">
-                            <div class="p-3 columns " style="display: flex; align-items: center; flex-wrap: wrap;">
+                            <div class="p-3 columns "
+                                 style="display: flex; align-items: center; flex-wrap: wrap; height: 185px;">
                                 {% for time in evening %}
 
-                                    <input type="submit" name="start_time" class="button is-info" style="width: 25%; margin-top: 1%;"
+                                    <input type="submit" name="start_time" class="button is-info"
+                                           style="width: 25%; margin-top: 1%;"
                                            value="{{ time.0 }}">
 
                                     &nbsp;
