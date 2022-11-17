@@ -13,7 +13,6 @@ from Appointments.models import Sale
 _WAIT_QUEUE = []
 _WORK_QUEUE = []
 
-
 def build_fresh_wait_queue(today_date: date): # change to queue of all tech of the day()
     timeslots = []
     temp = list(timeSlots.objects.filter(date=today_date).values('tech', 'arrive_time'))
@@ -33,12 +32,6 @@ def build_fresh_wait_queue(today_date: date): # change to queue of all tech of t
     
     read_temp()
         
-        
-def build_wait_queue():
-    a = Sale.objects.filter(status='working').values_list('technician', 'status')[0]
-    print(a)
-
-
 # Split formatted string data into tuple  "email:priority" -> ("email", priority)
 def to_tuple(line:str) -> tuple:
     temp_str = []
@@ -56,16 +49,22 @@ def to_tuple(line:str) -> tuple:
                 temp_num = c
     return ( ((''.join(temp_str)), int(temp_num)) )
 # Function to sort the list of tuples by its second item
-def Sort_Tuple(lst):
+def Sort_Tuple():
     global _WAIT_QUEUE
-    _WAIT_QUEUE = (sorted(lst, key = lambda x: x[1]))
-
+    global _WORK_QUEUE
+    _WAIT_QUEUE = (sorted(_WAIT_QUEUE, key = lambda x: x[1]))
+    _WORK_QUEUE = (sorted(_WORK_QUEUE, key = lambda x: x[1]))
+# Read temp file
 def read_temp():
     global _WAIT_QUEUE
     global _WORK_QUEUE
     f = open("helper/temp1", "r")
     lines = f.readlines()
     f.close()
+    
+    _WAIT_QUEUE = []
+    _WORK_QUEUE = []
+    
     read_flag = 0
     for line in lines:
         line = line.replace('\n', '')
@@ -78,7 +77,7 @@ def read_temp():
                 read_flag = 1
             else:
                 _WORK_QUEUE.append(to_tuple(line))
-
+# Write temp file
 def write_temp():
     data = ""
     data += "_WAIT\n"
@@ -90,12 +89,18 @@ def write_temp():
     f = open("helper/temp1", "w")
     f.write(data)
     f.close()
-
-def save_queue(queue):
-    Sort_Tuple(queue)
+# Sort data then write temp file
+def save_queue():
+    #Sort Tuple
+    global _WAIT_QUEUE
+    global _WORK_QUEUE
+    _WAIT_QUEUE = (sorted(_WAIT_QUEUE, key = lambda x: x[1]))
+    _WORK_QUEUE = (sorted(_WORK_QUEUE, key = lambda x: x[1]))
+    
     write_temp()
 
-def wait_to_work():
+def wait_to_work(email):
+    '''
     if len(_WAIT_QUEUE) >=1:
         a = _WAIT_QUEUE.pop(0)
         _WORK_QUEUE.append((a[0], a[1]+1))
@@ -103,17 +108,32 @@ def wait_to_work():
         return len(_WAIT_QUEUE)
     else:
         return 0
+    '''
+    read_temp()
+    if len(_WAIT_QUEUE) >=1:
+        for i in _WAIT_QUEUE:
+            if i[0] == email:
+                a = _WAIT_QUEUE.remove(i)
+                _WORK_QUEUE.append( (i[0], i[1]+1) )
+        save_queue()
+        return len(_WAIT_QUEUE)
+    else:
+        return 0
 
 def work_to_wait(email):
+    read_temp()
     if len(_WORK_QUEUE) >=1:
         for i in _WORK_QUEUE:
             if i[0] == email:
                 a = _WORK_QUEUE.remove(i)
                 _WAIT_QUEUE.append(i)
-        save_queue(_WAIT_QUEUE)
+        save_queue()
         return len(_WAIT_QUEUE)
     else:
         return 0
+
+def after_checkin_time_techs():
+    pass
 
 def get_WAIT_queue():
     read_temp()
@@ -124,11 +144,11 @@ def get_WORK_queue():
     return _WORK_QUEUE
 
 def main():
-    build_fresh_wait_queue(date(2022,12,11))
+    #build_fresh_wait_queue(date(2022,12,11))
     
-    global _WAIT_QUEUE
-    print(_WAIT_QUEUE)
-    
+    #global _WAIT_QUEUE
+    #print(_WAIT_QUEUE)
+    pass
 
 
 

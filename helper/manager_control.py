@@ -129,4 +129,7 @@ class C_Sale:
         print(f'u_tech_id: {u_tech_id}')
 
     def cancel(self):
-        print('Cancled')
+        return_mess = []
+        Sale.objects.filter(id=self.sale_id).delete()
+        return_mess.append("Sale is deleted!")
+        return return_mess
