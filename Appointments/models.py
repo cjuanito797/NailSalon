@@ -77,7 +77,7 @@ class Appointment (models.Model):
                                     on_delete=models.CASCADE,
                                     default=None,
                                     null=True,
-                                    blank=False)
+                                    blank=True)
     totalDuration = models.IntegerField ( )
     totalCharge = models.FloatField (max_length=10, )
     start_time = models.TimeField ( )

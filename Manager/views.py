@@ -126,7 +126,11 @@ def attendance(request):
             tech_timeslot.arrive_time = datetime.time(hour, min, sec, milisec)
             tech_timeslot.save()
             
-            #if this run after 9:00 then "Append" into _wait Queue
+            #if this run after open time (9:00) then "Append" into _wait Queue with lowest priority
+            current_time = datetime.datetime.today()
+            open_time = datetime.datetime.combine(datetime.date.today(), datetime.time(9,0,0))
+            if current_time > open_time:
+                queue.clock_tech_after_fresh_build(r['email'])
             
         return redirect("manager:home")
     else:

@@ -115,26 +115,30 @@ class C_Appointment:
 class C_Sale:
     def __init__(self, post: dict) -> None:
         s_btn = post['sale_btn']
-        self.sale_id = int(post['sale_id'])
+        self.sale_obj = Sale.objects.get(id=int(post['sale_id']))
         
-        if s_btn == 'Cancel':
-            self.cancel()
-        else:
+        if s_btn == 'Modify':
             self.tech_id = int(post['technician_id'])
-            self.modify()
         
     def modify(self):
         return_mess = []
+        if self.sale_obj.status != 'scheduled':
+            self.sale_obj.technician = Technician.objects.get(id=self.tech_id)
+            self.sale_obj.save()
         
-        sale_obj = Sale.objects.get(id=self.sale_id)
-        sale_obj.technician = Technician.objects.get(id=self.tech_id)
-        sale_obj.save()
-        
-        return_mess.append("Sale is modified!")
+            return_mess.append("Sale is modified!")
+        else:
+            return_mess.append("Sale's status is not allow to be modify!")
         return return_mess
 
     def cancel(self):
         return_mess = []
-        Sale.objects.filter(id=self.sale_id).delete()
-        return_mess.append("Sale is deleted!")
+        
+        if self.sale_obj.status != 'closed':
+            self.sale_obj.status = 'canceled'
+            self.sale_obj.save()
+            return_mess.append("Sale is canceled!")
+        else:
+            return_mess.append("Sale is already closed. Cannot cancel!")
+            #Sale.objects.filter(id=self.sale_id).delete()
         return return_mess

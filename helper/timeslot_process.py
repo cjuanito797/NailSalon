@@ -22,7 +22,6 @@ logging.basicConfig(level=logging.INFO)
 num_to_word = {13: 'one_', 14: 'two_', 15: 'three_', 16: 'four_',
                9: 'nine_', 10: 'ten_', 11: 'eleven_',
                12: 'twelve_', }
-ERROR_MESSAGE = {0: "Cannot find appointment", 1: "Cannot find open timeslot for services"}
 
 class Process:
     def close_slots(**kargs):
@@ -108,14 +107,16 @@ class _Process:
         self.appointment_id = appointment_id
         self.appointment_info = Appointment.objects.filter(id=appointment_id)
         
-        # get services' info using services' id list in appointment 
+        #get services' info by service id list attached in appointment 
         service_ids = self.appointment_info.values_list ('services', flat=True)
         self.services = []
         for i in service_ids:
             self.services.append (
                 (Service.objects.filter (id=i).values ('id', 'duration'))[0]
             )
+        #get all timeslot need to complete appointment (estimate)
         self.timeslots_need = self._get_timeslot_field()
+        #if no technician attached in appointment -> get random tech. Else, use that tech
         if (Appointment.objects.get(id=appointment_id).technician) is None:
             self.tech = self._get_free_tech_timeslot()
         else:
@@ -129,6 +130,7 @@ class _Process:
                 service=Service.objects.get(id=s['id']),
                 technician=Technician.objects.get(user=user_obj),
                 appointment=Appointment.objects.get(id=self.appointment_id),
+                status="working",
             )
         # Set time slot to False (busy) for open technician
         current_date = self.appointment_info.values_list('date', flat=True)[0]
