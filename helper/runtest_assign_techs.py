@@ -27,21 +27,46 @@ import calendar
 
 
 def main():
-    '''
-    apt_list = Appointment.objects.get(id=9)
-    apt_list.services.add(1)
     
-    
-    apt_list = Appointment.objects.filter(id=9).values("services")
-    print(apt_list)
-    '''
-    ''' # test _Process
-    process = _Process(9)
-    techs_queue.wait_to_work(process.assign_tech())
-    '''
-    
+        
     # build fresh queue for test
     techs_queue.build_fresh_wait_queue(date(2022, 12, 11))
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     #print(techs_queue.wait_to_work('h@a.com'))
     #print(techs_queue.wait_to_work('f@a.com'))
@@ -61,8 +86,20 @@ def main():
     
     
     
-    #tech2 = Appointment.objects.get(id=9)
-    #print(tech2.technician.user.email)
+    '''
+    apt_list = Appointment.objects.get(id=9)
+    apt_list.services.add(1)
+    
+    
+    apt_list = Appointment.objects.filter(id=9).values("services")
+    print(apt_list)
+    '''
+    # test _Process
+    #process = _Process(4)
+    #techs_queue.wait_to_work(process.assign_tech())
+    
+    
+    
     
     
 class _Process:
@@ -78,10 +115,13 @@ class _Process:
                 (Service.objects.filter (id=i).values ('id', 'duration'))[0]
             )
         self.timeslots_need = self._get_timeslot_field()
-        self.free_tech = self._get_free_tech_timeslot()
+        if (Appointment.objects.get(id=appointment_id).technician) is None:
+            self.tech = self._get_free_tech_timeslot()
+        else:
+            self.tech = Appointment.objects.get(id=appointment_id).technician.user.email
         
     def assign_tech(self):
-        user_obj = User.objects.get(email=self.free_tech)
+        user_obj = User.objects.get(email=self.tech)
         # Create new Sales
         for s in self.services:
             Sale.objects.create(
@@ -91,7 +131,7 @@ class _Process:
             )
         # Set time slot to False (busy) for open technician
         current_date = self.appointment_info.values_list('date', flat=True)[0]
-        assign = timeSlots.objects.get (tech=self.free_tech, date=current_date)
+        assign = timeSlots.objects.get (tech=self.tech, date=current_date)
         for field in self.timeslots_need:
             setattr (assign, field, False)
             assign.save ( )
@@ -101,7 +141,7 @@ class _Process:
         appointment.technician = Technician.objects.get(user=user_obj)
         appointment.save()
         
-        return self.free_tech
+        return self.tech
     
     def _get_timeslot_field(self):
         

@@ -45,12 +45,11 @@ class C_Appointment:
         
         # no sale => need to generate next random tech *****
         else:
-            print("bad")
+            result = Process.close_slots(id=self.appointment_id)
+            return_mess.append(f"{result} is assigned to appointment!")
+            return return_mess
 
     def modify(self):
-        print("Modify")
-        print(f'u_tech_id: {self.tech_id}')
-        print(f'timeslot: {TIME_SLOT[self.timeslot]}')
 
         appointment_obj = Appointment.objects.get(id=self.appointment_id)
         tech_obj = Technician.objects.get(id=self.tech_id)
@@ -117,16 +116,22 @@ class C_Sale:
     def __init__(self, post: dict) -> None:
         s_btn = post['sale_btn']
         self.sale_id = int(post['sale_id'])
-        print(f"sale_id: {self.sale_id}")
         
         if s_btn == 'Cancel':
             self.cancel()
         else:
-            self.modify(int(post['technician_id']))
+            self.tech_id = int(post['technician_id'])
+            self.modify()
         
-    def modify(self, u_tech_id):
-        print("Modify")
-        print(f'u_tech_id: {u_tech_id}')
+    def modify(self):
+        return_mess = []
+        
+        sale_obj = Sale.objects.get(id=self.sale_id)
+        sale_obj.technician = Technician.objects.get(id=self.tech_id)
+        sale_obj.save()
+        
+        return_mess.append("Sale is modified!")
+        return return_mess
 
     def cancel(self):
         return_mess = []

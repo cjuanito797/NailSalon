@@ -102,13 +102,13 @@
         </div>
 
         <!-- Appointment/Sale Control -->
+        <select name="apt_date" id="apt_date" onchange="sort_appointment()">
+            <option value="all" selected>-- Display All --</option>
+            {% for d in packet.apt_date %}
+                <option value="{{ d }}">{{ d }}</option>
+            {% endfor %}
+        </select>
         <div class="master" id="scroll-container" style="width: 450px; text-align: center; ">
-            <select name="apt_date" id="apt_date" onchange="sort_appointment()">
-                <option value="all" selected>-- Display All --</option>
-                {% for d in packet.apt_date %}
-                    <option value="{{ d }}">{{ d }}</option>
-                {% endfor %}
-            </select>
 
             {% for a in packet.appointments %}
             <form class="appointment" method="POST" id="{{ a.date }}">

@@ -17,8 +17,6 @@ import helper.techs_queue as queue
 # Create your views here.
 def home(request):
     if request.method == "POST":
-        #print(request.POST)
-        
         # Appointments Control
         if 'appointment_id' and 'appointment_btn' in request.POST:
             control = C_Appointment(request.POST)
@@ -100,7 +98,6 @@ def display():
     
     # Scheduled Tech
     scheduled_techlist = attendance_techlist()
-    print(scheduled_techlist)
     
     # include TIMESLOT
     return {
@@ -115,7 +112,6 @@ def display():
 # OTHER MANAGEMENT FUNCTIONS ---------------------------------
 def attendance(request):
     if request.method == "POST":
-        #print(request.POST)
         records = (json.loads(request.POST['data']))["records"]
         for r in records:
             
@@ -140,12 +136,13 @@ def newtech(request):
     if request.method == 'POST':
         form = NewTechnicianForm(request.POST)
         if form.is_valid():
-            print(request.POST['email'])
+            #print(request.POST['email'])
             all_email = User.objects.all().values_list("email")
             for i in all_email:
                 if request.POST['email'] == i[0]:
                     messages.success(request, f"Technician is added successfully!")
                     tech_info = request.POST
+                    print(tech_info)
                     return redirect("manager:home")
             messages.error(request, f"Email \"{request.POST['email']}\" is NOT exist!")
             return redirect("manager:newtech")
@@ -184,12 +181,13 @@ def sale_query(appointment_list: list):
         sale_list = []
         if len(s_list) > 0:
             for sale in s_list:
+                t_email = Technician.objects.get(id=sale['technician']).user
                 sale['service'] = Service.objects.filter(id=sale['service']).values_list('name', flat=True)[0]
-                sale['technician'] = list(User.objects.filter(id=sale['technician']).values("first_name", "last_name", ))[0]
+                sale['technician'] = list(User.objects.filter(email=t_email).values("first_name", "last_name", ))[0]
                 sale['check'] = ''
                 sale_list.append(sale)
             sale_list[0]['check'] = "checked"
-        a['sales'] = sale_list
+            a['sales'] = sale_list
         
     return appointment_list
 
@@ -208,8 +206,6 @@ def tech_query():
 def attendance_techlist():
     wait_queue = queue.get_WAIT_queue()
     work_queue = queue.get_WORK_queue()
-    print(wait_queue)
-    print(work_queue)
     if len(wait_queue)+len(work_queue) <= 0:
         return _get_scheduled_tech()
     else:

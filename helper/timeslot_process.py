@@ -14,6 +14,7 @@ django.setup ( )
 from Scheduling.models import TechnicianSchedule, timeSlots
 from Appointments.models import Appointment, Service, Sale
 from Account.models import Technician, User
+from helper import techs_queue as queue
 
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO)
@@ -69,7 +70,11 @@ class Process:
                 return return_count
             #appointment not assign -> get random tech -> set status to working
             else:   
-                print('no')        
+                process = _Process(appointment_id)
+                assigned_tech = process.assign_tech()
+                queue.wait_to_work(assigned_tech)
+                return assigned_tech
+                        
     def open_slots(**kargs):
         if len(kargs) == 1:      # Initialize timeslot for new day (by date)
             date = kargs['date']
@@ -99,6 +104,79 @@ class Process:
                         logger.info(f'{field} in {tech[0]} is set')
 
 class _Process:
+    def __init__(self, appointment_id):
+        self.appointment_id = appointment_id
+        self.appointment_info = Appointment.objects.filter(id=appointment_id)
+        
+        # get services' info using services' id list in appointment 
+        service_ids = self.appointment_info.values_list ('services', flat=True)
+        self.services = []
+        for i in service_ids:
+            self.services.append (
+                (Service.objects.filter (id=i).values ('id', 'duration'))[0]
+            )
+        self.timeslots_need = self._get_timeslot_field()
+        if (Appointment.objects.get(id=appointment_id).technician) is None:
+            self.tech = self._get_free_tech_timeslot()
+        else:
+            self.tech = Appointment.objects.get(id=appointment_id).technician.user.email
+        
+    def assign_tech(self):
+        user_obj = User.objects.get(email=self.tech)
+        # Create new Sales
+        for s in self.services:
+            Sale.objects.create(
+                service=Service.objects.get(id=s['id']),
+                technician=Technician.objects.get(user=user_obj),
+                appointment=Appointment.objects.get(id=self.appointment_id),
+            )
+        # Set time slot to False (busy) for open technician
+        current_date = self.appointment_info.values_list('date', flat=True)[0]
+        assign = timeSlots.objects.get (tech=self.tech, date=current_date)
+        for field in self.timeslots_need:
+            setattr (assign, field, False)
+            assign.save ( )
+            
+        # Attach chosen tech into appointment
+        appointment = Appointment.objects.get(id=self.appointment_id)
+        appointment.technician = Technician.objects.get(user=user_obj)
+        appointment.save()
+        
+        return self.tech
+    
+    def _get_timeslot_field(self):
+        
+        # count number of timefield for each service
+        count = []
+        for _ in self.services:
+            count.append (math.ceil (_['duration'].seconds / (60 * 15)))
+
+        starttime = (self.appointment_info.values_list ('start_time', flat=True))[0]
+        # get slot field_name as start
+        hour = starttime.hour
+        minute = starttime.minute
+
+        # Prepare all timeslot fieldname depend for total duration of all services
+        fieldname_list = collect_time_fieldname (hour, minute, count)
+        return fieldname_list
+        
+    def _get_free_tech_timeslot(self):
+        for tech, _ in queue.get_WAIT_queue():
+            t_timeslot = list(timeSlots.objects.filter(tech=tech, date=date(2022,12,11)).values())[0]
+            count = 0
+            for slot in self.timeslots_need:
+                if t_timeslot[slot] == True:
+                    count += 1
+            if count == len(self.timeslots_need):
+                return tech
+    
+
+
+
+
+
+
+class _Process_NOUSE:
     def __init__(self, check_date, appointment_id=None):
         # self.current_date = date.today()
         self.current_date = check_date
