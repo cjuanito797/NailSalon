@@ -38,13 +38,21 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    
     'Account.apps.AccountConfig',
     'Scheduling.apps.SchedulingConfig',
-    'django_behave',
     'Appointments.apps.AppointmentsConfig',
     'cart.apps.CartConfig',
     'Calendar.apps.CalendarConfig',
-    'Manager.apps'
+    'Manager.apps',
+    
+    'django_crontab',
+    'django_behave',
+]
+
+CRONTAB_COMMAND_SUFFIX = '2>&1'
+CRONJOBS = [
+    ('0 9 * * 1-6', 'helper.cron.open_time_job', f">> {os.path.join (BASE_DIR, 'NailSalon/log/helper_job.log')}"),
 ]
 
 MIDDLEWARE = [

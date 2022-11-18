@@ -30,8 +30,8 @@ def main():
     
         
     # build fresh queue for test
-    #techs_queue.build_fresh_wait_queue(date(2022, 12, 11))
-    pass
+    techs_queue.build_fresh_wait_queue(datetime.date(2022, 12, 11))
+    #pass
     
 
 if __name__ == "__main__":

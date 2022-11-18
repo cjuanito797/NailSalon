@@ -233,10 +233,7 @@ def _get_scheduled_tech():
     dayOfWeek_field_name = "{0}_availability".format (
         calendar.day_name[current_date.weekday ( )].lower ( )
     )  # string concat to match field_name for filter
-
-    timeIn_field_name = "{0}_time_In".format (dayOfWeek.lower())
-    timeOut_field_name = "{0}_time_Out".format (dayOfWeek.lower())
-
+    
     # filter {field_name(provide as custom string): True} (dict)
     scheduled_tech = list(TechnicianSchedule.objects.filter (
         **{dayOfWeek_field_name: True}

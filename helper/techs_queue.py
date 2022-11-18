@@ -9,13 +9,14 @@ django.setup ( )
 
 from Scheduling.models import timeSlots
 from Appointments.models import Sale
+FILE_DIR = "helper/temp1"
 
 _WAIT_QUEUE = []
 _WORK_QUEUE = []
 
 #QUEUE CONTROL FUNCTIONS----------------------------------------------
 # Build fresh queue in every day at open time salon open
-def build_fresh_wait_queue(today_date: date): # change to queue of all tech of the day()
+def build_fresh_wait_queue(today_date: date, filedir=FILE_DIR): # change to queue of all tech of the day()
     timeslots = []
     temp = list(timeSlots.objects.filter(date=today_date).values('tech', 'arrive_time'))
     for t in temp:
@@ -28,7 +29,8 @@ def build_fresh_wait_queue(today_date: date): # change to queue of all tech of t
     for sl in sorted_list:
         lines += f"{sl['tech']}:0\n"
     lines += "_WORK\n"
-    f = open("helper/temp1", "w")
+    f = open(filedir, "w")
+    #f = open("/Users/khoatran/Desktop/School/Capstone/NailSalon/helper/temp1", "w")
     f.write(lines)
     f.close()
 
@@ -84,30 +86,30 @@ def work_to_wait(email):
 
 #BASIC FUNCTIONS-----------------------------------------------------------
 # Retrieve technician waiting
-def get_WAIT_queue():
-    read_temp()
+def get_WAIT_queue(filedir=FILE_DIR):
+    read_temp(filedir)
     return _WAIT_QUEUE
 
 # Retrieve technician working
-def get_WORK_queue():
-    read_temp()
+def get_WORK_queue(filedir=FILE_DIR):
+    read_temp(filedir)
     return _WORK_QUEUE
      
 # Sort data then write temp file
-def save_queue():
+def save_queue(filedir=FILE_DIR):
     #Sort Tuple
     global _WAIT_QUEUE
     global _WORK_QUEUE
     _WAIT_QUEUE = (sorted(_WAIT_QUEUE, key = lambda x: x[1]))
     _WORK_QUEUE = (sorted(_WORK_QUEUE, key = lambda x: x[1]))
     #then write them in file
-    write_temp()
+    write_temp(filedir)
 
 # Read temp file
-def read_temp():
+def read_temp(filedir=FILE_DIR):
     global _WAIT_QUEUE
     global _WORK_QUEUE
-    f = open("helper/temp1", "r")
+    f = open(filedir, "r")
     lines = f.readlines()
     f.close()
     
@@ -128,7 +130,7 @@ def read_temp():
                 _WORK_QUEUE.append(to_tuple(line))
 
 # Write temp file
-def write_temp():
+def write_temp(filedir=FILE_DIR):
     data = ""
     data += "_WAIT\n"
     for i in _WAIT_QUEUE:
@@ -136,7 +138,7 @@ def write_temp():
     data += "_WORK\n"
     for i in _WORK_QUEUE:
         data += f"{str(i[0])}:{str(i[1])}\n"
-    f = open("helper/temp1", "w")
+    f = open(filedir, "w")
     f.write(data)
     f.close()
 

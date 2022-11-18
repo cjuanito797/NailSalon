@@ -164,7 +164,7 @@ class _Process:
         
     def _get_free_tech_timeslot(self):
         for tech, _ in queue.get_WAIT_queue():
-            t_timeslot = list(timeSlots.objects.filter(tech=tech, date=date(2022,12,11)).values())[0]
+            t_timeslot = list(timeSlots.objects.filter(tech=tech, date=datetime.date(2022,12,11)).values())[0]
             count = 0
             for slot in self.timeslots_need:
                 if t_timeslot[slot] == True:
@@ -172,6 +172,23 @@ class _Process:
             if count == len(self.timeslots_need):
                 return tech
     
+    def _get_time_scheduled_techs(self):
+        current_date = datetime.today()
+        
+        dayOfWeek = calendar.day_name[current_date.weekday ( )]
+        dayOfWeek_field_name = "{0}_availability".format (
+            calendar.day_name[current_date.weekday ( )].lower ( )
+        )  # string concat to match field_name for filter
+
+        timeIn_field_name = "{0}_time_In".format (dayOfWeek.lower())
+        timeOut_field_name = "{0}_time_Out".format (dayOfWeek.lower())
+
+        # filter {field_name(provide as custom string): True} (dict)
+        time_scheduled = list(TechnicianSchedule.objects.filter (
+            **{dayOfWeek_field_name: True}
+        ).values_list ('tech', timeIn_field_name, timeOut_field_name))
+
+        return time_scheduled
 
 
 
