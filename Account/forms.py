@@ -25,6 +25,7 @@ class RegistrationForm (UserCreationForm):
 
         for fieldname in ['password1', 'password2', ]:
             self.fields[fieldname].help_text = None
+
 class LoginForm (forms.Form):
     email = forms.CharField ( )
     password = forms.CharField (widget=forms.PasswordInput)

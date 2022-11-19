@@ -1,5 +1,5 @@
 from django.db import models
-from Account.models import Technician
+from Account.models import Technician, User
 from django.urls import reverse
 
 
@@ -71,6 +71,11 @@ class Appointment (models.Model):
                                   on_delete=models.CASCADE,
                                   default=None,
                                   null=False)
+    technician = models.ForeignKey("Account.Technician",
+                                   on_delete=models.CASCADE,
+                                   default=None,
+                                   null=True,
+                                   blank=False)
     totalDuration = models.IntegerField( )
     totalCharge = models.DecimalField(max_digits=10, decimal_places=2)
     start_time = models.TimeField()
@@ -88,7 +93,7 @@ class Sale(models.Model):
     service = models.ForeignKey(Service,
                                 on_delete=models.CASCADE,
                                 related_name='service')
-    technician = models.ForeignKey(Technician,
+    technician = models.ForeignKey(User,
                                 on_delete=models.CASCADE,
                                 related_name='technician')
     appointment = models.ForeignKey(Appointment,

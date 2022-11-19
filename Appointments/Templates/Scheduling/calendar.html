@@ -2,12 +2,10 @@
 
 {% load static %}
 
-
-{% block title %}<title>Choose Technician Below</title>{% endblock %}
+{% block title %}<title>Confirm Appointment</title>{% endblock %}
 
 {% block navigation %}
-
-<nav class="navbar" role="navigation" aria-label="main navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="{% url 'account:home' %}">
                 <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
@@ -52,7 +50,7 @@
                                 My Promotions
                             </a>
                             <hr class="navbar-divider">
-                            <a class="navbar-item">
+                            <a class="navbar-item" href="{% url 'account:security' %}">
                                 Security Settings
                             </a>
                         </div>
@@ -67,13 +65,13 @@
 
                     <div class="navbar-dropdown" style="color: black;">
                         <a class="navbar-item">
-                            About
+                            Meet the team
                         </a>
                         <a class="navbar-item">
-                            Jobs
+                            Career Opportunities
                         </a>
                         <a class="navbar-item" style="color: black;">
-                            Contact
+                            Promotions
                         </a>
                         <hr class="navbar-divider">
                         <a class="navbar-item">
@@ -91,10 +89,10 @@
                     <div class="buttons">
 
                         <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
-                            <img src="../../static/shopping_bag.png" style=""/>
+                            <img src="../../../Account/static/shopping_bag.png" style=""/>
                             {% with total_items=cart|length %}
                                 {% if cart|length > 0 %}
-                                        ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
+                                    ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
 
                                 {% else %}
                                     Empty
@@ -109,7 +107,7 @@
                             Book Appointment
                         </a>
 
-                        <a class="button is-light" href="{% url 'account:customerView' %}">
+                        <a class="button is-light" href="{% url 'account:logout' %}">
                             Sign Out
                         </a>
 
@@ -122,45 +120,62 @@
 {% endblock %}
 
 {% block mainbody %}
-    <section class="section">
-    {% if messages %}
-        {% for message in messages %}
 
-            <artcile class="message is-danger is-size-5-desktop">
-                <div class="message-header">
-                    <p>Please Correct Error Below</p>
-                </div>
-                <div class="message-body">
-                    {{ message }}
-                </div>
-            </artcile>
-        {% endfor %}
+    <section class="hero is-fullheight">
+        <div class="hero-head has-text-centered">
+            <div class="">
+                <p class="title has-text-black">
+                    Please Select a date and time for technician {{ tech.user.first_name }}
+                </p>
 
-    {% endif %}
+            </div>
+
+
+        </div>
+
+        <!--Add some spacing-->
+        <section class="field-body" style="margin-left: 55%; margin-top: 7%; position: relative;">
+            <div class="field-label has-text centered" style="margin: -5%;">
+                <p class="title has-text-black has-text-centered">
+                    Availability
+                </p>
+
+            </div>
+
+            <!--render a box in here to hold the dates-->
+            <div class="box"
+                 style="border-radius: 5px; margin-top: 5%; width: 100%; overflow-y: scroll; position: absolute; height: 75%;">
+                {% for day in availableDates %}
+                    <!-- create a styled box for each of the dates and then render them that way-->
+
+                    <button class="button is-fullwidth is-spaced is-size-5 has-text-centered" style="margin: 2%; padding: 10px;">{{ day.date }}</button>
+
+                {% endfor %}
+
+            </div>
+        </section>
+
+        <section class="field-body" style="margin-left: 5%; margin-top: 10%; position:absolute;">
+
+            <div class="field-label has-text-left">
+                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
+                    Morning
+                </p>
+
+                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
+                    Afternoon
+                </p>
+
+                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
+                    Evening
+                </p>
+
+            </div>
+
+
+        </section>
+
 
     </section>
-    <h1>Choose from our technicians below.</h1>
-    <form method="POST" class="post-form">
-
-    {% csrf_token %}
-    {% for tech in techs %}
-        <input type="radio" id="tech_{{ tech.id }}" name="tech" value="{{ tech.id }}">
-        <label for="tech_{{ tech.id }}"></label>
-
-        <p>{{ tech.user.first_name }} {{ tech.user.last_name }}</p>
-        <p>{{ tech.user.email }}</p>
-        <p>{{ tech.bio }}</p>
-        <p>{{ tech.age }}</p>
-
-    {% endfor %}
-
-        <p><input type="submit" name="schedule_with" value="Schedule Now!"></p>
-        <p><input type="submit" name="schedule_random" value="Random"></p>
-
-
-
-
-    </form>
 
 {% endblock %}
-
