@@ -23,13 +23,17 @@
 .collapsible:hover {
     background-color: #666;
 }
+
 .master{
-    margin-top: 1em;
     border-style: solid;
     background-color: #555;
     overflow-y: scroll;
-    height: 500px;
+    height: 100%;
     text-align: center;
+
+    float: left;
+    width: 30%;
+    max-height: 300px;
 }
 .content{
     padding: 0 18px;
@@ -38,13 +42,17 @@
     background-color: #555;
 }
 
+
+.appointment{
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
 .a_control{
     padding-bottom: 5px;
     display: none;
 }
-.appointment{
-    padding-top: 10px;
-    padding-bottom: 5px;
+.appointment_btn {
+    background-color: #44891a;
 }
 
 .master_sale{
@@ -58,10 +66,12 @@
 .sale{
     padding-top: 20px;
     padding-left: 20px;
-    
+}
+.sale_btn {
+    background-color: #009fe3
 }
 .nosale{
-    color: blue;
+    color: #1183ca;
 }
 .s_control{
     padding-top: 5px;
@@ -150,3 +160,88 @@ button{
 .clock{
     font-size: small;
 }
+
+
+
+
+
+
+
+
+
+.container {
+    border: 3px solid #fff;
+    padding: 20px;
+    height: 300px;
+}
+
+
+
+
+
+
+/* Use overflow:scroll on your container to enable scrolling: */
+
+.timetable{
+    overflow: scroll;
+    max-width: 60%;
+    max-height: 300px;
+    float: right;
+    border: 2px solid red;
+}
+  
+  /* Use position: sticky to have it stick to the edge
+   * and top, right, or left to choose which edge to stick to: */
+  
+  thead th {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    top: 0;
+  }
+  
+  tbody th {
+    position: -webkit-sticky; /* for Safari */
+    position: sticky;
+    left: 0;
+  }
+  
+  
+  /* To have the header in the first column stick to the left: */
+  
+  thead th:first-child {
+    left: 0;
+    z-index: 2;
+  }
+  
+  
+  /* Just to display it nicely: */
+  
+  thead th {
+    background: #000;
+    color: #FFF;
+    /* Ensure this stays above the emulated border right in tbody th {}: */
+    z-index: 1;
+  }
+  
+  tbody th {
+    background: #FFF;
+    border-right: 1px solid #CCC;
+    /* Browsers tend to drop borders on sticky elements, so we emulate the border-right using a box-shadow to ensure it stays: */
+    box-shadow: 1px 0 0 0 #ccc;
+  }
+  
+  table {
+    border-collapse: collapse;
+  }
+  
+  td,
+  th {
+    padding: 0.5em;
+  }
+
+
+
+
+
+
+

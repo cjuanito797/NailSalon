@@ -77,7 +77,7 @@ class Process:
     def open_slots(**kargs):
         if len(kargs) == 1:      # Initialize timeslot for new day (by date)
             date = kargs['date']
-            process = _Process(date)
+            process = _Process_openslot(date)
             techs_timeslots = process._get_time_scheduled_techs()
             fieldname_list = collect_time_fieldname (9, 0, [32])
             # tech = [0: email, 1: time_In, 2: time_Out]
@@ -171,13 +171,15 @@ class _Process:
                     count += 1
             if count == len(self.timeslots_need):
                 return tech
-    
-    def _get_time_scheduled_techs(self):
-        current_date = datetime.today()
+
+class _Process_openslot:
+    def __init__(self, date):
+        self.current_date = date
         
-        dayOfWeek = calendar.day_name[current_date.weekday ( )]
+    def _get_time_scheduled_techs(self):
+        dayOfWeek = calendar.day_name[self.current_date.weekday ( )]
         dayOfWeek_field_name = "{0}_availability".format (
-            calendar.day_name[current_date.weekday ( )].lower ( )
+            calendar.day_name[self.current_date.weekday ( )].lower ( )
         )  # string concat to match field_name for filter
 
         timeIn_field_name = "{0}_time_In".format (dayOfWeek.lower())

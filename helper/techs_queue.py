@@ -9,7 +9,7 @@ django.setup ( )
 
 from Scheduling.models import timeSlots
 from Appointments.models import Sale
-FILE_DIR = "helper/temp1"
+FILE_DIR = "helper/techs_queue"
 
 _WAIT_QUEUE = []
 _WORK_QUEUE = []
@@ -173,21 +173,6 @@ def main():
     #global _WAIT_QUEUE
     #print(_WAIT_QUEUE)
     pass
-
-
-
-'''
-Khoa's stuff:
-    process = _Process(date(2022, 11, 12))
-    
-    onday_techs = []
-    for tech in process._get_time_scheduled_techs():
-        onday_techs.append(tech[0])
-        
-    #build_fresh_wait_queue(date(2022, 11, 12), onday_techs)
-    #print(_WAIT_QUEUE)
-    build_wait_queue()
-    '''
     
 if __name__ == '__main__':
     main()

@@ -43,7 +43,7 @@ class C_Appointment:
             return_mess.append(f"Canceled sales: {result['canceled']}")
             return return_mess
         
-        # no sale => need to generate next random tech *****
+        # no sale => need to generate next random tech
         else:
             result = Process.close_slots(id=self.appointment_id)
             return_mess.append(f"{result} is assigned to appointment!")
@@ -87,20 +87,24 @@ class C_Appointment:
         return return_mess
         
     def cancel(self):
-        print("Appointment Cancel")
         return_mess = []
         
-        # If appointment contain sale => turn all sales status to canceled
+        # If appointment contain sale => turn all sales with status different than [closed]
+        # to canceled
         if len(self.sale_list) > 0:
             cancel_count = 0
+            closed_count = 0
             for s in self.sale_list:
                 sale = Sale.objects.get(id=s['id'])
-                sale.status = 'canceled'
-                sale.save()
-                cancel_count += 1
+                if sale.status != 'closed':
+                    sale.status = 'canceled'
+                    sale.save()
+                    cancel_count += 1
+                else:
+                    closed_count += 1
             # {'working': 0, 'closed': 0, 'canceled': 0}
             return_mess.append("Working sales: 0")
-            return_mess.append(f"Closed sales: 0")
+            return_mess.append(f"Closed sales: {closed_count}")
             return_mess.append(f"Canceled sales: {cancel_count}")
             
         
@@ -122,7 +126,7 @@ class C_Sale:
         
     def modify(self):
         return_mess = []
-        if self.sale_obj.status != 'scheduled':
+        if self.sale_obj.status == 'scheduled':
             self.sale_obj.technician = Technician.objects.get(id=self.tech_id)
             self.sale_obj.save()
         
@@ -134,11 +138,11 @@ class C_Sale:
     def cancel(self):
         return_mess = []
         
+        # If appointment status is [scheduled, working], set status to cancel
         if self.sale_obj.status != 'closed':
             self.sale_obj.status = 'canceled'
             self.sale_obj.save()
             return_mess.append("Sale is canceled!")
         else:
             return_mess.append("Sale is already closed. Cannot cancel!")
-            #Sale.objects.filter(id=self.sale_id).delete()
         return return_mess

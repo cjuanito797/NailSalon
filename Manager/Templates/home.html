@@ -101,57 +101,104 @@
             </div>
         </div>
 
-        <!-- Appointment/Sale Control -->
         <select name="apt_date" id="apt_date" onchange="sort_appointment()">
-            <option value="all" selected>-- Display All --</option>
+            <option value="all" selected>-- Display All Appointments--</option>
             {% for d in packet.apt_date %}
                 <option value="{{ d }}">{{ d }}</option>
             {% endfor %}
         </select>
-        <div class="master" id="scroll-container" style="width: 450px; text-align: center; ">
 
-            {% for a in packet.appointments %}
-            <form class="appointment" method="POST" id="{{ a.date }}">
-            {% csrf_token %}
-                <button type="button" class="collapsible">
-                Customer: {{a.customer.first_name}} {{a.customer.last_name}}.<br>
-                Start time: {{a.start_time}}.<br>
-                End time: {{a.end_time}}.<br>
-                Total charge: {{a.totalCharge}}.
-                </button> 
-                <div class="a_control">
-                    <input type="hidden" name="appointment_id" value="{{ a.id }}" />
-                    <button type="submit" name="appointment_btn" value="Trigger">Trigger</button>
-                    <button type="button" name="appointment_btn" id="a_modify" value="{{ a.id }}">Modify</button>
-                    <button type="submit" name="appointment_btn" value="Cancel">Cancel</button>
-                </div>
-            </form>
-            <div class="content" id="{{ a.date }}">
-                {% if a.sales|length > 0 %}
-                <form method="POST">
+        
+        <select name="apt_date" id="apt_date" onchange="sort_appointment()" style="float: right">
+            <option value="all" selected>-- Display All Timeslot--</option>
+            {% for d in packet.apt_date %}
+                <option value="{{ d }}">{{ d }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="container">
+            <!-- Appointment/Sale Control -->
+            <div class="master" id="scroll-container">
+
+                {% for a in packet.appointments %}
+                <form class="appointment" method="POST" id="{{ a.date }}">
                 {% csrf_token %}
-                    <div class="master_sale">
-                        {% for s in a.sales %}
-                        <div class="sale">
-                            <input {{ s.check }} type="radio" name="sale_id" value="{{ s.id }}"/>
-                            <a>Technician: {{s.technician.first_name}} {{s.technician.last_name}}.</a><br>
-                            <a>Service: {{s.service}}.</a><br>
-                            <a>Status: {{s.status}}.</a><br>
-                        </div>
-                        
-                        {% endfor %} 
-                    </div>
-                    <div class="s_control">
-                        <button type="button" name="sale_btn" id="s_modify">Modify</button>
-                        <button type="submit" name="sale_btn" value="Cancel">Cancel</button>
+                    <button type="button" class="collapsible">
+                    Customer: {{a.customer.first_name}} {{a.customer.last_name}}.<br>
+                    Start time: {{a.start_time}}.<br>
+                    End time: {{a.end_time}}.<br>
+                    Total charge: {{a.totalCharge}}.
+                    </button> 
+                    <div class="a_control">
+                        <input type="hidden" name="appointment_id" value="{{ a.id }}" />
+                        <button type="submit" name="appointment_btn" class="appointment_btn" value="Trigger" >Trigger</button>
+                        <button type="button" name="appointment_btn" class="appointment_btn" id="a_modify" value="{{ a.id }}" >Modify</button>
+                        <button type="submit" name="appointment_btn" class="appointment_btn" value="Cancel" >Cancel</button>
                     </div>
                 </form>
-                {% else %}
-                <a class="nosale">NO POSTED SALE</a>
-                {% endif %} 
-            </div>
-            {% endfor %}
+                <div class="content" id="{{ a.date }}">
+                    {% if a.sales|length > 0 %}
+                    <form method="POST">
+                    {% csrf_token %}
+                        <div class="master_sale">
+                            {% for s in a.sales %}
+                            <div class="sale">
+                                <input {{ s.check }} type="radio" name="sale_id" value="{{ s.id }}"/>
+                                <a>Technician: {{s.technician.first_name}} {{s.technician.last_name}}.</a><br>
+                                <a>Service: {{s.service}}.</a><br>
+                                <a>Status: {{s.status}}.</a><br>
+                            </div>
+                            
+                            {% endfor %} 
+                        </div>
+                        <div class="s_control">
+                            <button type="button" name="sale_btn" class="sale_btn" id="s_modify">Modify</button>
+                            <button type="submit" name="sale_btn" class="sale_btn" value="Cancel">Cancel</button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <a class="nosale">NO POSTED SALE</a>
+                    {% endif %} 
+                </div>
+                {% endfor %}
 
+            </div>
+            
+            
+            <div class="timetable">
+                <table>
+                    <thead>
+                        <tr><!--row with technician name-->
+                            <th></th>
+                            <th>headheadhead</th>
+                            <th>headheadhead</th>
+                            <th>headheadhead</th>
+                            <th>headheadhead</th>
+                            <th>headheadhead</th>
+                            <th>headheadhead</th>
+                            <th>headheadhead</th>
+                            <th>headheadhead</th>
+                            <th>headheadhead</th>
+                            <th>headheadhead</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key,slot in packet.timeslots.items %}
+                        <tr><!--row with time first then timeslot-->
+                            <th>{{slot}}</th>
+                            <td>body</td>
+                            <td>body</td>
+                            <td>body</td>
+                            <td>body</td>
+                            <td>body</td>
+                            <td>body</td>
+                            <td>body</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
         </div>
         
         <!-- Modify Modal -->
