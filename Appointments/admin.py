@@ -18,7 +18,7 @@ class saleItemInline(admin.StackedInline):
 
 @admin.register(Appointment)
 class AppointmentModel(admin.ModelAdmin):
-    list_display = ['id', 'customer', 'technician', 'start_time', 'end_time', 'date', 'details', 'image']
+    list_display = ['customer', 'technician', 'start_time', 'end_time', 'date', 'details', 'image']
     inlines = [
         saleItemInline,
     ]
