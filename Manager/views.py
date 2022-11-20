@@ -10,7 +10,7 @@ from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
 from Scheduling.models import TechnicianSchedule, timeSlots
 
-from helper.timeslot_process import Process
+from helper import timeslot_process
 from helper.manager_control import C_Appointment, C_Sale, TIME_SLOT
 import helper.techs_queue as queue
 
@@ -99,13 +99,21 @@ def display():
     # Scheduled Tech
     scheduled_techlist = attendance_techlist()
     
+    # Time table query
+    temp_query = timetable()
+    timetable_date = temp_query[0]
+    timetable_list = temp_query[1]
+    
+    
     # include TIMESLOT
     return {
         "apt_date": apt_date_list,
         "appointments": appointment_list,
         "technicians": tech_list,
         "scheduled": scheduled_techlist,
-        "timeslots": TIME_SLOT
+        "timeslots": TIME_SLOT,
+        "timetable_date": timetable_date,
+        "timetable_list": timetable_list,
         }      
 
 
@@ -206,6 +214,30 @@ def tech_query():
         tech['email'] = u_data['email']
         tech_list.append(tech)
     return tech_list
+
+def timetable():
+    timetable_query = timeSlots.objects.all().values()
+    fieldname_list = timeslot_process.collect_time_fieldname (9, 0, [32])
+    
+    
+    timetable_date_list = []
+    for timeslot in timetable_query:
+        
+        if timeslot['date'] not in timetable_date_list:
+            timetable_date_list.append(timeslot['date'])
+        
+        count = 0
+        for field in fieldname_list:
+            timeslot[count] = timeslot.pop(field)
+            count += 1
+        timeslot['tech'] = list(User.objects.filter(email=timeslot['tech']).values("first_name", "last_name"))[0]
+        del timeslot['id']
+        del timeslot['arrive_time']
+        
+    
+    
+    return (timetable_date_list, timetable_query)
+    
 
 def attendance_techlist():
     wait_queue = queue.get_WAIT_queue()

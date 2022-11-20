@@ -197,6 +197,8 @@ button{
     position: -webkit-sticky; /* for Safari */
     position: sticky;
     top: 0;
+
+    max-width: 100px;
   }
   
   tbody th {
@@ -214,18 +216,18 @@ button{
   }
   
   
-  /* Just to display it nicely: */
-  
   thead th {
     background: #000;
     color: #FFF;
     /* Ensure this stays above the emulated border right in tbody th {}: */
     z-index: 1;
+ 
   }
   
   tbody th {
     background: #FFF;
     border-right: 1px solid #CCC;
+    border-bottom: 1px groove #CCC;
     /* Browsers tend to drop borders on sticky elements, so we emulate the border-right using a box-shadow to ensure it stays: */
     box-shadow: 1px 0 0 0 #ccc;
   }
@@ -234,11 +236,11 @@ button{
     border-collapse: collapse;
   }
   
-  td,
-  th {
+  td,th {
     padding: 0.5em;
+    min-width: 80px;
+    min-height: 100px;
   }
-
 
 
 

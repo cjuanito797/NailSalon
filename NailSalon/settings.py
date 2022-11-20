@@ -82,6 +82,9 @@ TEMPLATES = [
                 "Scheduling.context_processors.getTodaysDate",
                 "Calendar.context_processors.buildCalendar"
             ],
+            "libraries":{
+                "extra_tags": "Manager.templatetags.extra_tags"
+            }
         },
     },
 ]

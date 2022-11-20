@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    {% load extra_tags %}
     <head>
         {% block head %}
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -101,6 +102,7 @@
             </div>
         </div>
 
+        <!-- Appointment Sort Option -->
         <select name="apt_date" id="apt_date" onchange="sort_appointment()">
             <option value="all" selected>-- Display All Appointments--</option>
             {% for d in packet.apt_date %}
@@ -108,10 +110,9 @@
             {% endfor %}
         </select>
 
-        
-        <select name="apt_date" id="apt_date" onchange="sort_appointment()" style="float: right">
-            <option value="all" selected>-- Display All Timeslot--</option>
-            {% for d in packet.apt_date %}
+        <!-- Timetable Sort Option -->
+        <select name="timetable_date" id="timetable_date" onchange="sort_timetable()" style="float: right">
+            {% for d in packet.timetable_date %}
                 <option value="{{ d }}">{{ d }}</option>
             {% endfor %}
         </select>
@@ -164,40 +165,40 @@
 
             </div>
             
-            
-            <div class="timetable">
+            {% for d in packet.timetable_date %}
+            <div class="timetable" id="{{d}}">
                 <table>
                     <thead>
                         <tr><!--row with technician name-->
                             <th></th>
-                            <th>headheadhead</th>
-                            <th>headheadhead</th>
-                            <th>headheadhead</th>
-                            <th>headheadhead</th>
-                            <th>headheadhead</th>
-                            <th>headheadhead</th>
-                            <th>headheadhead</th>
-                            <th>headheadhead</th>
-                            <th>headheadhead</th>
-                            <th>headheadhead</th>
+                            {% for t in packet.timetable_list %}
+                            {% if t.date == d %}
+                            <th class="tech_timetable" id="{{ t.date }}">{{t.tech.first_name}} {{t.tech.last_name}}</th>
+                            {% endif %}
+                            {% endfor %}
                         </tr>
                     </thead>
                     <tbody>
                         {% for key,slot in packet.timeslots.items %}
-                        <tr><!--row with time first then timeslot-->
+                        {% with k=key %}
+                        <tr>
                             <th>{{slot}}</th>
-                            <td>body</td>
-                            <td>body</td>
-                            <td>body</td>
-                            <td>body</td>
-                            <td>body</td>
-                            <td>body</td>
-                            <td>body</td>
+                            {% for t in packet.timetable_list %}
+                            {% if t.date == d %}
+                                {% if t|get_item:k == True %}
+                                <td style="background-color: green; border: 1px ridge;"></td>
+                                {% else %}
+                                <td style="background-color: gray; border: 1px groove;"></td></td>
+                                {% endif %}
+                            {% endif %}
+                            {% endfor %}
                         </tr>
+                        {% endwith %}
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+            {% endfor %}
             
         </div>
         

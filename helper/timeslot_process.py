@@ -4,7 +4,7 @@ import math
 import django
 import os
 import calendar
-from datetime import datetime
+import datetime
 import sys
 
 sys.path.append ("../NailSalon")
@@ -82,8 +82,8 @@ class Process:
             fieldname_list = collect_time_fieldname (9, 0, [32])
             # tech = [0: email, 1: time_In, 2: time_Out]
             for tech in techs_timeslots:
-                delta_In = datetime.combine(datetime.today(), tech[1])
-                delta_Out = datetime.combine(datetime.today(), tech[2])
+                delta_In = datetime.datetime.combine(datetime.datetime.today(), tech[1])
+                delta_Out = datetime.datetime.combine(datetime.datetime.today(), tech[2])
                 duration = (int)((delta_Out - delta_In).total_seconds())
                 count = math.ceil(duration / (60 * 15))
                 if count == 32:
@@ -123,6 +123,7 @@ class _Process:
             self.tech = Appointment.objects.get(id=appointment_id).technician.user.email
         
     def assign_tech(self):
+        print(self.tech)
         user_obj = User.objects.get(email=self.tech)
         # Create new Sales
         for s in self.services:
@@ -164,7 +165,7 @@ class _Process:
         
     def _get_free_tech_timeslot(self):
         for tech, _ in queue.get_WAIT_queue():
-            t_timeslot = list(timeSlots.objects.filter(tech=tech, date=datetime.date(2022,12,11)).values())[0]
+            t_timeslot = list(timeSlots.objects.filter(tech=tech, date=datetime.datetime.today()).values())[0]
             count = 0
             for slot in self.timeslots_need:
                 if t_timeslot[slot] == True:

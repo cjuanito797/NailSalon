@@ -24,27 +24,33 @@ from Scheduling.models import TechnicianSchedule, timeSlots
 import techs_queue, timeslot_process
 
 import calendar
+from django.core import serializers
 
 
 def main():
     
         
-    # build fresh queue for test
-    #techs_queue.build_fresh_wait_queue(datetime.date(2022, 12, 11))
+    timetable_query = timeSlots.objects.all().values()
+    fieldname_list = timeslot_process.collect_time_fieldname (9, 0, [32])
     
-    all_timeslot = list(timeSlots.objects.filter(date=datetime.date(2022,12,11)).values())
-    #print(a[0])
-    fieldname_list = timeslot_process.collect_time_fieldname (10, 30, [4])
-    for timeslot in all_timeslot:
+    
+    timetable_date_list = []
+    for timeslot in timetable_query:
+        
+        if timeslot['date'] not in timetable_date_list:
+            timetable_date_list.append(timeslot['date'])
+        
         count = 0
         for field in fieldname_list:
             timeslot[count] = timeslot.pop(field)
             count += 1
+        timeslot['date'] = str(timeslot['date'])
+        timeslot['tech'] = list(User.objects.filter(email=timeslot['tech']).values("first_name", "last_name"))[0]
         del timeslot['id']
         del timeslot['arrive_time']
-        print(timeslot)
-    
-    
+        
+    print(timetable_date_list)
+    print(timetable_query[0])
 
 if __name__ == "__main__":
     main()
