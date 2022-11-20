@@ -90,12 +90,10 @@ class Appointment (models.Model):
                                null=True)
     # completed = models.BooleanField(default=False, null=True)
     STATUS_OPTION = (
-        ('scheduled', 'scheduled'),
-        ('working', 'working'),
-        ('closed', 'closed'),
-        ('canceled', 'canceled'),
+        ('active', 'active'),
+        ('inactive', 'inactive'),
     )
-    status = models.CharField (choices=STATUS_OPTION, default='scheduled', max_length=10)
+    status = models.CharField (choices=STATUS_OPTION, default='active', max_length=10)
 
     # details = models.TextField (blank=True, null=True)
     # completed = models.BooleanField(default=False, null=True)

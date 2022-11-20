@@ -10,7 +10,7 @@ from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
 from Scheduling.models import TechnicianSchedule, timeSlots
 
-from helper import timeslot_process
+import helper.timeslot_process as timeslot_process
 from helper.manager_control import C_Appointment, C_Sale, TIME_SLOT
 import helper.techs_queue as queue
 
@@ -20,9 +20,9 @@ def home(request):
         # Appointments Control
         if 'appointment_id' and 'appointment_btn' in request.POST:
             control = C_Appointment(request.POST)
-            # TRIGGER appointment
-            if request.POST['appointment_btn'] == 'Trigger':
-                mess = control.trigger()
+            # INITIALIZE appointment
+            if request.POST['appointment_btn'] == 'Initialize':
+                mess = control.initialize()
                 for m in mess:
                    messages.success(request, m)
             # CANCEL appointment
@@ -40,10 +40,16 @@ def home(request):
         elif 'sale_id' and 'sale_btn' in request.POST:
             control = C_Sale(request.POST)
             
+            # CANCEL sale
             if request.POST['sale_btn'] == 'Cancel':
                 mess = control.cancel()
                 for m in mess:
                    messages.warning(request, m)
+            # TRIGGER sale
+            elif request.POST['sale_btn'] == 'Trigger':
+                mess = control.trigger()
+                for m in mess:
+                   messages.success(request, m)
             # MODIY sale
             else:
                 mess = control.modify()
@@ -62,6 +68,7 @@ appointment:
     start_time,
     end_time,
     totalCharge,
+    status,
     sales: [
         id,
         service,
@@ -81,6 +88,17 @@ scheduled:
 [{
     email,
     name: {first_name,last_name},
+}]
+
+timetable_date: [date,date,...]
+
+timetable_list:
+[{
+    tech: {first_name,last_name},
+    0: True/False,
+    1: True/False,
+    ...
+    31: True/False
 }]
 '''
 
@@ -175,7 +193,8 @@ def appointments_and_dates_query():
         'start_time', 
         'end_time', 
         'totalCharge',
-        'date'
+        'date',
+        'status'
         )
     appointment_list = []
     apt_date_list = []
@@ -238,7 +257,6 @@ def timetable():
     
     return (timetable_date_list, timetable_query)
     
-
 def attendance_techlist():
     wait_queue = queue.get_WAIT_queue()
     work_queue = queue.get_WORK_queue()

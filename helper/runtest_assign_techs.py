@@ -30,27 +30,23 @@ from django.core import serializers
 def main():
     
         
-    timetable_query = timeSlots.objects.all().values()
-    fieldname_list = timeslot_process.collect_time_fieldname (9, 0, [32])
+    return_count = {'scheduled': 0, 'working': 0, 'closed': 0, 'canceled': 0}
+    sales = Sale.objects.filter(appointment=2).values('status')
     
-    
-    timetable_date_list = []
-    for timeslot in timetable_query:
+    for s in sales:
+        if s['status'] == 'scheduled':
+            return_count['scheduled'] += 1
+        if s['status'] == 'working':
+            return_count['working'] += 1
+        if s['status'] == 'closed':
+            return_count['closed'] += 1
+        if s['status'] == 'canceled':
+            return_count['canceled'] += 1
+            
+            
+    if (return_count['closed'] + return_count['canceled']) == len(sales):
+        print("yes")
         
-        if timeslot['date'] not in timetable_date_list:
-            timetable_date_list.append(timeslot['date'])
-        
-        count = 0
-        for field in fieldname_list:
-            timeslot[count] = timeslot.pop(field)
-            count += 1
-        timeslot['date'] = str(timeslot['date'])
-        timeslot['tech'] = list(User.objects.filter(email=timeslot['tech']).values("first_name", "last_name"))[0]
-        del timeslot['id']
-        del timeslot['arrive_time']
-        
-    print(timetable_date_list)
-    print(timetable_query[0])
 
 if __name__ == "__main__":
     main()

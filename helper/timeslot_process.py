@@ -25,49 +25,59 @@ num_to_word = {13: 'one_', 14: 'two_', 15: 'three_', 16: 'four_',
 
 class Process:
     def close_slots(**kargs):
-        if len(kargs) == 2:      # close timeslot by appointment (by id(appointment), date)
-            appointment_id = kargs['id']
-            sale_count = Sale.objects.filter(appointment=appointment_id).count()
-            if sale_count > 0:
-                return "Appoinment is already triggered!"
-            check_date = kargs['date']
+        if len(kargs) == 2:      # close timeslot by appointment (by appointment_id, sale_id)
+            appointment_id = kargs['appointment_id']
+            sale = Sale.objects.get(id=kargs['sale_id'])
+            if sale.status == 'scheduled':
+                sale.status = 'working'
+                sale.save()
+            if sale.status == 'working':
+                sale.status = 'closed'
+                sale.save()
             
-            process = _Process(check_date, appointment_id)
-            # split appointment to sales
-            sale_service = process._split_appointment_to_sales ( )
-            # retrieve all available technicians (using today day)
-            avail_techs_timeslots = process._get_techs_timeslots ( )
-            # find and assign open technician for sales
-            assign_tech = process._assign_chosen_tech (avail_techs_timeslots['tech'], sale_service)
-            # retrieve technician name for return
-            tech_name = User.objects.filter (email=assign_tech).values_list ('first_name', 'last_name')[0]
-            # set return value (tech first, last name)
-            return f"{tech_name[0]} {tech_name[1]}" # --return for test
+            return_count = {'scheduled': 0, 'working': 0, 'closed': 0, 'canceled': 0}
+            sales = Sale.objects.filter(appointment=appointment_id).values('status')
+            for s in sales:
+                if s['status'] == 'scheduled':
+                    return_count['scheduled'] += 1
+                if s['status'] == 'working':
+                    return_count['working'] += 1
+                if s['status'] == 'closed':
+                    return_count['closed'] += 1
+                if s['status'] == 'canceled':
+                    return_count['canceled'] += 1
+            
+            if (return_count['closed'] + return_count['canceled']) == len(sales):
+                a_obj = Appointment.objects.get(id=appointment_id)
+                a_obj.status = "inactive"
+                a_obj.save()
+                
+            return return_count
         
-        elif len(kargs) == 1:       # move sale status by appointment (by id(appointment))  
+        elif len(kargs) == 1:       # return sale info of a appointment or provide random tech (by id(appointment))  
             appointment_id = kargs['id']
             sales = Sale.objects.filter(appointment=appointment_id).values('id', 'status')
             
             #appointment already assigned -> move status
             if sales.count() > 0:
-                return_count = {'working': 0, 'closed': 0, 'canceled': 0}
+                return_count = {'scheduled': 0, 'working': 0, 'closed': 0, 'canceled': 0}
                 for s in sales:
                     if s['status'] == 'scheduled':
-                        sale = Sale.objects.get(id=s['id'])
-                        sale.status = 'working'
-                        sale.save()
-                        return_count['working'] += 1
+                        #sale = Sale.objects.get(id=s['id'])
+                        #sale.status = 'working'
+                        #sale.save()
+                        return_count['scheduled'] += 1
                     elif s['status'] == 'working':
-                        sale = Sale.objects.get(id=s['id'])
-                        sale.status = 'closed'
-                        sale.save()
-                        return_count['closed'] += 1
+                        #sale = Sale.objects.get(id=s['id'])
+                        #sale.status = 'closed'
+                        #sale.save()
+                        return_count['working'] += 1
                     elif s['status'] == 'closed':
                         return_count['closed'] += 1
                     elif s['status'] == 'canceled':
                         return_count['canceled'] += 1
                 return return_count
-            #appointment not assign -> get random tech -> set status to working
+            #appointment not assign -> get random tech -> set first sale status to working
             else:   
                 process = _Process(appointment_id)
                 assigned_tech = process.assign_tech()
@@ -123,16 +133,23 @@ class _Process:
             self.tech = Appointment.objects.get(id=appointment_id).technician.user.email
         
     def assign_tech(self):
-        print(self.tech)
         user_obj = User.objects.get(email=self.tech)
-        # Create new Sales
-        for s in self.services:
-            Sale.objects.create(
-                service=Service.objects.get(id=s['id']),
-                technician=Technician.objects.get(user=user_obj),
-                appointment=Appointment.objects.get(id=self.appointment_id),
-                status="working",
-            )
+        # Create new Sales (first sale status is working; others will be scheduled)
+        for index,s in enumerate(self.services):
+            if (index == 0):
+                Sale.objects.create(
+                    service=Service.objects.get(id=s['id']),
+                    technician=Technician.objects.get(user=user_obj),
+                    appointment=Appointment.objects.get(id=self.appointment_id),
+                    status="working",
+                )
+            else:
+                Sale.objects.create(
+                    service=Service.objects.get(id=s['id']),
+                    technician=Technician.objects.get(user=user_obj),
+                    appointment=Appointment.objects.get(id=self.appointment_id),
+                    status="scheduled",
+                )
         # Set time slot to False (busy) for open technician
         current_date = self.appointment_info.values_list('date', flat=True)[0]
         assign = timeSlots.objects.get (tech=self.tech, date=current_date)

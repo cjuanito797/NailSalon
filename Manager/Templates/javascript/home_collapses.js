@@ -69,14 +69,14 @@ function sort_timetable(){
     //get selected value
     const dropdown = document.getElementById("timetable_date");
     const selectedValue = dropdown.options[dropdown.selectedIndex].value;
-    //get all elements
+    //get all timetables (different day)
     const all_timetable = document.getElementsByClassName("timetable")
 
     for (i = 0; i < all_timetable.length; i++){
-        //if this appointment id = selected value, then display the appointment
+        //if this timetable id (date) = selected value, then display
         if (all_timetable[i].id == selectedValue){
             all_timetable[i].style.display = "block";
-        //else, hide the appointment, and remove "active class" (remove click color)
+        //hide all else
         }else{
             all_timetable[i].style.display = "none";
         }

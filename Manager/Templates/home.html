@@ -132,7 +132,11 @@
                     </button> 
                     <div class="a_control">
                         <input type="hidden" name="appointment_id" value="{{ a.id }}" />
-                        <button type="submit" name="appointment_btn" class="appointment_btn" value="Trigger" >Trigger</button>
+                        {% if a.sales|length == 0 %}
+                            <button type="submit" name="appointment_btn" class="appointment_btn" value="Initialize" >Initialize</button>
+                        {% else %}
+                            <button type="button" name="appointment_btn" class="appointment_btn" value="Initialize" disabled>Initialize</button>
+                        {% endif %} 
                         <button type="button" name="appointment_btn" class="appointment_btn" id="a_modify" value="{{ a.id }}" >Modify</button>
                         <button type="submit" name="appointment_btn" class="appointment_btn" value="Cancel" >Cancel</button>
                     </div>
@@ -153,6 +157,8 @@
                             {% endfor %} 
                         </div>
                         <div class="s_control">
+                            <input type="hidden" name="appointment_id" value="{{ a.id }}" />
+                            <button type="submit" name="sale_btn" class="sale_btn" value="Trigger">Trigger</button>
                             <button type="button" name="sale_btn" class="sale_btn" id="s_modify">Modify</button>
                             <button type="submit" name="sale_btn" class="sale_btn" value="Cancel">Cancel</button>
                         </div>
@@ -170,7 +176,7 @@
                 <table>
                     <thead>
                         <tr><!--row with technician name-->
-                            <th></th>
+                            <th id="first_cell"></th>
                             {% for t in packet.timetable_list %}
                             {% if t.date == d %}
                             <th class="tech_timetable" id="{{ t.date }}">{{t.tech.first_name}} {{t.tech.last_name}}</th>
@@ -188,7 +194,7 @@
                                 {% if t|get_item:k == True %}
                                 <td style="background-color: green; border: 1px ridge;"></td>
                                 {% else %}
-                                <td style="background-color: gray; border: 1px groove;"></td></td>
+                                <td style="background-color: white; border: 1px groove; text-align: center;">BUSY</td>
                                 {% endif %}
                             {% endif %}
                             {% endfor %}
@@ -215,7 +221,8 @@
                         <option value="{{ t.id }}">{{ t.name.first_name }} {{ t.name.last_name }}</option>
                     {% endfor %}
                 </select>
-                <br><br>
+                <button type="button" name="technician_id" id="modal_btn" value="random" style="display: none;">Random Tech</button>
+                <br>
                 <a>Start Time:</a>
                 <select name="timeslot" id="timeslot">
                     {% for key,slot in packet.timeslots.items %}

@@ -31,13 +31,14 @@ class C_Appointment:
             self.tech_id = int(post['technician_id'])
             self.timeslot = int(post['timeslot'])
         
-    def trigger(self):
+    def initialize(self):
         return_mess = []
         
         # If appointment contain sale => appointment has tech
         if len(self.sale_list) > 0:
             # {'working': 0, 'closed': 0, 'canceled': 0}
             result = Process.close_slots(id=self.appointment_id)
+            return_mess.append("Appointment is already triggered!")
             return_mess.append(f"Working sales: {result['working']}")
             return_mess.append(f"Closed sales: {result['closed']}")
             return_mess.append(f"Canceled sales: {result['canceled']}")
@@ -119,10 +120,16 @@ class C_Appointment:
 class C_Sale:
     def __init__(self, post: dict) -> None:
         s_btn = post['sale_btn']
-        self.sale_obj = Sale.objects.get(id=int(post['sale_id']))
+        
         
         if s_btn == 'Modify':
+            self.sale_obj = Sale.objects.get(id=int(post['sale_id']))
             self.tech_id = int(post['technician_id'])
+        elif s_btn == 'Cancel':
+            self.sale_obj = Sale.objects.get(id=int(post['sale_id']))
+        else:
+            self.appointment_id = int(post['appointment_id'])
+            self.sale_id = int(post['sale_id'])
         
     def modify(self):
         return_mess = []
@@ -146,3 +153,13 @@ class C_Sale:
         else:
             return_mess.append("Sale is already closed. Cannot cancel!")
         return return_mess
+    
+    def trigger(self):
+        return_mess = []
+        
+        result = Process.close_slots(appointment_id=self.appointment_id, sale_id=self.sale_id)
+        return_mess.append(f"Working sales: {result['working']}")
+        return_mess.append(f"Closed sales: {result['closed']}")
+        return_mess.append(f"Canceled sales: {result['canceled']}")
+        return return_mess
+        
