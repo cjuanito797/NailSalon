@@ -14,10 +14,28 @@ def cart_add(request, service_id):
         quantity=1
     )
 
-    print(service.name)
-    print(cart.get_total_price())
-
     return redirect ('appointments:service_list')  # simply redirect to the page displaying our services.
+
+def cart_update_Quanity(request, service_id):
+    if request.method == "POST":
+        form = CartAddServiceForm(request.POST)
+        if form.is_valid():
+
+            cart = Cart(request)
+            service = get_object_or_404(Service, id=service_id)
+
+            # first remove from the cart.
+            cart.remove(service)
+
+            # print the service id and the new quantity
+
+            cart.add (
+                service=service,
+                quantity=int(request.POST["quantity"])
+            )
+        return redirect('cart:cart_detail')
+    else:
+        return redirect('cart:cart_detail')
 
 
 def cart_remove(request, service_id):
@@ -36,4 +54,5 @@ def cart_detail(request):
                 'update': True
             }
         )
+    
     return render (request, 'cart/detail.html', {'cart': cart})

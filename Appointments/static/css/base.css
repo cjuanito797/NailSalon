@@ -1,395 +1,47 @@
-@import url(https://fonts.googleapis.com/css?family=Ubuntu);
-.top {
-            height: auto;
-            width: 100%;
-            margin-left: 0;
-            background: rgb(189, 181, 181);
-            position: fixed;
-            top: 0;
-            margin-bottom: 5px;
-        }
-
-        .top ul {
-            width: auto;
-            list-style-type: none;
-            white-space: nowrap;
-            overflow: hidden;
-            margin-left: 5%;
-            padding: 0;
-        }
-
-        .top li {
-            float: left;
-            margin-right: 2%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .top li a {
-            display: block;
-            color: black;
-            text-align: center;
-            padding: 3px;
-            overflow: hidden;
-            text-decoration: none;
-        }
-
-        .top li a:hover {
-            background: #111;
-        }
-
-        .top ul li ul {
-            margin-left: -0.2px;
-            background: rgb(189, 181, 181);
-            position: relative;
-            display: none;
-        }
-
-        .top ul li ul li {
-            float: none;
-            text-align: center;
-        }
-
-        .top ul li:hover ul {
-            display: block;
-        }
-
-
-
-body {
-    margin: 0;
+.banner {
     padding: 0;
-    font-family: helvetica, sans-serif;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Ubuntu', sans-serif;
-    font-weight: normal;
-}
-
-a {
-    text-decoration: none;
-    color: black;
-}
-
-a:hover {
-    color: #77b6e2;
-}
-
-a.button, input[type="submit"] {
-    color: black;
-    background: floralwhite;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 14px;
-    border: 0;
-}
-
-a.button.light {
-    color: floralwhite;
-    background: #ededed;
-}
-
-.text-left {
-    text-align: left;
-}
-
-.text-right {
-    text-align: right;
-}
-
-table {
+    height: 300px;
+    background-image: url('https://t4.ftcdn.net/jpg/03/38/18/47/360_F_338184799_qDtjVptNgJZMDLQpvpRrmzNOCdWfqhzX.jpg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: bottom;
     width: 100%;
-    border-spacing: 0;
-    border-collapse: collapse;
+    display: grid;
 }
 
-table th, table td {
-    text-align: left;
-    font-size: 14px;
-    padding: 10px;
-    margin: 0;
-}
-
-tbody tr:nth-child(odd) {
-    background: floralwhite;
-    color: black;
-}
-
-tbody tr.subtotal {
-    background: black;
-}
-
-thead th, tbody tr.total {
-    background: floralwhite;
-    color: #fff;
-    font-weight: bold;
-}
-
-table.cart {
-    margin-bottom: 40px;
-}
-
-table.cart img {
-    width: 180px;
-}
-
-tbody td.num {
-    text-align: right;
-}
-
-td input[type="submit"] {
-    font-size: 12px;
-    padding: 4px 10px;
-}
-
-form p label, form p input {
-    float: left;
-    clear: both;
-}
-
-form p label {
-    font-size: 14px;
-    padding-bottom: 4px;
-}
-
-form p input {
-    width: 300px;
-    font-size: 13px;
-    margin-bottom: 10px;
-    padding: 10px 12px;
-    border: 0;
-    background: #efefef;
-    color: #666;
-    border-radius: 4px;
-}
-
-ul.errorlist {
-    float: left;
-    color: #ff0000;
-    clear: both;
-    font-size: 13px;
-    margin: 0;
+#ScheduleBanner {
     padding: 0;
-}
-
-
-#header {
-    padding: 10px 100px;
-    font-size: 18px;
-    overflow: auto;
-}
-
-#subheader {
-    background: #ececec;
-    color: #444;
-    padding: 15px 100px;
-    overflow: auto;
-}
-
-#header .logo {
-    font-family: 'Ubuntu', sans-serif;
-    float: left;
-    color: #333;
-    font-size: 22px;
-    margin-right: 10%;
-}
-
-#subheader .cart {
-    float: right;
-    padding-top: 4px;
-}
-
-#content {
-    padding: 0 100px;
-    overflow: hidden;
-}
-
-#sidebar {
-    width: 220px;
-    padding: 30px 20px 0 0;
-    float: left;
-}
-
-#sidebar ul {
-    margin: 0;
-    padding: 0;
-}
-
-#sidebar ul li {
-    margin: 0;
-    list-style: none;
-    padding: 10px 14px;
-}
-
-#sidebar ul li a {
-    display: block;
-}
-
-#sidebar ul li.selected {
-    background: black;
-    border-radius: 4px;
-}
-
-#sidebar ul li.selected a {
-    color: black;
-}
-
-#main {
-    float: left;
-    width: 96%;
-    margin-right: -220px;
-    overflow: hidden;
-}
-
-.product-list .item {
-    width: 25%;
-    padding: 10px 20px 10px 0;
-    float: left;
-    text-align: center;
-    line-height: 1.2;
-}
-
-.product-list .item img {
+    height: 300px;
+    background-image: url('https://topnailsmtpleasant.com/uploads/fnail0lsagxak/logo/2019/09/30/thumbnail/x2-w768.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: bottom;
     width: 100%;
-    margin-bottom: 8px;
+    display: grid;
 }
 
-.product-detail {
-    text-align: justify;
+.grid-container {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    grid-gap: 1%;
+
 }
 
-.product-detail .price {
-    color: #333;
-    font-size: 28px;
-    font-weight: bold;
+.grid-child-categories {
+    padding: 1%;
 }
 
-.product-detail img {
-    width: 40%;
-    float: left;
-    padding: 0 20px 20px 0;
+.grid-child-services {
 }
 
-.product-detail h1 {
-    margin-bottom: 0;
-}
-
-.product-detail h2 {
-    margin-top: 10px;
-}
-
-.order-form {
-    float: left;
-}
-
-.order-info {
-    float: right;
-    width: 300px;
-    background: #efefef;
-    padding: 10px 20px;
-    color: #333;
-    border-bottom: 4px solid #5993bb;
-}
-
-.order-info h3 {
-    color: blue;
-}
-
-.order-info ul li {
-    margin: 0;
-    padding: 0;
-    font-size: 14px;
-}
-
-.order-info p {
-    font-weight: bold;
-    float: right;
-}
-
-.order-info span {
-    float: right;
-}
-
-.neg {
-    color: #dc1616;
-}
-
-.languages {
-    float: right;
-    padding-top: 4px;
-    font-size: 14px;
-}
-
-.languages ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    float: left;
-}
-
-.languages ul li {
-    float: left;
-    margin: 0 0 0 10px;
-    font-size: 14px;
-}
-
-.languages p {
-    float: left;
-    margin: 0;
-}
-
-.recommendations {
-    clear: both;
-}
-
-.recommendations div {
-    float: left;
-}
-
-.recommendations img {
-    width: 200px
-}
-
-.recommendations p {
-    clear: both;
-}
-
-.recommendations.cart {
-    width: 60%;
-    float: left;
-    overflow: auto;
-}
-
-.recommendations.cart h3 {
-    margin-top: 0;
-}
-
-.recommendations.cart .item {
-    margin-right: 10px;
-}
-
-.recommendations.cart img {
-    width: 120px;
-}
-
-form div.field {
-    font-size:13px;
-    color:#666;
-    width:300px;
-    height:22px;
-    margin-bottom:10px;
-    padding:6px 12px;
-    border:0;
-    background:#efefef;
-    color:#666;
-    border-radius:4px;
-}
-
-.addressListing {
-    border-style: solid;
-    border-radius: 10px;
+.parent {
     text-align: center;
-    width: 200px;
+}
+
+.child {
+    width: 50%;
+    display: inline-block;
+    padding: 1rem 1rem;
+    vertical-align: middle;
 }
 

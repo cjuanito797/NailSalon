@@ -1,0 +1,2 @@
+Hello {{ user }} we are letting you know that you have succesfully  cancelled your appointment on {{ date }} with
+{{ technician }}. Thank you for using our services.

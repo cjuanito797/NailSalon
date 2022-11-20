@@ -132,19 +132,37 @@
     </div>
 
     <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
-
-                <a class="button is-info" href="">
-                    Change Email
+    <section class="section has-text-left">
+        <h1 class="title has-text-black">Your Information</h1>
+        ____________________________________________________
+        <br>
+        <br>
+        First Name: {{ this_user.first_name }}
+        <br>
+        <br>
+        Last Name: {{ this_user.last_name }}
+        <br>
+        <br>
+                <a class="button is-info" href="{}">
+                    Edit Name
                 </a>
-
-                <a class="button is-info" href="{% url 'account:changePassword' %}">
-                    Change Password
+        <br>
+        <br>
+        Address: {{ this_user.street_num }}, {{ this_user.city }}, {{ this_user.state }} {{ this_user.zipcode }}
+        <br>
+        <br>
+                <a class="button is-info" href="{% url 'account:edit_address' %}">
+                    Edit Address
                 </a>
-
-                <a class="button is-info" href="">
-                    Delete Account
+        <br>
+        <br>
+        Phone Number: {{ this_user.phoneNumber }}
+        <br>
+        <br>
+                <a class="button is-info" href="{}">
+                    Edit Phone Number
                 </a>
-
+            </section>
     </div>
 
 {% endblock %}

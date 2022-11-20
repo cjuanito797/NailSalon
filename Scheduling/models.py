@@ -10,43 +10,32 @@ class TechnicianSchedule (models.Model):
     tech = models.EmailField (_ ('email'), unique=True)
 
     monday_availability = models.BooleanField (default=False)
-    monday_timeIn = models.TimeField (blank=True)
-    monday_timeOut = models.TimeField (blank=True)
+    monday_time_In = models.TimeField (blank=True)
+    monday_time_Out = models.TimeField (blank=True)
 
     tuesday_availability = models.BooleanField (default=False)
     tuesday_time_In = models.TimeField (blank=True)
     tuesday_time_Out = models.TimeField (blank=True)
 
-
     wednesday_availability = models.BooleanField (default=False)
     wednesday_time_In = models.TimeField (blank=True)
     wednesday_time_Out = models.TimeField (blank=True)
-
-
 
     thursday_availability = models.BooleanField (default=False)
     thursday_time_In = models.TimeField (blank=True)
     thursday_time_Out = models.TimeField (blank=True)
 
-
-
     friday_availability = models.BooleanField (default=False)
     friday_time_In = models.TimeField (blank=True)
     friday_time_Out = models.TimeField (blank=True)
-
-
 
     saturday_availability = models.BooleanField (default=False)
     saturday_time_In = models.TimeField (blank=True)
     saturday_time_Out = models.TimeField (blank=True)
 
-
-
     sunday_availability = models.BooleanField (default=False)
     sunday_time_In = models.TimeField (blank=True)
     sunday_time_Out = models.TimeField (blank=True)
-
-
 
     def __str__(self):
         return self.tech + "\'s schedule"
@@ -82,7 +71,7 @@ class TechnicianSchedule (models.Model):
 class timeSlots (models.Model):
     tech = models.EmailField (_ ('email'), unique=False)
     date = models.DateField (blank=True)
-    arrive_time = models.TimeField(blank=True, null=True)
+    arrive_time = models.TimeField (blank=True, null=True)
 
     nine_00_am = models.BooleanField (default=False)
     nine_15am = models.BooleanField (default=False)
@@ -125,4 +114,120 @@ class timeSlots (models.Model):
     four_45pm = models.BooleanField (default=False)
 
     def __str__(self):
-        return self.tech + "\'s" + " " + str(self.date)
+        return self.tech + "\'s" + " " + str (self.date)
+
+    def list(self):
+        timeSlotsList = [self.nine_00_am, self.nine_15am, self.nine_30am, self.nine_45am,
+                         self.ten_00_am, self.ten_15am, self.ten_30am, self.ten_45am,
+                         self.eleven_00_am, self.eleven_15am, self.eleven_30am, self.eleven_45am,
+                         self.twelve_00_pm, self.twelve_15pm, self.twelve_30pm, self.twelve_45pm,
+                         self.one_00_pm, self.one_15pm, self.one_30pm, self.one_45pm,
+                         self.two_00_pm, self.two_15pm, self.two_30pm, self.two_45pm,
+                         self.three_00_pm, self.three_15pm, self.three_30pm, self.three_45pm,
+                         self.four_00_pm, self.four_15pm, self.four_30pm, self.four_45pm]
+        return timeSlotsList
+
+    def getTimeSlot(self, time):
+        if time == "9:00am":
+            return "nine_00_am"
+        elif time == "9:15am":
+            return "nine_15am"
+        elif time == "9:30am":
+            return "nine_30am"
+        elif time == "9:45am":
+            return "nine_45am"
+        elif time == "10:00am":
+            return "ten_00_am"
+        elif time == "10:15am":
+            return "ten_15am"
+        elif time == "10:30am":
+            return "ten_30am"
+        elif time == "10:45am":
+            return "ten_45am"
+        elif time == "11:00am":
+            return "eleven_00_am"
+        elif time == "11:15am":
+            return "eleven_15am"
+        elif time == "11:30am":
+            return "eleven_30am"
+        elif time == "11:45am":
+            return "eleven_45am"
+        elif time == "12:00pm":
+            return "twelve_00_pm"
+        elif time == "12:15pm":
+            return "twelve_15pm"
+        elif time == "12:30pm":
+            return "twelve_30pm"
+        elif time == "12:45pm":
+            return "twelve_45pm"
+        elif time == "1:00pm":
+            return "one_00_pm"
+        elif time == "1:15pm":
+            return "one_15pm"
+        elif time == "1:30pm":
+            return "one_30pm"
+        elif time == "1:45pm":
+            return "one_45pm"
+        elif time == "2:00pm":
+            return "two_00_pm"
+        elif time == "2:15pm":
+            return "two_15pm"
+        elif time == "2:30pm":
+            return "two_30pm"
+        elif time == "2:45pm":
+            return "two_45pm"
+        elif time == "3:00pm":
+            return "three_00_pm"
+        elif time == "3:15pm":
+            return "three_15pm"
+        elif time == "3:30pm":
+            return "three_30pm"
+        elif time == "3:45pm":
+            return "three_45pm"
+        elif time == "4:00pm":
+            return "four_00_pm"
+        elif time == "4:15pm":
+            return "four_15pm"
+        elif time == "4:30pm":
+            return "four_30pm"
+        elif time == "4:45pm":
+            return "four_45pm"
+
+
+    def timeDictionary(self):
+        times = {
+            '9:00am': self.nine_00_am,
+            '9:15am': self.nine_15am,
+            '9:30am': self.nine_30am,
+            '9:45am': self.nine_45am,
+            '10:00am': self.ten_00_am,
+            '10:15am': self.ten_15am,
+            '10:30am': self.ten_30am,
+            '10:45am': self.ten_45am,
+            '11:00am': self.eleven_00_am,
+            '11:15am': self.eleven_15am,
+            '11:30am': self.eleven_30am,
+            '11:45am': self.eleven_45am,
+            '12:00pm': self.twelve_00_pm,
+            '12:15pm': self.twelve_15pm,
+            '12:30pm': self.twelve_30pm,
+            '12:45pm': self.twelve_45pm,
+            '1:00pm': self.one_00_pm,
+            '1:15pm': self.one_15pm,
+            '1:30pm': self.one_30pm,
+            '1:45pm': self.one_45pm,
+            '2:00pm': self.two_00_pm,
+            '2:15pm': self.two_15pm,
+            '2:30pm': self.two_30pm,
+            '2:45pm': self.two_45pm,
+            '3:00pm': self.three_00_pm,
+            '3:15pm': self.three_15pm,
+            '3:30pm': self.three_30pm,
+            '3:45pm': self.three_45pm,
+            '4:00pm': self.four_00_pm,
+            '4:15pm': self.four_15pm,
+            '4:30pm': self.four_30pm,
+            '4:45pm': self.four_45pm
+        }
+
+        return times

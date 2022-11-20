@@ -17,14 +17,40 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('Account.urls', namespace='Account')),
-    path('appointment/', include('Appointments.urls', namespace='appointments')),
-    path('cart/', include('cart.urls', namespace='cart')),
+    path ('admin/', admin.site.urls),
+    path ('', include ('Account.urls', namespace='Account')),
+    path ('appointment/', include ('Appointments.urls', namespace='appointments')),
+    path ('cart/', include ('cart.urls', namespace='cart')),
+    path ('manager/', include ('Manager.urls', namespace='Manager')),
+
+    # views for password reset
+
+    # this view renders the template where the user enters their e-mail.
+    path ("password_reset/", auth_views.PasswordResetView.as_view (template_name="account/password_reset.html"),
+          name='password_reset'),
+
+    # this view reders the confirmation page, when the e-mail was successfully sent to the user.
+    path ("password_reset_sent/",
+          auth_views.PasswordResetDoneView.as_view (template_name="account/password_reset_sent.html"),
+          name='password_reset_done'),
+
+    # this view/url that encodes users information for password change.
+    path ("reset/<uidb64>/<token>/",
+          auth_views.PasswordResetConfirmView.as_view (template_name='account/password_reset_confirm.html'),
+          name='password_reset_confirm'),
+
+    # this is the view that is rendered whenever the user has succesfully reset their password.
+    path ("password_reset_complete/",
+          auth_views.PasswordResetCompleteView.as_view (template_name='account/password_reset_done.html'),
+          name='password_reset_complete'),
+
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+    urlpatterns += static (settings.MEDIA_URL,
+                           document_root=settings.MEDIA_ROOT)

@@ -2,7 +2,16 @@
 
 {% load static %}
 
-{% block title %}<title>Confirm Appointment</title>{% endblock %}
+{% block head %}
+    {% block title %}<title>Confirm Appointment</title>{% endblock %}
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
+{% endblock %}
 
 {% block navigation %}
     <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -89,7 +98,7 @@
                     <div class="buttons">
 
                         <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
-                            <img src="../../../Account/static/shopping_bag.png" style=""/>
+                            <img src={% static "shopping_bag.png" %} style=""/>
                             {% with total_items=cart|length %}
                                 {% if cart|length > 0 %}
                                     ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
@@ -122,58 +131,179 @@
 {% block mainbody %}
 
     <section class="hero is-fullheight">
-        <div class="hero-head has-text-centered">
-            <div class="">
-                <p class="title has-text-black">
-                    Please Select a date and time for technician {{ tech.user.first_name }}
-                </p>
+        <div class='column has-text-centered is-half' style="position: relative; width: 100%;">
+            <div class='child'>
+                <div class="box has-text-left">
+                    <!--make the progress bar display a green check mark for the first step, and give them the option to continue.
+                    this design will need to be consistent throughout all of the pages -->
+                    <a href="{% url 'appointments:service_list' %}">
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 0%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="carbon:shopping-bag" width="50"></iconify-icon>
+                            <p>Add service(s) below</p>
+                        </div>
+                    </a>
 
+                    <a href="{% url 'cart:cart_detail' %}">
+                        <div class="step has-text-centered"
+                             style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                            <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+                            <p>Confirm your services</p>
+                        </div>
+                    </a>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="bi:person-check-fill" width="50"></iconify-icon>
+                        <p>Select Technician</p>
+
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; ">
+                        <iconify-icon icon="akar-icons:calendar" width="50"></iconify-icon>
+                        <p>Select Date & Time</p>
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block; padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="line-md:circle-to-confirm-circle-transition" width="50"></iconify-icon>
+                        <p>Confirm your appointment</p>
+                    </div>
+
+
+                    <div class="stepsNumbers" style="display: flex; align-items: center;">
+                        {% if cart|length > 0 %}
+                            <iconify-icon icon="bi:1-circle-fill" width="25"
+                                          style="margin-left: 6%; color: lightgreen;"></iconify-icon>
+                        {% else %}
+                            <iconify-icon icon="bi:1-circle" width="25"
+                                          style="margin-left: 6%;"></iconify-icon>
+
+                        {% endif %}
+
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:2-circle-fill" width="25" style="color: lightgreen"></iconify-icon>
+
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:3-circle-fill" width="25" style="color: lightgreen"></iconify-icon>
+
+                        <div class="hr" style="border: 1px solid black; width: 17%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:4-circle-fill" width="25"></iconify-icon>
+                        <div class="hr" style="border: 1px solid black; width: 18%; display: inline-block; ">
+                        </div>
+
+                        <iconify-icon icon="bi:5-circle" width="25"></iconify-icon>
+
+                    </div>
+                </div>
             </div>
-
-
         </div>
 
-        <!--Add some spacing-->
-        <section class="field-body" style="margin-left: 55%; margin-top: 7%; position: relative;">
-            <div class="field-label has-text centered" style="margin: -5%;">
-                <p class="title has-text-black has-text-centered">
+        <div class="grid-container">
+
+            <div class="grid-child-categories" style="margin-top: 12%;">
+                <nav class="panel">
+                    <p class="panel-heading has-text-centered" style="background-color: lightpink">
+                        Select A Time Below for {{ date }}
+                    </p>
+                    <div class="panel-block">
+                        <p class="control has-icons-left">
+                            <span class="icon is-left">
+      </span>
+                        </p>
+                    </div>
+
+
+                    <div class="navbar has-text-centered" style="color: black; display: grid;">
+                        <form method="post" class="post-form">
+                            {% csrf_token %}
+
+                            <p class="subtitle is-size-3 has-text-black">
+                                Morning
+                            </p>
+                            <hr class="navbar-divider">
+                            <div class="p-3 columns "
+                                 style="display: flex; align-items: center; flex-wrap: wrap; height: 185px;">
+                                {% for time in morning %}
+                                    <input type="submit" name="start_time" class="button is-info"
+                                           value="{{ time.0 }}" style="width: 25%; margin-top: 1%;">
+                                    &nbsp;
+                                    <br>
+
+                                {% endfor %}
+
+                            </div>
+
+                            <p class="subtitle is-size-3 has-text-black">
+                                Afternoon
+                            </p>
+                            <hr class="navbar-divider">
+                            <div class="p-3 columns "
+                                 style="display: flex; align-items: center; flex-wrap: wrap; height: 185px;">
+                                {% for time in afternoon %}
+                                    <input type="submit" name="start_time" class="button is-info"
+                                           style="width: 25%; margin-top: 1%;"
+                                           value="{{ time.0 }}">
+
+                                    &nbsp;
+                                    <br>
+
+
+                                {% endfor %}
+
+                            </div>
+
+                            <p class="subtitle is-size-3 has-text-black">
+                                Evening
+                            </p>
+                            <hr class="navbar-divider">
+                            <div class="p-3 columns "
+                                 style="display: flex; align-items: center; flex-wrap: wrap; height: 185px;">
+                                {% for time in evening %}
+
+                                    <input type="submit" name="start_time" class="button is-info"
+                                           style="width: 25%; margin-top: 1%;"
+                                           value="{{ time.0 }}">
+
+                                    &nbsp;
+                                    <br>
+
+                                {% endfor %}
+                            </div>
+                        </form>
+                    </div>
+
+                </nav>
+            </div>
+
+
+            <div class="grid-child-services has-text-centered">
+
+                <p class="subtitle is-size-3 has-text-black">
                     Availability
                 </p>
+                <div class="box"
+                     style="border-radius: 5px; width: 75%; margin-left: 12%; overflow-y: scroll;  overflow-x: hidden; height: 30%;">
+
+                    {% for day in availableDates %}
+
+                        <a href="{% url 'appointments:schedule' tech.id day.id %}"
+                           class="button is-fullwidth is-spaced is-size-5 has-text-centered"
+                           style="margin-top: 1%;">{{ day.date }}</a>
+
+                    {% endfor %}
+
+                </div>
 
             </div>
-
-            <!--render a box in here to hold the dates-->
-            <div class="box"
-                 style="border-radius: 5px; margin-top: 5%; width: 100%; overflow-y: scroll; position: absolute; height: 75%;">
-                {% for day in availableDates %}
-                    <!-- create a styled box for each of the dates and then render them that way-->
-
-                    <button class="button is-fullwidth is-spaced is-size-5 has-text-centered" style="margin: 2%; padding: 10px;">{{ day.date }}</button>
-
-                {% endfor %}
-
-            </div>
-        </section>
-
-        <section class="field-body" style="margin-left: 5%; margin-top: 10%; position:absolute;">
-
-            <div class="field-label has-text-left">
-                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
-                    Morning
-                </p>
-
-                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
-                    Afternoon
-                </p>
-
-                <p class="title has-text-black has-text-left" style="margin-bottom: 100%;">
-                    Evening
-                </p>
-
-            </div>
-
-
-        </section>
+        </div>
 
 
     </section>

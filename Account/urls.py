@@ -2,11 +2,11 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
 
 from . import views
-
+from django.contrib.auth import views as auth_views
 app_name = 'account'
 
 urlpatterns = [
-    re_path (r'^customerView/$', views.customerView, name='customerView'),
+    re_path(r'^customerView/$', views.customerView, name='customerView'),
     path("", views.home, name="home"),
     path("login/", auth_views.LoginView.as_view(), name="user_login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
@@ -17,5 +17,8 @@ urlpatterns = [
     path("aboutUs/", views.aboutUs, name='aboutUs'),
     path("profile/", views.profile, name='profile'),
     path("changePassword/", views.changePassword, name='changePassword'),
-    path("securitySettings/", views.securitySettings, name='security')
+    path("securitySettings/", views.securitySettings, name='security'),
+    path("editAddress/", views.edit_address, name='edit_address'),
+    path("deleteAccount/", views.deleteAccount, name='deleteAccount'),
+    path("changeEmail/", views.changeEmail, name='changeEmail'),
 ]

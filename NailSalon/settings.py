@@ -9,10 +9,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os.path
 from pathlib import Path
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path (__file__).resolve ( ).parent.parent
-
 AUTH_USER_MODEL = 'Account.User'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -30,18 +32,27 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
+    "django.contrib.admin",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    
     'Account.apps.AccountConfig',
     'Scheduling.apps.SchedulingConfig',
-    'django_behave',
     'Appointments.apps.AppointmentsConfig',
     'cart.apps.CartConfig',
-    'Calendar.apps.CalendarConfig'
+    'Calendar.apps.CalendarConfig',
+    'Manager.apps',
+    
+    'django_crontab',
+    'django_behave',
+]
+
+CRONTAB_COMMAND_SUFFIX = '2>&1'
+CRONJOBS = [
+    ('0 9 * * 1-6', 'helper.cron.open_time_job', f">> {os.path.join (BASE_DIR, 'NailSalon/log/helper_job.log')}"),
 ]
 
 MIDDLEWARE = [
@@ -58,10 +69,9 @@ ROOT_URLCONF = "NailSalon.urls"
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates']
-        ,
-        "APP_DIRS": True,
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join (BASE_DIR, 'templates'), ],
+        'APP_DIRS': True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -72,6 +82,9 @@ TEMPLATES = [
                 "Scheduling.context_processors.getTodaysDate",
                 "Calendar.context_processors.buildCalendar"
             ],
+            "libraries":{
+                "extra_tags": "Manager.templatetags.extra_tags"
+            }
         },
     },
 ]
@@ -118,7 +131,7 @@ TIME_INPUT_FORMATS = ('%I:%M %p')
 
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '../customerView/'
-LOGIN_URL = 'login'
+LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = '/'
 
 CART_SESSION_ID = 'cart'
@@ -130,3 +143,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 TEST_RUNNER = 'django_behave'
 
+# SMTP Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'applenailsalon22@gmail.com'
+EMAIL_HOST_PASSWORD = 'xxwwcggwiyxcwatf'

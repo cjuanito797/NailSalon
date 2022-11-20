@@ -80,10 +80,13 @@ class User (AbstractBaseUser, PermissionsMixin):
     isTechnician = models.BooleanField (default=False)
     is_staff = models.BooleanField (default=False)
     bio = models.TextField (blank=True)
+    age = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
 
     objects = CustomUserManger ( )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
 
 
 

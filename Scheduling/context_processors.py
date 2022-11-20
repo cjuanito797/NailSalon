@@ -6,6 +6,7 @@ from .models import *
 from Account.models import Technician
 from Calendar.models import calendarEntry
 import calendar
+from helper.timeslot_process import Process
 
 myDates = []
 
@@ -30,6 +31,7 @@ def buildMonthlyDays(today):
         # perhaps we wont delete old time slots as it may helpt with data processing.
         # time slot for each technician on this new day, note that this should only be done once.
         techs = Technician.objects.all ( )
+
         dayOfWeek = calendar.day_name[today.weekday ( )].lower ( )
 
         if dayOfWeek == 'Monday':
@@ -60,9 +62,6 @@ def buildMonthlyDays(today):
 
         # so now go ahead and create the calendar entries.
         new_entry.save ( )
-
-        # now for each of the new days, what we will do is we modify the time slots based off of the technicians
-        # availability that they have set, for an abstract week.
 
         today = today + timedelta (days=1)
 
@@ -115,6 +114,8 @@ def buildSchedules(todaysDate):
 
             new_time_slot.save ( )
 
+        Process.open_slots (date=nextDayInWindow)
+
         # now also each time that we move the window one day to the right, we also need to create a calendar entry with
         # all of the techs working on that day.
         dayOfWeek = calendar.day_name[nextDayInWindow.weekday ( )].lower ( )
@@ -155,7 +156,7 @@ def buildSchedules(todaysDate):
 
 def getTodaysDate(request):
     todaysDate = date.today ( )
-    # buildMonthlyDays(todaysDate)
-    # buildSchedules (todaysDate)
+    #buildMonthlyDays(todaysDate)
+    buildSchedules (todaysDate)
 
     return {'todaysDate': todaysDate}
