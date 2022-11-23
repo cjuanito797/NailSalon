@@ -134,3 +134,7 @@ class Sale (models.Model):
                                choices=STATUS_OPTION,
                                blank=False,
                                default='scheduled')
+    
+    start_time = models.TimeField (default=None,
+                                   null=True,
+                                   blank=True)

@@ -10,19 +10,18 @@ for (i = 0; i < a_btn.length; i++){
     a_btn[i].onclick = function() {
         //display modal
         modal.style.display = "block";
-        //enable timeslot (appointment can has time modifying)
-        var timefield = document.querySelectorAll("[name='timeslot']")
-        for (var j = 0; j < timefield.length; j++){
-            timefield[j].disabled = false;
-        }
+        //display timeslot (appointment can has time modifying)
+        document.getElementById("div_modal_timeslot").style.display = "block";
 
-        //remove Randome Button uses in Sale modify
+        //remove Random Button uses in Sale modify
         var btn = document.querySelectorAll("[id='modal_btn']");
         for (var h = 0; h < btn.length; h++){
             if(btn[h].getAttribute("name") == "technician_id"){
                 btn[h].style.display = "none";
             }
         }
+        
+
         //set first cell in timetable hide behind the modal
         document.getElementById("first_cell").style.zIndex = "1";
 
@@ -40,11 +39,6 @@ for (i = 0; i < s_btn.length; i++){
     s_btn[i].onclick = function() {
         //display modal
         modal.style.display = "block";
-        //disable timeslot (sales do not need time modify)
-        var timefield = document.querySelectorAll("[name='timeslot']")
-        for (var j = 0; j < timefield.length; j++){
-            timefield[j].disabled = true;
-        }
 
         //display Randome Button uses in Sale modify
         var btn = document.querySelectorAll("[id='modal_btn']");
@@ -53,6 +47,8 @@ for (i = 0; i < s_btn.length; i++){
                 btn[h].style.display = "block";
             }
         }
+        //disable timeslot (sales do not need time modify)
+        document.getElementById("div_modal_timeslot").style.display = "none";
         //set first cell in timetable hide behind the modal
         first_cell = document.getElementById("first_cell").style.zIndex = "1";
 
@@ -68,8 +64,30 @@ for (i = 0; i < s_btn.length; i++){
         }
     }
 }
-function sale_random_btn(){
-    
+
+var btn = document.querySelectorAll("[id='modal_btn']");
+for (var i = 0; i < btn.length; i++){
+    if(btn[i].getAttribute("name") == "technician_id"){
+        btn[i].style.display = "block";
+        btn[i].onclick = function(){
+            this.previousElementSibling.add((new Option("-- Random --", "random")), 0);
+            this.previousElementSibling.selectedIndex = "0";
+            
+            
+            if (confirm("Replace next random technician into this sale?") == true){
+                
+                for (var j = 0; j < btn.length; j++){
+                    if(btn[j].getAttribute("name") == "sale_btn"){
+                        btn[j].click()
+                    }
+                }
+            }else{
+                this.previousElementSibling.options[0].remove();
+            }
+
+            
+        };
+    }
 }
 
 
