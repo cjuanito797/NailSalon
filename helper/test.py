@@ -3,11 +3,27 @@ import django
 import os
 import calendar
 import sys
-
+from datetime import date
+import calendar
 sys.path.append ("../NailSalon")
 os.environ.setdefault ('DJANGO_SETTINGS_MODULE', 'NailSalon.settings')
 django.setup ( )
 
+cc = ["f@a.com", "g@a.com", "h@a.com","i@a.com", "j@a.com", "k@a.com", "l@a.com", "m@a.com", "n@a.com", "o@a.com", "p@a.com"]
+def get_date():
+    aa=[]
+    bb=[]
+    for i in range(30):
+        a = (date.today() + datetime.timedelta(days=i))
+        c = a.strftime("%Y,%m,%d")
+        b = calendar.day_name[a.weekday()]
+        if b != 'Sunday':
+            aa.append(c)
+        else:
+            bb.append(c)
+    return [aa,bb]
+
+'''
 from Account.models import User
 
 a = [
@@ -67,11 +83,12 @@ for i in a:
 print ("Customer done!")
 # DELETE FROM Account_customer;
 
+
+
 from Scheduling.models import TechnicianSchedule
 
-a = [
-    TechnicianSchedule (
-        tech="f@a.com",
+for i in cc:
+    TechnicianSchedule (tech=i,
         monday_availability=True,
         monday_time_In=datetime.time (9, 0),
         monday_time_Out=datetime.time (17, 0),
@@ -90,254 +107,10 @@ a = [
         saturday_availability=True,
         saturday_time_In=datetime.time (9, 0),
         saturday_time_Out=datetime.time (17, 0),
-        sunday_availability=True,
-        sunday_time_In=datetime.time (9, 0),
-        sunday_time_Out=datetime.time (17, 0),
-    ),
-    TechnicianSchedule (
-        tech="g@a.com",
-        monday_availability=True,
-        monday_time_In=datetime.time (9, 0),
-        monday_time_Out=datetime.time (17, 0),
-        tuesday_availability=True,
-        tuesday_time_In=datetime.time (9, 0),
-        tuesday_time_Out=datetime.time (17, 0),
-        wednesday_availability=True,
-        wednesday_time_In=datetime.time (9, 0),
-        wednesday_time_Out=datetime.time (17, 0),
-        thursday_availability=True,
-        thursday_time_In=datetime.time (9, 0),
-        thursday_time_Out=datetime.time (17, 0),
-        friday_availability=True,
-        friday_time_In=datetime.time (9, 0),
-        friday_time_Out=datetime.time (17, 0),
-        saturday_availability=True,
-        saturday_time_In=datetime.time (9, 0),
-        saturday_time_Out=datetime.time (17, 0),
-        sunday_availability=True,
-        sunday_time_In=datetime.time (9, 0),
-        sunday_time_Out=datetime.time (17, 0),
-    ),
-    TechnicianSchedule (
-        tech="h@a.com",
-        monday_availability=True,
-        monday_time_In=datetime.time (9, 0),
-        monday_time_Out=datetime.time (17, 0),
-        tuesday_availability=True,
-        tuesday_time_In=datetime.time (9, 0),
-        tuesday_time_Out=datetime.time (17, 0),
-        wednesday_availability=True,
-        wednesday_time_In=datetime.time (9, 0),
-        wednesday_time_Out=datetime.time (17, 0),
-        thursday_availability=True,
-        thursday_time_In=datetime.time (9, 0),
-        thursday_time_Out=datetime.time (17, 0),
-        friday_availability=True,
-        friday_time_In=datetime.time (9, 0),
-        friday_time_Out=datetime.time (17, 0),
-        saturday_availability=True,
-        saturday_time_In=datetime.time (9, 0),
-        saturday_time_Out=datetime.time (17, 0),
-        sunday_availability=True,
-        sunday_time_In=datetime.time (9, 0),
-        sunday_time_Out=datetime.time (17, 0),
-    ),
-    TechnicianSchedule (
-        tech="i@a.com",
-        monday_availability=True,
-        monday_time_In=datetime.time (9, 0),
-        monday_time_Out=datetime.time (17, 0),
-        tuesday_availability=True,
-        tuesday_time_In=datetime.time (9, 0),
-        tuesday_time_Out=datetime.time (17, 0),
-        wednesday_availability=True,
-        wednesday_time_In=datetime.time (9, 0),
-        wednesday_time_Out=datetime.time (17, 0),
-        thursday_availability=True,
-        thursday_time_In=datetime.time (9, 0),
-        thursday_time_Out=datetime.time (17, 0),
-        friday_availability=True,
-        friday_time_In=datetime.time (9, 0),
-        friday_time_Out=datetime.time (17, 0),
-        saturday_availability=True,
-        saturday_time_In=datetime.time (9, 0),
-        saturday_time_Out=datetime.time (17, 0),
-        sunday_availability=True,
-        sunday_time_In=datetime.time (9, 0),
-        sunday_time_Out=datetime.time (17, 0),
-    ),
-    TechnicianSchedule (
-        tech="j@a.com",
-        monday_availability=True,
-        monday_time_In=datetime.time (9, 0),
-        monday_time_Out=datetime.time (17, 0),
-        tuesday_availability=True,
-        tuesday_time_In=datetime.time (9, 0),
-        tuesday_time_Out=datetime.time (17, 0),
-        wednesday_availability=True,
-        wednesday_time_In=datetime.time (9, 0),
-        wednesday_time_Out=datetime.time (17, 0),
-        thursday_availability=True,
-        thursday_time_In=datetime.time (9, 0),
-        thursday_time_Out=datetime.time (17, 0),
-        friday_availability=True,
-        friday_time_In=datetime.time (9, 0),
-        friday_time_Out=datetime.time (17, 0),
-        saturday_availability=True,
-        saturday_time_In=datetime.time (9, 0),
-        saturday_time_Out=datetime.time (17, 0),
-        sunday_availability=True,
-        sunday_time_In=datetime.time (9, 0),
-        sunday_time_Out=datetime.time (17, 0),
-    ),
-    TechnicianSchedule (
-        tech="k@a.com",
-        monday_availability=True,
-        monday_time_In=datetime.time (9, 0),
-        monday_time_Out=datetime.time (17, 0),
-        tuesday_availability=True,
-        tuesday_time_In=datetime.time (9, 0),
-        tuesday_time_Out=datetime.time (17, 0),
-        wednesday_availability=True,
-        wednesday_time_In=datetime.time (9, 0),
-        wednesday_time_Out=datetime.time (17, 0),
-        thursday_availability=True,
-        thursday_time_In=datetime.time (9, 0),
-        thursday_time_Out=datetime.time (17, 0),
-        friday_availability=True,
-        friday_time_In=datetime.time (9, 0),
-        friday_time_Out=datetime.time (17, 0),
-        saturday_availability=True,
-        saturday_time_In=datetime.time (9, 0),
-        saturday_time_Out=datetime.time (17, 0),
-        sunday_availability=True,
-        sunday_time_In=datetime.time (9, 0),
-        sunday_time_Out=datetime.time (17, 0),
-    ),
-    TechnicianSchedule (
-        tech="l@a.com",
-        monday_availability=True,
-        monday_time_In=datetime.time (9, 0),
-        monday_time_Out=datetime.time (17, 0),
-        tuesday_availability=True,
-        tuesday_time_In=datetime.time (9, 0),
-        tuesday_time_Out=datetime.time (17, 0),
-        wednesday_availability=True,
-        wednesday_time_In=datetime.time (9, 0),
-        wednesday_time_Out=datetime.time (17, 0),
-        thursday_availability=True,
-        thursday_time_In=datetime.time (9, 0),
-        thursday_time_Out=datetime.time (17, 0),
-        friday_availability=True,
-        friday_time_In=datetime.time (9, 0),
-        friday_time_Out=datetime.time (17, 0),
-        saturday_availability=True,
-        saturday_time_In=datetime.time (9, 0),
-        saturday_time_Out=datetime.time (17, 0),
-        sunday_availability=True,
-        sunday_time_In=datetime.time (9, 0),
-        sunday_time_Out=datetime.time (17, 0),
-    ),
-    TechnicianSchedule (
-        tech="m@a.com",
-        monday_availability=True,
-        monday_time_In=datetime.time (9, 0),
-        monday_time_Out=datetime.time (17, 0),
-        tuesday_availability=True,
-        tuesday_time_In=datetime.time (9, 0),
-        tuesday_time_Out=datetime.time (17, 0),
-        wednesday_availability=True,
-        wednesday_time_In=datetime.time (9, 0),
-        wednesday_time_Out=datetime.time (17, 0),
-        thursday_availability=True,
-        thursday_time_In=datetime.time (9, 0),
-        thursday_time_Out=datetime.time (17, 0),
-        friday_availability=True,
-        friday_time_In=datetime.time (9, 0),
-        friday_time_Out=datetime.time (17, 0),
-        saturday_availability=True,
-        saturday_time_In=datetime.time (9, 0),
-        saturday_time_Out=datetime.time (17, 0),
-        sunday_availability=True,
-        sunday_time_In=datetime.time (9, 0),
-        sunday_time_Out=datetime.time (17, 0),
-    ),
-    TechnicianSchedule (
-        tech="n@a.com",
-        monday_availability=True,
-        monday_time_In=datetime.time (9, 0),
-        monday_time_Out=datetime.time (17, 0),
-        tuesday_availability=True,
-        tuesday_time_In=datetime.time (9, 0),
-        tuesday_time_Out=datetime.time (17, 0),
-        wednesday_availability=True,
-        wednesday_time_In=datetime.time (9, 0),
-        wednesday_time_Out=datetime.time (17, 0),
-        thursday_availability=True,
-        thursday_time_In=datetime.time (9, 0),
-        thursday_time_Out=datetime.time (17, 0),
-        friday_availability=True,
-        friday_time_In=datetime.time (9, 0),
-        friday_time_Out=datetime.time (17, 0),
-        saturday_availability=True,
-        saturday_time_In=datetime.time (9, 0),
-        saturday_time_Out=datetime.time (17, 0),
-        sunday_availability=True,
-        sunday_time_In=datetime.time (9, 0),
-        sunday_time_Out=datetime.time (17, 0),
-    ),
-    TechnicianSchedule (
-        tech="o@a.com",
-        monday_availability=True,
-        monday_time_In=datetime.time (9, 0),
-        monday_time_Out=datetime.time (17, 0),
-        tuesday_availability=True,
-        tuesday_time_In=datetime.time (9, 0),
-        tuesday_time_Out=datetime.time (17, 0),
-        wednesday_availability=True,
-        wednesday_time_In=datetime.time (9, 0),
-        wednesday_time_Out=datetime.time (17, 0),
-        thursday_availability=True,
-        thursday_time_In=datetime.time (9, 0),
-        thursday_time_Out=datetime.time (17, 0),
-        friday_availability=True,
-        friday_time_In=datetime.time (9, 0),
-        friday_time_Out=datetime.time (17, 0),
-        saturday_availability=True,
-        saturday_time_In=datetime.time (9, 0),
-        saturday_time_Out=datetime.time (17, 0),
-        sunday_availability=True,
-        sunday_time_In=datetime.time (9, 0),
-        sunday_time_Out=datetime.time (17, 0),
-    ),
-    TechnicianSchedule (
-        tech="p@a.com",
-        monday_availability=True,
-        monday_time_In=datetime.time (9, 0),
-        monday_time_Out=datetime.time (17, 0),
-        tuesday_availability=True,
-        tuesday_time_In=datetime.time (9, 0),
-        tuesday_time_Out=datetime.time (17, 0),
-        wednesday_availability=True,
-        wednesday_time_In=datetime.time (9, 0),
-        wednesday_time_Out=datetime.time (17, 0),
-        thursday_availability=True,
-        thursday_time_In=datetime.time (9, 0),
-        thursday_time_Out=datetime.time (17, 0),
-        friday_availability=True,
-        friday_time_In=datetime.time (9, 0),
-        friday_time_Out=datetime.time (17, 0),
-        saturday_availability=True,
-        saturday_time_In=datetime.time (9, 0),
-        saturday_time_Out=datetime.time (17, 0),
-        sunday_availability=True,
-        sunday_time_In=datetime.time (9, 0),
-        sunday_time_Out=datetime.time (17, 0),
-    ),
+        sunday_availability=False,
+        sunday_time_In=datetime.time (0, 0),
+        sunday_time_Out=datetime.time (0, 0)).save()
 
-]
-for i in a:
-    i.save ( )
 print ("Tech_Schedule done!")
 
 from Account.models import Technician
@@ -464,10 +237,8 @@ from Appointments.models import Appointment
 
 a = datetime.time (10, 30, 00)
 b = datetime.time (11, 30, 00)
-aa = []
-for z in range(1,32):
-    if z%7 != 4:
-        aa.append(datetime.date (2022, 12, z))
+aa = get_date()[0]
+
 for z in aa:
     for id in range(1,6):
         Appointment (customer_id=id, totalDuration=60, date=z, end_time=b, start_time=a, totalCharge=50).save()
@@ -477,16 +248,9 @@ print ("Appointment done!")
 
 
 from Scheduling.models import timeSlots
-aa = []
-bb = []
-cc = ["f@a.com", "g@a.com", "h@a.com","i@a.com", "j@a.com", "k@a.com", "l@a.com", "m@a.com", "n@a.com", "o@a.com", "p@a.com"]
-for z in range(1,32):
-    if z%7 != 4:
-        aa.append(datetime.date (2022, 12, z))
-    else:
-        bb.append(datetime.date (2022, 12, z))
+aa = get_date()
 
-for i in aa:
+for i in aa[0]:
     for email in cc:
         timeSlots (tech=email, date=i, arrive_time =None, nine_00_am = True, nine_15am = True, nine_30am = True, nine_45am = True,
         ten_00_am = True, ten_15am = True, ten_30am = True, ten_45am = True, eleven_00_am = True, eleven_15am = True, eleven_30am = True,
@@ -494,7 +258,7 @@ for i in aa:
         one_15pm = True, one_30pm = True, one_45pm = True, two_00_pm = True, two_15pm = True, two_30pm = True, two_45pm = True,
         three_00_pm = True, three_15pm = True, three_30pm = True, three_45pm = True, four_00_pm = True, four_15pm = True, four_30pm = True,
         four_45pm = True).save ( )
-for i in bb:
+for i in aa[1]:
     for email in cc:
         timeSlots (tech=email, date=i, arrive_time =None).save ( )
 print ("Timeslot done!")
@@ -503,19 +267,15 @@ print ("Timeslot done!")
 
 from Calendar.models import calendarEntry
 from Account.models import Technician
-aa = [datetime.date (2022, 12, 31)]
-cc = [6,7,8,9,10,11,12,13,14,15,16]
-for z in range(1,32):
-    if z%7 != 4:
-        aa.append(datetime.date (2022, 12, z))
-
+aa = get_date()[0]
+tech_id = [6,7,8,9,10,11,12,13,14,15,16]
 
 for i in aa:
-    zz = calendarEntry(date=i)
-    zz.save()
-    for id in cc:
-        zz.technicians.add(Technician.objects.get(user_id=id))
-        zz.save()
+    d = calendarEntry(date=i)
+    d.save()
+    for id in tech_id:
+        d.technicians.add(Technician.objects.get(user_id=id))
+        d.save()
 print("Calendar entry done!")
 
 
@@ -540,4 +300,8 @@ for j in range(1,8):
     a.services.add(Service.objects.get(id=random.randint(1,20)))
     a.save()
 print("Insert done!")
+
+'''
+
+
 

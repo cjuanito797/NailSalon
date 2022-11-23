@@ -130,7 +130,7 @@ TIME_INPUT_FORMATS = ('%I:%M %p')
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
-LOGIN_REDIRECT_URL = '../customerView/'
+LOGIN_REDIRECT_URL = '../'
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = '/'
 

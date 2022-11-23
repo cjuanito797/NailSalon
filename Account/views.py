@@ -22,7 +22,11 @@ from Appointments.models import Appointment, Sale
 def home(request):
     if request.user.is_authenticated:
         if (request.session.get ('is_signedIn'), True):
-            return redirect (reverse ('account:customerView'))
+            if str(request.user) != 'test@email.com':
+                return redirect  ('account:customerView')
+                
+            else:
+                return redirect ('manager/')
         else:
             print ("User is not logged in!")
     else:
@@ -72,8 +76,9 @@ def user_login(request):
         # here we should redirect a user to seperate views depending on whether they are a customer, tech or admin.
         if user is not None:
             if user.is_active:
+                
                 login (request, user)
-                return render (redirect ('account:customerView'))
+                return render  ('account:customerView')
             else:
                 return HttpResponse ('Disabled Account')
         else:
