@@ -109,25 +109,30 @@ def save_queue(filedir=FILE_DIR):
 def read_temp(filedir=FILE_DIR):
     global _WAIT_QUEUE
     global _WORK_QUEUE
-    f = open(filedir, "r")
-    lines = f.readlines()
-    f.close()
     
-    _WAIT_QUEUE = []
-    _WORK_QUEUE = []
-    
-    read_flag = 0
-    for line in lines:
-        line = line.replace('\n', '')
-        if (line == "_WAIT"):
-            pass
-        else:
-            if line != "_WORK" and read_flag == 0:
-                _WAIT_QUEUE.append(to_tuple(line))
-            elif line == "_WORK":
-                read_flag = 1
+    if os.stat(filedir).st_size != 0:
+        f = open(filedir, "r")
+        lines = f.readlines()
+        f.close()
+        
+        _WAIT_QUEUE = []
+        _WORK_QUEUE = []
+        
+        read_flag = 0
+        for line in lines:
+            line = line.replace('\n', '')
+            if (line == "_WAIT"):
+                pass
             else:
-                _WORK_QUEUE.append(to_tuple(line))
+                if line != "_WORK" and read_flag == 0:
+                    _WAIT_QUEUE.append(to_tuple(line))
+                elif line == "_WORK":
+                    read_flag = 1
+                else:
+                    _WORK_QUEUE.append(to_tuple(line))
+    else:
+        _WAIT_QUEUE = []
+        _WORK_QUEUE = []
 
 # Write temp file
 def write_temp(filedir=FILE_DIR):

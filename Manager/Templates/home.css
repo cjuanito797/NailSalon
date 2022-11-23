@@ -117,13 +117,15 @@ button{
 /* -----end Modal style-----*/
 
 /* -----Master Control -----*/
+.master_control {
+    overflow: hidden;
+}
 .master_control, .checkin_control {
     margin: auto;
     width: 60%;
     padding: 10px;
     margin-bottom: 20px;
     text-align: center;
-    border: 2px solid
 }
 .checkin_grid {
     margin-left: auto;
@@ -241,7 +243,6 @@ button{
     min-width: 80px;
     min-height: 100px;
   }
-
 
 
 

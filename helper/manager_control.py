@@ -1,8 +1,9 @@
 import datetime
 
 from Appointments.models import Appointment, Sale, Service
-from Account.models import Technician
+from Account.models import Technician, User
 from helper.timeslot_process import Process
+import helper.techs_queue as techs_queue
 
 
 TIME_SLOT = {}
@@ -28,7 +29,10 @@ class C_Appointment:
         self.sale_list = Sale.objects.filter(appointment_id=self.appointment_id).values('id', 'status')
         
         if a_btn == 'Modify':
-            self.tech_id = int(post['technician_id'])
+            if post['technician_id'] != "none":
+                self.tech_id = int(post['technician_id'])
+            else:
+                self.tech_id = None
             self.timeslot = int(post['timeslot'])
         
     def initialize(self):
@@ -46,45 +50,59 @@ class C_Appointment:
         
         # no sale => need to generate next random tech
         else:
-            result = Process.close_slots(id=self.appointment_id)
-            return_mess.append(f"{result} is assigned to appointment!")
-            return return_mess
+            try:
+                assigned_techs = Process.close_slots(id=self.appointment_id)
+                return_mess.append("success")
+                for tech in assigned_techs:
+                    return_mess.append(f"{tech} is assigned to appointment!")
+                return return_mess
+            except:
+                return_mess.append("error")
+                return_mess.append(f"Error! Initialize appointment failed!")
+                return return_mess
 
     def modify(self):
-
         appointment_obj = Appointment.objects.get(id=self.appointment_id)
-        tech_obj = Technician.objects.get(id=self.tech_id)
-
-        return_mess = []
-        # If appointment links to sales, then modified all sales too
-        if len(self.sale_list) > 0:
-            appointment_obj.technician = tech_obj
-            appointment_obj.start_time = TIME_SLOT[self.timeslot]
-            appointment_obj.save()
-            count = 0
-            for s in self.sale_list:
-                sale_obj = Sale.objects.get(id=s['id'])
-                sale_obj.technician = tech_obj
-                sale_obj.save()
-                count += 1
-            return_mess = [f'Appointment is modifed. {count} sale(s) have been modified.']
-        # If no sale, then modified appointment then, split into sales
-        else:
-            #retrieve services' id attach in appointment
-            service_ids = Appointment.objects.filter (
-                id=self.appointment_id).values_list (
-                    'services', flat=True)
-            #get service info for each id 
-            count = 0
-            for si in service_ids:
-                Sale.objects.create(
-                    service=Service.objects.get(id=si),
-                    technician=tech_obj,
-                    appointment=appointment_obj
-                )
-                count += 1
-            return_mess.append( f'Appointment is modifed. {count} sale(s) are created.')
         
+        
+        return_mess = []
+        # If appointment links to sales, then not alow to modify
+        if len(self.sale_list) > 0:
+            return_mess = ["error", f'Appointment is already initialized. Cannot Modify!']
+        # If no sale, then modified appointment
+        else:
+            update_duration = get_total_appointment_duration(self.appointment_id)
+            starttime = Appointment.objects.get(id=2).start_time
+            starttime = datetime.datetime.combine(datetime.date.today(), starttime)
+            endtime = (starttime+ update_duration).time()
+            # If user did not include technician in modify request, then only modify time
+            if self.tech_id is None:
+                appointment_obj.start_time = TIME_SLOT[self.timeslot]
+                appointment_obj.end_time = endtime
+                appointment_obj.totalDuration = update_duration
+                appointment_obj.save()
+                return_mess.append('success')
+                return_mess.append( f'Appointment is modifed with start time at {TIME_SLOT[self.timeslot]}')
+            
+            # If user included technician in modify request, then add technician in appointment and create sales
+            else:
+                tech_obj = Technician.objects.get(id=self.tech_id)
+                try:
+                    appointment_obj.technician = tech_obj
+                    appointment_obj.start_time = TIME_SLOT[self.timeslot]
+                    appointment_obj.end_time = endtime
+                    appointment_obj.totalDuration = update_duration
+                    appointment_obj.save()
+                    
+                    assigned_techs_list = Process.close_slots(id=self.appointment_id)
+                    
+                    return_mess.append('success')
+                    return_mess.append( f'Appointment is modifed. Start time at {TIME_SLOT[self.timeslot]}')
+                    for a in assigned_techs_list:
+                        return_mess.append( f"{a} is assigned to all sales in appointment.")
+                except:
+                    return_mess.append( "error")
+                    return_mess.append(f"Error! Modifying appointment is failed!")
         return return_mess
         
     def cancel(self):
@@ -121,10 +139,14 @@ class C_Sale:
     def __init__(self, post: dict) -> None:
         s_btn = post['sale_btn']
         
-        
         if s_btn == 'Modify':
             self.sale_obj = Sale.objects.get(id=int(post['sale_id']))
-            self.tech_id = int(post['technician_id'])
+            if post['technician_id'] == "random":
+                self.tech_id = post['technician_id']
+            elif post['technician_id'] == "none":
+                self.tech_id = None
+            else:
+                self.tech_id = int(post['technician_id'])
         elif s_btn == 'Cancel':
             self.sale_obj = Sale.objects.get(id=int(post['sale_id']))
         else:
@@ -133,12 +155,39 @@ class C_Sale:
         
     def modify(self):
         return_mess = []
+        # If user want to modify a sale with status scheduled
         if self.sale_obj.status == 'scheduled':
-            self.sale_obj.technician = Technician.objects.get(id=self.tech_id)
-            self.sale_obj.save()
-        
-            return_mess.append("Sale is modified!")
+            # user provided tech to replace, then assign new tech and give back timeslot for old tech
+            if isinstance(self.tech_id, int):
+                old_technician = self.sale_obj.technician
+                
+                self.sale_obj.technician = Technician.objects.get(id=self.tech_id)
+                self.sale_obj.save()
+                
+                sale_duration = self.sale_obj.service.duration
+                old_technician = Process.open_slots(tech_id=old_technician,
+                                                    duration=sale_duration, 
+                                                    starttime=self.sale_obj.start_time,
+                                                    date=datetime.date(2022, 12, 1))
+    
+                old_technician = User.objects.get(email=old_technician)
+                return_mess.append("success")
+                return_mess.append("Sale is modified!")
+                return_mess.append(f"{old_technician.first_name} {old_technician.last_name} timeslot are returned back! ")
+            # user choose to replace random tech, then assign tech in wait and give back timeslot for old tech
+            elif self.tech_id == "random":
+                old_technician = self.sale_obj.technician
+                next_randtech = techs_queue.get_WAIT_queue()
+                
+                return_mess.append("success")
+                return_mess.append(f"{next_randtech}")
+            # user choose to "none" as tech option
+            else:
+                return_mess.append("warning")
+                return_mess.append("Need to provide a technician in order to modify sale!")
+                
         else:
+            return_mess.append("error")
             return_mess.append("Sale's status is not allow to be modify!")
         return return_mess
 
@@ -149,8 +198,10 @@ class C_Sale:
         if self.sale_obj.status != 'closed':
             self.sale_obj.status = 'canceled'
             self.sale_obj.save()
+            return_mess.append("success")
             return_mess.append("Sale is canceled!")
         else:
+            return_mess.append("error")
             return_mess.append("Sale is already closed. Cannot cancel!")
         return return_mess
     
@@ -158,8 +209,21 @@ class C_Sale:
         return_mess = []
         
         result = Process.close_slots(appointment_id=self.appointment_id, sale_id=self.sale_id)
+        return_mess.append("success")
         return_mess.append(f"Working sales: {result['working']}")
         return_mess.append(f"Closed sales: {result['closed']}")
         return_mess.append(f"Canceled sales: {result['canceled']}")
         return return_mess
+
+
+
+def get_total_appointment_duration(appointment_id):
+    duration = datetime.timedelta(0)
+    
+    sales = Sale.objects.filter(appointment_id=appointment_id)
+    for sale in sales:
+        duration += sale.service.duration
         
+    return duration
+        
+    

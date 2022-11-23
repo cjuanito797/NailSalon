@@ -22,39 +22,26 @@ def home(request):
             control = C_Appointment(request.POST)
             # INITIALIZE appointment
             if request.POST['appointment_btn'] == 'Initialize':
-                mess = control.initialize()
-                for m in mess:
-                   messages.success(request, m)
+                frontend_messages(request, control.initialize())
             # CANCEL appointment
             elif request.POST['appointment_btn'] == 'Cancel':
-                mess = control.cancel()
-                for m in mess:
-                   messages.warning(request, m)
+                frontend_messages(request, control.cancel())
             # MODIFY appointment
             else:
-                mess = control.modify()
-                for m in mess:
-                   messages.success(request, m)
+                frontend_messages(request, control.modify())
                    
         # Sales Control
         elif 'sale_id' and 'sale_btn' in request.POST:
             control = C_Sale(request.POST)
-            
             # CANCEL sale
             if request.POST['sale_btn'] == 'Cancel':
-                mess = control.cancel()
-                for m in mess:
-                   messages.warning(request, m)
+                frontend_messages(request, control.cancel())
             # TRIGGER sale
             elif request.POST['sale_btn'] == 'Trigger':
-                mess = control.trigger()
-                for m in mess:
-                   messages.success(request, m)
+                frontend_messages(request, control.trigger())
             # MODIY sale
             else:
-                mess = control.modify()
-                for m in mess:
-                   messages.success(request, m)
+                frontend_messages(request, control.modify())
         
         return redirect("manager:home")
     else:
@@ -139,6 +126,7 @@ def display():
 def attendance(request):
     if request.method == "POST":
         records = (json.loads(request.POST['data']))["records"]
+        print(records)
         for r in records:
             
             hour = r['clocked']['hour']
@@ -147,16 +135,16 @@ def attendance(request):
             
             milisec = r['clocked']['milisec']
             
-            #NEED TO CHANGE DATE
-            tech_timeslot = timeSlots.objects.get(tech=r['email'], date=datetime.date(2022,12,11))
+            #NEED FIX DATE
+            tech_timeslot = timeSlots.objects.get(tech=r['email'], date=datetime.date(2022,12,1))
             tech_timeslot.arrive_time = datetime.time(hour, min, sec, milisec)
             tech_timeslot.save()
             
             #if this run after open time (9:00) then "Append" into _wait Queue with lowest priority
             current_time = datetime.datetime.today()
             open_time = datetime.datetime.combine(datetime.date.today(), datetime.time(9,0,0))
-            if current_time > open_time:
-                queue.clock_tech_after_fresh_build(r['email'])
+            #if current_time > open_time:
+            queue.clock_tech_after_fresh_build(r['email'])
             
         return redirect("manager:home")
     else:
@@ -184,6 +172,19 @@ def newtech(request):
     else:
         form = NewTechnicianForm()
         return render(request, 'newtech.html', {"form":form})
+
+# FRONTEND MESSAGES --------------------------------------
+def frontend_messages(request, mess: list):
+    print(mess)
+    if mess[0] == "success":
+        for m in mess[1:]:
+            messages.success(request, m)
+    elif mess[0] == "error":
+        for m in mess[1:]:
+            messages.error(request, m)
+    elif mess[0] == "warning":
+        for m in mess[1:]:
+            messages.warning(request, m)
 
 # DISPLAY QUERY FUNCTIONS ------------------------------------
 def appointments_and_dates_query():
@@ -236,8 +237,7 @@ def tech_query():
 
 def timetable():
     timetable_query = timeSlots.objects.all().values()
-    fieldname_list = timeslot_process.collect_time_fieldname (9, 0, [32])
-    
+    fieldname_list = timeslot_process.collect_time_fieldname (9, 0, datetime.timedelta(hours=8))
     
     timetable_date_list = []
     for timeslot in timetable_query:
