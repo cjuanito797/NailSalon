@@ -15,12 +15,12 @@ def get_date():
     bb=[]
     for i in range(30):
         a = (date.today() + datetime.timedelta(days=i))
-        c = a.strftime("%Y,%m,%d")
+        #c = a.strftime("%Y,%m,%d")
         b = calendar.day_name[a.weekday()]
         if b != 'Sunday':
-            aa.append(c)
+            aa.append(a)
         else:
-            bb.append(c)
+            bb.append(a)
     return [aa,bb]
 
 '''
@@ -230,7 +230,7 @@ for i in a:
     i.save ( )
 print ("Service done!")
 # DELETE FROM Appointments_service;
-
+'''
 
 
 from Appointments.models import Appointment
@@ -279,6 +279,7 @@ for i in aa:
 print("Calendar entry done!")
 
 
+'''
 from Account.models import Technician
 from Appointments.models import Sale, Appointment, Service
 import random
@@ -300,8 +301,8 @@ for j in range(1,8):
     a.services.add(Service.objects.get(id=random.randint(1,20)))
     a.save()
 print("Insert done!")
-
 '''
+
 
 
 

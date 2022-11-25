@@ -136,11 +136,14 @@
                         <input type="hidden" name="appointment_id" value="{{ a.id }}" />
                         {% if a.sales|length == 0 %}
                             <button type="submit" name="appointment_btn" class="appointment_btn" value="Initialize" >Initialize</button>
-                        {% else %}
+                            <button type="button" name="appointment_btn" class="appointment_btn" id="a_modify" value="{{ a.id }}" >Modify</button>
+                            <button type="submit" name="appointment_btn" class="appointment_btn" value="Cancel" >Cancel</button>
+                            {% else %}
                             <button type="button" name="appointment_btn" class="appointment_btn" value="Initialize" disabled>Initialize</button>
+                            <button type="button" name="appointment_btn" class="appointment_btn" id="a_modify" value="{{ a.id }}" >Modify</button>
+                            <button type="submit" name="appointment_btn" class="appointment_btn" value="Cancel" disabled>Cancel</button>
                         {% endif %} 
-                        <button type="button" name="appointment_btn" class="appointment_btn" id="a_modify" value="{{ a.id }}" >Modify</button>
-                        <button type="submit" name="appointment_btn" class="appointment_btn" value="Cancel" >Cancel</button>
+                        
                     </div>
                 </form>
                 <div class="content" id="{{ a.date }}">

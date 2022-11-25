@@ -1,8 +1,9 @@
 import datetime
+import logging
 
 from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
-from helper.timeslot_process import Process
+from helper.timeslot_process import Process, get_free_tech, get_timeslot_field_bysale
 import helper.techs_queue as techs_queue
 
 
@@ -57,6 +58,7 @@ class C_Appointment:
                     return_mess.append(f"{tech} is assigned to appointment!")
                 return return_mess
             except:
+                logging.exception("message")
                 return_mess.append("error")
                 return_mess.append(f"Error! Initialize appointment failed!")
                 return return_mess
@@ -74,7 +76,7 @@ class C_Appointment:
             update_duration = get_total_appointment_duration(self.appointment_id)
             starttime = Appointment.objects.get(id=2).start_time
             starttime = datetime.datetime.combine(datetime.date.today(), starttime)
-            endtime = (starttime+ update_duration).time()
+            endtime = (starttime + update_duration).time()
             # If user did not include technician in modify request, then only modify time
             if self.tech_id is None:
                 appointment_obj.start_time = TIME_SLOT[self.timeslot]
@@ -158,29 +160,39 @@ class C_Sale:
         # If user want to modify a sale with status scheduled
         if self.sale_obj.status == 'scheduled':
             # user provided tech to replace, then assign new tech and give back timeslot for old tech
-            if isinstance(self.tech_id, int):
+            if isinstance(self.tech_id, int) or self.tech_id == "random":
+                appointment_date = self.sale_obj.appointment.date
                 old_technician = self.sale_obj.technician
-                
-                self.sale_obj.technician = Technician.objects.get(id=self.tech_id)
-                self.sale_obj.save()
-                
                 sale_duration = self.sale_obj.service.duration
-                old_technician = Process.open_slots(tech_id=old_technician,
+                
+                # user choose to replace random tech, then assign tech in wait and give back timeslot for old tech
+                if self.tech_id == "random":
+                    fieldname_list =  get_timeslot_field_bysale(self.sale_obj.start_time, self.sale_obj.service.duration)
+                    
+                    tech_email = get_free_tech(appointment_date, fieldname_list, [old_technician.user.email])
+                    
+                    user_obj = User.objects.get(email=tech_email)
+                    self.sale_obj.technician = Technician.objects.get(user=user_obj)
+                    self.sale_obj.save()
+                else:
+                    self.sale_obj.technician = Technician.objects.get(id=self.tech_id)
+                    self.sale_obj.save()
+                
+                # Process.open_slots return structure:
+                # [oldtech_email, newtech_email]
+                process_returnlist = Process.open_slots(oldtech_id=old_technician.id,
+                                                    newtech_id=self.sale_obj.technician.id,
                                                     duration=sale_duration, 
                                                     starttime=self.sale_obj.start_time,
-                                                    date=datetime.date(2022, 12, 1))
-    
-                old_technician = User.objects.get(email=old_technician)
+                                                    date=appointment_date)
+                old_technician = User.objects.get(email=process_returnlist[0])
+                new_technician = User.objects.get(email=process_returnlist[1])
+                
                 return_mess.append("success")
                 return_mess.append("Sale is modified!")
                 return_mess.append(f"{old_technician.first_name} {old_technician.last_name} timeslot are returned back! ")
-            # user choose to replace random tech, then assign tech in wait and give back timeslot for old tech
-            elif self.tech_id == "random":
-                old_technician = self.sale_obj.technician
-                next_randtech = techs_queue.get_WAIT_queue()
+                return_mess.append(f"{new_technician.first_name} {new_technician.last_name} timeslot is closed for sale!")
                 
-                return_mess.append("success")
-                return_mess.append(f"{next_randtech}")
             # user choose to "none" as tech option
             else:
                 return_mess.append("warning")

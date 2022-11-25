@@ -17,16 +17,17 @@ import datetime
 from timeslot_process import Process
 import calendar
 from Scheduling.models import TechnicianSchedule, timeSlots
-from Account.models import Technician
+from Account.models import Technician, User
+from django.db.models import Q
 
 
 def main():
-    
-    process = Process.open_slots(tech_id=1, 
-                                 duration=datetime.timedelta(seconds=1800), 
-                                 starttime=datetime.time(9,45),
-                                 date=datetime.date(2022, 12, 1))
-    
+    timetable_query = timeSlots.objects.filter(Q(date__gte=datetime.date.today)|Q(date=None)).values()
+    count = 0
+    for t in timetable_query:
+        count += 1
+        
+    print(count)
     
 if __name__ == "__main__":
     main()

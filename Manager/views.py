@@ -1,7 +1,7 @@
 import calendar
 import datetime
 import json
-from webbrowser import get
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
@@ -188,7 +188,7 @@ def frontend_messages(request, mess: list):
 
 # DISPLAY QUERY FUNCTIONS ------------------------------------
 def appointments_and_dates_query():
-    appointment_query = Appointment.objects.all().values(
+    appointment_query = Appointment.objects.filter(Q(date__gte=datetime.date.today())|Q(date=None)).values(
         'id', 
         'customer', 
         'start_time', 
@@ -200,10 +200,11 @@ def appointments_and_dates_query():
     appointment_list = []
     apt_date_list = []
     for a in appointment_query:
-        a['customer'] = list(User.objects.filter(id=a['customer']).values("first_name", "last_name"))[0]
-        appointment_list.append(a)
-        if a['date'] not in apt_date_list:
-            apt_date_list.append(a['date'])
+        if (a['status'] != 'inactive'):
+            a['customer'] = list(User.objects.filter(id=a['customer']).values("first_name", "last_name"))[0]
+            appointment_list.append(a)
+            if a['date'] not in apt_date_list:
+                apt_date_list.append(a['date'])
             
     return (appointment_list, apt_date_list)
 
@@ -236,7 +237,7 @@ def tech_query():
     return tech_list
 
 def timetable():
-    timetable_query = timeSlots.objects.all().values()
+    timetable_query = timeSlots.objects.filter(Q(date__gte=datetime.date.today())|Q(date=None)).values()
     fieldname_list = timeslot_process.collect_time_fieldname (9, 0, datetime.timedelta(hours=8))
     
     timetable_date_list = []

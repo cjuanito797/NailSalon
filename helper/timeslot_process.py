@@ -24,8 +24,9 @@ num_to_word = {13: 'one_', 14: 'two_', 15: 'three_', 16: 'four_',
                12: 'twelve_', }
 
 class Process:
+    # "close timeslot" (trigger) by sale (by appointment_id, sale_id)
     def close_slots(**kargs):
-        if len(kargs) == 2:      # close timeslot by sale (by appointment_id, sale_id)
+        if len(kargs) == 2:      
             appointment_id = kargs['appointment_id']
             sale = Sale.objects.get(id=kargs['sale_id'])
             if sale.status == 'scheduled':
@@ -35,6 +36,7 @@ class Process:
                 sale.status = 'closed'
                 sale.save()
             
+            # prepare sale info to return
             return_count = {'scheduled': 0, 'working': 0, 'closed': 0, 'canceled': 0}
             sales = Sale.objects.filter(appointment=appointment_id).values('status')
             for s in sales:
@@ -47,6 +49,7 @@ class Process:
                 if s['status'] == 'canceled':
                     return_count['canceled'] += 1
             
+            # verify all sales in appointment are closed and canceled to set appointment inactive
             if (return_count['closed'] + return_count['canceled']) == len(sales):
                 a_obj = Appointment.objects.get(id=appointment_id)
                 a_obj.status = "inactive"
@@ -54,30 +57,26 @@ class Process:
                 
             return return_count
         
-        elif len(kargs) == 1:       # return sale info of a appointment or provide random tech (by id(appointment))  
+        # close timeslot by appointment (id(appointment))
+        elif len(kargs) == 1:      
             appointment_id = kargs['id']
             sales = Sale.objects.filter(appointment=appointment_id).values('id', 'status')
             
-            #appointment contain sales -> move status
+            #appointment contain sales -> return sale info in the appointment
             if sales.count() > 0:
                 return_count = {'scheduled': 0, 'working': 0, 'closed': 0, 'canceled': 0}
                 for s in sales:
                     if s['status'] == 'scheduled':
-                        #sale = Sale.objects.get(id=s['id'])
-                        #sale.status = 'working'
-                        #sale.save()
                         return_count['scheduled'] += 1
                     elif s['status'] == 'working':
-                        #sale = Sale.objects.get(id=s['id'])
-                        #sale.status = 'closed'
-                        #sale.save()
                         return_count['working'] += 1
                     elif s['status'] == 'closed':
                         return_count['closed'] += 1
                     elif s['status'] == 'canceled':
                         return_count['canceled'] += 1
                 return return_count
-            #appointment with no sales
+            
+            #appointment with no sales -> assign different random tech for each sale
             else:   
                 process = _Process(appointment_id)
                 assigned_tech = process.assign_tech()
@@ -112,19 +111,28 @@ class Process:
                         assign.save ( )
                         logger.info(f'{field} in {tech[0]} is set')
                         
-        elif len(kargs) == 4:      # Give back timeslot for technician 
-            tech_email = Technician.objects.get(id=kargs["tech_id"]).user.email
-            tech_timeslot_obj = timeSlots.objects.get(tech=tech_email, date=kargs["date"])
+        # Give back timeslot for technician 
+        # parameters need: oldtech_id, newtech_id, duration, starttime, date               
+        elif len(kargs) == 5:      
+            oldtech_email = Technician.objects.get(id=kargs["oldtech_id"]).user.email
+            newtech_email = Technician.objects.get(id=kargs["newtech_id"]).user.email
+            oldtech_timeslot_obj = timeSlots.objects.get(tech=oldtech_email, date=kargs["date"])
+            newtech_timeslot_obj = timeSlots.objects.get(tech=newtech_email, date=kargs["date"])
             
             duration = kargs["duration"]
             starttime = kargs["starttime"]
             
             fieldname_list = collect_time_fieldname(starttime.hour, starttime.minute, duration)
             for field in fieldname_list:
-                setattr (tech_timeslot_obj, field, True)
-                tech_timeslot_obj.save ( )
+                setattr (oldtech_timeslot_obj, field, True)
+                oldtech_timeslot_obj.save ( )
+                logger.info(f'{field} in {oldtech_timeslot_obj} is set')
                 
-            return tech_email
+                setattr (newtech_timeslot_obj, field, False)
+                newtech_timeslot_obj.save ( )
+                logger.info(f'{field} in {newtech_timeslot_obj} is set')
+                
+            return [oldtech_email, newtech_email]
             
             
             
@@ -170,10 +178,10 @@ class _Process:
         #if no technician attached in appointment -> get random tech for each sales, first start working.
         assigned_techs = []
         if (Appointment.objects.get(id=self.appointment_id).technician) is None:
-            
+            print(self.services)
             for index, s in enumerate(self.services):
-                timeslots_need = self._get_timeslot_field_bysale(s)
-                tech = self._get_free_tech_timeslot(timeslots_need)
+                timeslots_need = get_timeslot_field_bysale(s['starttime'], s['duration'])
+                tech = get_free_tech(self.appointment_date, timeslots_need)
                 user_obj = User.objects.get(email=tech)
                 if index == 0:
                     Sale.objects.create(
@@ -217,7 +225,7 @@ class _Process:
                     start_time=s['starttime'],
                 )
                 # Set time slot to False (busy) for open technician
-                timeslots_need = self._get_timeslot_field_bysale(s)
+                timeslots_need = get_timeslot_field_bysale(s['starttime'], s['duration'])
                 close_timeslot(tech, self.appointment_date, timeslots_need)
             
 
@@ -225,27 +233,9 @@ class _Process:
             
         return assigned_techs
     
-    def _get_free_tech_timeslot(self, timeslots_need: list):
-        print(timeslots_need)
-        for tech, _ in techs_queue.get_WAIT_queue():                        #datetime.datetime.today() NEED FIX
-            t_timeslot = list(timeSlots.objects.filter(tech=tech, date=datetime.date(2022,12,1)).values())[0]
-            count = 0
-            for slot in timeslots_need:
-                if t_timeslot[slot] == True:
-                    count += 1
-            if count == len(timeslots_need):
-                return tech
+
             
-    def _get_timeslot_field_bysale(self, service):
 
-        starttime = service['starttime']
-        # get slot field_name as start
-        hour = starttime.hour
-        minute = starttime.minute
-
-        # Prepare all timeslot fieldname depend for total duration of all services
-        fieldname_list = collect_time_fieldname(hour, minute, service['duration'])
-        return fieldname_list
     
     def _get_timeslot_field2(self):
         
@@ -284,6 +274,7 @@ class _Process_openslot:
         return time_scheduled
 
 
+
 def close_timeslot(tech_email, date, timeslots: list):
     # Set time slot in list to False (busy)
     assign = timeSlots.objects.get (tech=tech_email, date=date)
@@ -291,10 +282,34 @@ def close_timeslot(tech_email, date, timeslots: list):
         setattr (assign, field, False)
         assign.save ( )
 
+def get_free_tech(sortdate: datetime.date, timeslots_need: list, exclusion: list=[] ):
+    waiting_techs = techs_queue.get_WAIT_queue()
+    
+    # Loop through all waiting
+    for tech_email, _ in waiting_techs:         
+        # if tech_email in exclusion list then skip               
+        if tech_email in exclusion:
+            continue                                                #datetime.datetime.today() NEED FIX
+        t_timeslot = list(timeSlots.objects.filter(tech=tech_email, date=sortdate).values())[0]
+        count = 0
+        for slot in timeslots_need:
+            if t_timeslot[slot] == True:
+                count += 1
+        if count == len(timeslots_need):
+            return tech_email
+
+def get_timeslot_field_bysale(starttime, duraton):
+    # get slot field_name as start
+    hour = starttime.hour
+    minute = starttime.minute
+
+    # Prepare all timeslot fieldname depend for total duration of all services
+    fieldname_list = collect_time_fieldname(hour, minute, duraton)
+    return fieldname_list
+
 def collect_time_fieldname(starthour, startminute, duration):
     
     timefield_amount = (math.ceil (duration.seconds / (60 * 15)))
-    print(timefield_amount)
     
     # move minute back 15 to include the startslot at next count
     startminute -= 15
