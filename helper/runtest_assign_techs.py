@@ -22,12 +22,28 @@ from django.db.models import Q
 
 
 def main():
-    timetable_query = timeSlots.objects.filter(Q(date__gte=datetime.date.today)|Q(date=None)).values()
-    count = 0
-    for t in timetable_query:
-        count += 1
+    test = get_time_scheduled_techs(['tuesday', 'thursday', 'saturday'])
         
-    print(count)
+    print(test)
+    
+
+    '''
+    timeIn_field_name = "{0}_time_In".format (dayOfWeek.lower())
+    timeOut_field_name = "{0}_time_Out".format (dayOfWeek.lower())
+
+    # filter {field_name(provide as custom string): True} (dict)
+    time_scheduled_list = list(TechnicianSchedule.objects.filter (
+        **{dayOfWeek_field_name: True}
+    ).values_list ('tech', timeIn_field_name, timeOut_field_name))
+    '''
+    
+def get_time_scheduled_techs(days_list: list):
+    dayOfWeek_fieldname_list = []
+    for day in days_list:
+        day_fieldname = f"{day}_availability"
+        dayOfWeek_fieldname_list.append(day_fieldname)
+        
+    return dayOfWeek_fieldname_list
     
 if __name__ == "__main__":
     main()

@@ -88,8 +88,6 @@ class User (AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
 
-
-
 class Technician (models.Model):
     user = models.OneToOneField ("Account.User",
                                  related_name='user',

@@ -159,8 +159,16 @@ def newtech(request):
             for i in all_email:
                 if request.POST['email'] == i[0]:
                     messages.success(request, f"Technician is added successfully!")
-                    tech_info = request.POST
-                    print(tech_info)
+                    tech_email = request.POST['email']
+                    schedule_days = request.POST['scheduled_day']
+                    
+                    print(request.POST)
+                    
+                    
+                    
+                    
+                    
+                    
                     return redirect("manager:home")
             messages.error(request, f"Email \"{request.POST['email']}\" is NOT exist!")
             return redirect("manager:newtech")

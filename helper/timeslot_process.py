@@ -267,11 +267,11 @@ class _Process_openslot:
         timeOut_field_name = "{0}_time_Out".format (dayOfWeek.lower())
 
         # filter {field_name(provide as custom string): True} (dict)
-        time_scheduled = list(TechnicianSchedule.objects.filter (
+        time_scheduled_list = list(TechnicianSchedule.objects.filter (
             **{dayOfWeek_field_name: True}
         ).values_list ('tech', timeIn_field_name, timeOut_field_name))
 
-        return time_scheduled
+        return time_scheduled_list
 
 
 
