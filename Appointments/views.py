@@ -132,6 +132,7 @@ def scheduleWithTech(request, pk, date):
         # if tech is in day, add day to a list.
         # print a list of all technicans working that day.
         techs = day.technicians.all ( )
+        print (day)
         if tech in techs:
             # add the day to a list.
             workingDays.append (day)
@@ -382,13 +383,248 @@ def confirmAppointment(request):
 
             return redirect ('appointments:confirmation')
 
-
     # if the user changes their mind, delete the appointment and return to the calendar page with appropriate params.
     return render (request, "Scheduling/confirmation.html")
 
 
 def index(request):
     return render (request, "Send/confirmation.html")
+
+
+def rescheduleAppointment(request, id, date):
+    # get the corresponding appointment, by way of it's id.
+    # build a list for the time slots that the user may elect to start their appointment at.
+
+    # some calculations and logic will be written here, keep in mind that we are not actually passing in the date but the ID.
+
+    dateSelected = calendarEntry.objects.get (date=date)
+    appointment = Appointment.objects.filter (pk=id).get ( )
+    tech = Technician.objects.get (pk=appointment.technician.id)
+
+    # print out the time slots that the appointment is taking up by way of its startTime, endTime and totalDuration / 15.
+    startTime = appointment.start_time
+
+    # use strptime function on the startTime.
+    startTime = datetime.datetime.strptime (str (startTime), "%H:%M:%S")
+
+    # utilize the strftime function in order to convert time into 12 hour with am/pm.
+    time = datetime.datetime.strftime (startTime, "%I:%M%p")
+
+    # get the number of time slots that are required for this appointment.
+
+    # get the number of time slots that, are required for this appointment.
+    timeSlotsRequired = appointment.totalDuration / 15
+
+    # create a copy of the timeSlot object that is referenced by this appointment.
+    time_slot = timeSlots.objects.filter (date=appointment.date, tech=appointment.technician.user.email).get ( )
+
+    i = 0
+    for i in range (int (timeSlotsRequired)):
+        # get the time in am/pm and print in lower case.
+        timeToChange = time_slot.getTimeSlot (time.lower ( ).lstrip ("0"))
+        print ("We are setting", timeToChange, " back to true")
+        setattr (time_slot, timeToChange, True)
+
+        # add an offset of 15 minutes to the startTime variable.
+        startTime = startTime + datetime.timedelta (minutes=15)
+        time = datetime.datetime.strftime (startTime, "%I:%M%p")
+
+    workingDays = []
+
+    # also pass in the working date to the html page.
+    # this is where we need to do the calculations to get the times that the technician is available depending on day
+    # that user has selected.
+
+    # need to get the dates that the technician is actually available on, if not give user to select another technician
+    # by taking them back to the previous page.
+
+    # this could should only need to be calclated once, when the user selects the technician so I can write this so it only
+    # calculates once.
+
+    availableDates = calendarEntry.objects.all ( )
+
+    for day in availableDates:
+        # if tech is in day, add day to a list.
+        # print a list of all technicans working that day.
+        techs = day.technicians.all ( )
+        if tech in techs:
+            # add the day to a list.
+            workingDays.append (day)
+
+    x = 32 - timeSlotsRequired + 1  # used for determining how many start times there can actually be given our requirements.
+    i = 0  # used for iterating over all the possible start times
+    y = 0  # used for iterating to get the next (n - 1) time slots after a given start time.
+    pos = 0  # used for iterating to get the next time slot in the list, gets set to i after each iteration.
+
+    startTimes = []
+    startTimesSet = []
+    booleanValue = True
+
+    timeSlot = timeSlots.objects.get (tech=appointment.technician.user.email,
+                                      date=dateSelected.date)  # get the time slot data for the date selected
+    if dateSelected.date == appointment.date:
+        timeSlot = time_slot
+
+    times = timeSlot.list ( )
+    dict = timeSlot.timeDictionary ( )
+    temp = iter (list (dict.items ( )))
+
+    for key, value in dict.items ( ):
+        # first we want the actual times that the appointment may be started at.
+        # based off of the equation: x - t + 1
+        if i < x:
+            booleanValue = value
+            # transform the list of keys into an array so that we may  iterate through them using index values.
+            listForm = list (dict.keys ( ))
+            startTimes.append (key)
+            # set pos to the value of current key's position.
+            pos = i
+            # only if all of these values are true may we build a set and add them to a list.
+            if value or not (value):  # this is used to get all potential, not assumming whether true or false.
+                for y in range (int (timeSlotsRequired) - 1):
+                    pos += 1
+                    if (dict.get (listForm[pos])):
+                        startTimes.append (listForm[pos])
+                    else:
+                        # set a second boolean value to false.
+                        booleanValue = False
+                    y += 1
+                pos = 0
+                y = 0
+                i += 1
+
+            # now only if startTimeTrueOrFal was not false may we add our set of times to a list and clear it always regardless.
+            if booleanValue:
+                startTimesSet.append (startTimes)
+            startTimes = []
+
+        # lastly iterate through our set of starttimes.
+    format = '%H:%M%p'
+    morningUpperBound = datetime.time (12, 0, 0)
+    afternoonUpperBound = datetime.time (15, 0, 0)
+
+    morningTimeSets = []
+    afternoonTimeSets = []
+    eveningTimeSets = []
+
+    currentDateAndTime = datetime.datetime.now ( ).time ( )
+    currentTime = currentDateAndTime.strftime ("%H:%M%p")
+
+    todaysDate = datetime.datetime.today ( ).date ( )
+    current_time = datetime.datetime.strptime (currentTime, format)
+
+    if dateSelected.date == datetime.date.today ( ) and dateSelected.date != appointment.date:
+        print (
+            "You have selected today's date, we will need to process the time slots so that you can't schedule at an illogical time.")
+        print ("No need to open up the time slots, since the appointment is not today.")
+        for set in startTimesSet:
+            datetime_str = datetime.datetime.strptime (set[0], format)
+            # only add the times that are logically possible.
+            # ex. don't add 9:00am if it is 12pm in the afternoon
+
+            # though we need to convert the time into 24 hour time format in order to do the comparison.
+            # now we only need to do this for the today's date.
+
+            time_in24 = datetime.datetime.strptime (set[0], '%I:%M%p')
+            if dateSelected.date == todaysDate:
+                if time_in24.time ( ) > current_time.time ( ):
+                    if time_in24.time ( ) < morningUpperBound:
+                        morningTimeSets.append (set)
+                    if time_in24.time ( ) < afternoonUpperBound:
+                        if time_in24.time ( ) > morningUpperBound:
+                            afternoonTimeSets.append (set)
+                    else:
+                        eveningTimeSets.append (set)
+
+
+
+    elif dateSelected.date == datetime.date.today ( ) and dateSelected.date == appointment.date:
+        print (
+            "You have selected today's date, we will need to process the time slots so that you  can't schedule at an illogical time.")
+        print ("Since the appointment is today we need to set it so that you can't schedule at an illogical time but try to give you more options.")
+        for set in startTimesSet:
+            datetime_str = datetime.datetime.strptime (set[0], format)
+            # only add the times that are logically possible.
+            # ex. don't add 9:00am if it is 12pm in the afternoon
+
+            # though we need to convert the time into 24 hour time format in order to do the comparison.
+            # now we only need to do this for the today's date.
+
+            time_in24 = datetime.datetime.strptime (set[0], '%I:%M%p')
+            if dateSelected.date == todaysDate:
+                if time_in24.time ( ) > current_time.time ( ):
+                    if time_in24.time ( ) < morningUpperBound:
+                        morningTimeSets.append (set)
+                    if time_in24.time ( ) < afternoonUpperBound:
+                        if time_in24.time ( ) > morningUpperBound:
+                            afternoonTimeSets.append (set)
+                    else:
+                        eveningTimeSets.append (set)
+
+    elif dateSelected.date != datetime.date.today ( ) and dateSelected.date == appointment.date:
+        print (
+            "So the appointment is not today, but you have selected the date on which the appointment was originally schedule.")
+        print ("We will need to open up the time slots.")
+        for set in startTimesSet:
+            datetime_str = datetime.datetime.strptime (set[0], format)
+            # only add the times that are logically possible.
+            # ex. don't add 9:00am if it is 12pm in the afternoon
+
+            # though we need to convert the time into 24 hour time format in order to do the comparison.
+            # now we only need to do this for the today's date.
+
+            time_in24 = datetime.datetime.strptime (set[0], '%I:%M%p')
+            if dateSelected.date == todaysDate:
+                if time_in24.time ( ) > current_time.time ( ):
+                    if time_in24.time ( ) < morningUpperBound:
+                        morningTimeSets.append (set)
+                    if time_in24.time ( ) < afternoonUpperBound:
+                        if time_in24.time ( ) > morningUpperBound:
+                            afternoonTimeSets.append (set)
+                    else:
+                        eveningTimeSets.append (set)
+            else:
+                if time_in24.time ( ) < morningUpperBound:
+                    morningTimeSets.append (set)
+                if time_in24.time ( ) < afternoonUpperBound:
+                    if time_in24.time ( ) > morningUpperBound:
+                        afternoonTimeSets.append (set)
+                else:
+                    eveningTimeSets.append (set)
+
+    elif dateSelected.date != datetime.date.today ( ) and dateSelected.date != appointment.date:
+        print ("So you have selected a date in the future.")
+        print ("The appointment is also not on this date so we simply need to get the available start times.")
+        for set in startTimesSet:
+            datetime_str = datetime.datetime.strptime (set[0], format)
+            # only add the times that are logically possible.
+            # ex. don't add 9:00am if it is 12pm in the afternoon
+
+            # though we need to convert the time into 24 hour time format in order to do the comparison.
+            # now we only need to do this for the today's date.
+
+            time_in24 = datetime.datetime.strptime (set[0], '%I:%M%p')
+            if dateSelected.date == todaysDate:
+                if time_in24.time ( ) > current_time.time ( ):
+                    if time_in24.time ( ) < morningUpperBound:
+                        morningTimeSets.append (set)
+                    if time_in24.time ( ) < afternoonUpperBound:
+                        if time_in24.time ( ) > morningUpperBound:
+                            afternoonTimeSets.append (set)
+                    else:
+                        eveningTimeSets.append (set)
+            else:
+                if time_in24.time ( ) < morningUpperBound:
+                    morningTimeSets.append (set)
+                if time_in24.time ( ) < afternoonUpperBound:
+                    if time_in24.time ( ) > morningUpperBound:
+                        afternoonTimeSets.append (set)
+                else:
+                    eveningTimeSets.append (set)
+
+    return render (request, "Scheduling/reschedule.html", {'availableDates': workingDays, 'appointment': appointment,
+                                                           'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
+                                                           'evening': eveningTimeSets, 'date': dateSelected.date})
 
 
 def deleteAppointment(request, id):
@@ -449,7 +685,7 @@ def deleteAppointment(request, id):
         {
             'technician': appointment.technician.user.first_name, 'user': request.user.first_name,
             'start_time': appointment.start_time, 'end_time': appointment.end_time, 'date': appointment.date,
-            })
+        })
 
     text_content = plaintext.render (content)
     html_content = htmlEmail.render (content)
