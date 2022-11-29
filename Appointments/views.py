@@ -619,7 +619,23 @@ def rescheduleAppointment(request, id, date):
                 time_slot.save()
                 appointment.save()
 
-                return redirect('account:home')
+                plaintext = get_template('Send/re-schedule.txt')
+                htmlEmail = get_template('Send/re-schedule.html')
+
+                content = ({
+                    'user': request.user.first_name
+                })
+
+                text_content = plaintext.render(content)
+                html_content = htmlEmail.render(content)
+
+                msg = EmailMultiAlternatives("Appointment has been re-scheduled", html_content, 'applenailsalon22@gmail.com',
+                                             [request.user.email])
+
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
+
+                return redirect('appointments:confirmation')
 
 
 

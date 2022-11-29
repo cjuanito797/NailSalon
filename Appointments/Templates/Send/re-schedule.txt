@@ -1,0 +1,2 @@
+Hello {{user}} this is an automated message to let you know that your appointment has been re-scheduled successfully.
+
