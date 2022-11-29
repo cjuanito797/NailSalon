@@ -604,23 +604,13 @@ def rescheduleAppointment(request, id, date):
             # now we only need to do this for the today's date.
 
             time_in24 = datetime.datetime.strptime (set[0], '%I:%M%p')
-            if dateSelected.date == todaysDate:
-                if time_in24.time ( ) > current_time.time ( ):
-                    if time_in24.time ( ) < morningUpperBound:
-                        morningTimeSets.append (set)
-                    if time_in24.time ( ) < afternoonUpperBound:
-                        if time_in24.time ( ) > morningUpperBound:
-                            afternoonTimeSets.append (set)
-                    else:
-                        eveningTimeSets.append (set)
+            if time_in24.time ( ) < morningUpperBound:
+                morningTimeSets.append (set)
+            if time_in24.time ( ) < afternoonUpperBound:
+                if time_in24.time ( ) > morningUpperBound:
+                    afternoonTimeSets.append (set)
             else:
-                if time_in24.time ( ) < morningUpperBound:
-                    morningTimeSets.append (set)
-                if time_in24.time ( ) < afternoonUpperBound:
-                    if time_in24.time ( ) > morningUpperBound:
-                        afternoonTimeSets.append (set)
-                else:
-                    eveningTimeSets.append (set)
+                eveningTimeSets.append (set)
 
     return render (request, "Scheduling/reschedule.html", {'availableDates': workingDays, 'appointment': appointment,
                                                            'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
