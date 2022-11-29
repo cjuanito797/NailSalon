@@ -13,5 +13,6 @@ urlpatterns = [
     path('confirm', views.confirmAppointment, name='confirm'),
     path('e-mailConfirm/', views.index, name='confirmation'),
     path('delete/<int:id>/', views.deleteAppointment, name='delete'),
+    path('reschedule/<int:id>/<str:date>/', views.rescheduleAppointment, name='reschedule'),
 
 ]
