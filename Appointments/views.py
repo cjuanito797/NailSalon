@@ -376,7 +376,7 @@ def confirmAppointment(request):
 
             text_content = plaintext.render (content)
             html_content = htmlEmail.render (content)
-            msg = EmailMultiAlternatives ('Your Appointment', html_content, 'cjuangas17@gmail.com',
+            msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon22@gmail.com',
                                           [request.user.email])
             msg.attach_alternative (html_content, "text/html")
             msg.send ( )
@@ -514,9 +514,6 @@ def rescheduleAppointment(request, id, date):
     current_time = datetime.datetime.strptime (currentTime, format)
 
     if dateSelected.date == datetime.date.today ( ) and dateSelected.date != appointment.date:
-        print (
-            "You have selected today's date, we will need to process the time slots so that you can't schedule at an illogical time.")
-        print ("No need to open up the time slots, since the appointment is not today.")
         for set in startTimesSet:
             datetime_str = datetime.datetime.strptime (set[0], format)
             # only add the times that are logically possible.
@@ -536,12 +533,7 @@ def rescheduleAppointment(request, id, date):
                     else:
                         eveningTimeSets.append (set)
 
-
-
     elif dateSelected.date == datetime.date.today ( ) and dateSelected.date == appointment.date:
-        print (
-            "You have selected today's date, we will need to process the time slots so that you  can't schedule at an illogical time.")
-        print ("Since the appointment is today we need to set it so that you can't schedule at an illogical time but try to give you more options.")
         for set in startTimesSet:
             datetime_str = datetime.datetime.strptime (set[0], format)
             # only add the times that are logically possible.
@@ -562,39 +554,6 @@ def rescheduleAppointment(request, id, date):
                         eveningTimeSets.append (set)
 
     elif dateSelected.date != datetime.date.today ( ) and dateSelected.date == appointment.date:
-        print (
-            "So the appointment is not today, but you have selected the date on which the appointment was originally schedule.")
-        print ("We will need to open up the time slots.")
-        for set in startTimesSet:
-            datetime_str = datetime.datetime.strptime (set[0], format)
-            # only add the times that are logically possible.
-            # ex. don't add 9:00am if it is 12pm in the afternoon
-
-            # though we need to convert the time into 24 hour time format in order to do the comparison.
-            # now we only need to do this for the today's date.
-
-            time_in24 = datetime.datetime.strptime (set[0], '%I:%M%p')
-            if dateSelected.date == todaysDate:
-                if time_in24.time ( ) > current_time.time ( ):
-                    if time_in24.time ( ) < morningUpperBound:
-                        morningTimeSets.append (set)
-                    if time_in24.time ( ) < afternoonUpperBound:
-                        if time_in24.time ( ) > morningUpperBound:
-                            afternoonTimeSets.append (set)
-                    else:
-                        eveningTimeSets.append (set)
-            else:
-                if time_in24.time ( ) < morningUpperBound:
-                    morningTimeSets.append (set)
-                if time_in24.time ( ) < afternoonUpperBound:
-                    if time_in24.time ( ) > morningUpperBound:
-                        afternoonTimeSets.append (set)
-                else:
-                    eveningTimeSets.append (set)
-
-    elif dateSelected.date != datetime.date.today ( ) and dateSelected.date != appointment.date:
-        print ("So you have selected a date in the future.")
-        print ("The appointment is also not on this date so we simply need to get the available start times.")
         for set in startTimesSet:
             datetime_str = datetime.datetime.strptime (set[0], format)
             # only add the times that are logically possible.
@@ -611,6 +570,58 @@ def rescheduleAppointment(request, id, date):
                     afternoonTimeSets.append (set)
             else:
                 eveningTimeSets.append (set)
+
+    elif dateSelected.date != datetime.date.today ( ) and dateSelected.date != appointment.date:
+        for set in startTimesSet:
+            datetime_str = datetime.datetime.strptime (set[0], format)
+            # only add the times that are logically possible.
+            # ex. don't add 9:00am if it is 12pm in the afternoon
+
+            # though we need to convert the time into 24 hour time format in order to do the comparison.
+            # now we only need to do this for the today's date.
+
+            time_in24 = datetime.datetime.strptime (set[0], '%I:%M%p')
+            if time_in24.time ( ) < morningUpperBound:
+                morningTimeSets.append (set)
+            if time_in24.time ( ) < afternoonUpperBound:
+                if time_in24.time ( ) > morningUpperBound:
+                    afternoonTimeSets.append (set)
+            else:
+                eveningTimeSets.append (set)
+
+    # now we can process the timeSlot data, if they selected a new date and time.
+    if request.method == "POST":
+        if "start_time" in request.POST:
+            if request.user.is_authenticated:
+                myVar = request.POST.get ("start_time")
+                # ok we have the start time, now what we need to do is to setup everything to send to confirmation page.
+                # really all that we need to pass in is our Appointment object that we are creating.
+
+                # ultimately if the user decides that they would like to alter it, we can  simply delete it.
+                # but we wont alter the time slots until after they have confirmed their appointment.
+
+                startTime = datetime.datetime.strptime (myVar, '%I:%M%p')
+                endTime = startTime + datetime.timedelta (minutes=appointment.totalDuration)
+
+                print("So you wish to re-schedule starting at", myVar , " on the date of ", dateSelected.date)
+                appointment.start_time = startTime
+                appointment.end_time = endTime
+                appointment.date = dateSelected.date
+
+                # process the time slot data
+                for set in startTimesSet:
+                    if set[0] == myVar:
+                        for time in set:
+                            slot = timeSlot.getTimeSlot (time)
+                            setattr (timeSlot, slot, False)
+
+                timeSlot.save()
+                time_slot.save()
+                appointment.save()
+
+                return redirect('account:home')
+
+
 
     return render (request, "Scheduling/reschedule.html", {'availableDates': workingDays, 'appointment': appointment,
                                                            'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
@@ -662,7 +673,7 @@ def deleteAppointment(request, id):
 
     text_content = plaintext.render (content)
     html_content = htmlEmail.render (content)
-    msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'cjuangas17@gmail.com',
+    msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'applenailsalon22@gmail.com',
                                   [request.user.email])
     msg.attach_alternative (html_content, "text/html")
     msg.send ( )
@@ -679,7 +690,7 @@ def deleteAppointment(request, id):
 
     text_content = plaintext.render (content)
     html_content = htmlEmail.render (content)
-    msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'cjuangas17@gmail.com',
+    msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'applenailsalon22@gmail.com',
                                   [appointment.technician.user.email])
     msg.attach_alternative (html_content, "text/html")
     msg.send ( )

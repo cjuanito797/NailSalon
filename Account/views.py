@@ -191,7 +191,7 @@ def customerView(request):
             username = request.user.email
             this_user = User.objects.get (pk=request.user.id)
             # get the future appointments pertaining to the user.
-            my_appointments = Appointment.objects.filter (customer_id=this_user.id, status__exact='scheduled').all ( )
+            my_appointments = Appointment.objects.filter (customer_id=this_user.id, status__exact='active').all ( )
             apptCount = my_appointments.count ( )
 
             # build a query set for all of the sale items in the customers upcoming appointments
