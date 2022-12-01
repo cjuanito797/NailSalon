@@ -14,5 +14,7 @@ urlpatterns = [
     path('e-mailConfirm/', views.index, name='confirmation'),
     path('delete/<int:id>/', views.deleteAppointment, name='delete'),
     path('reschedule/<int:id>/<str:date>/', views.rescheduleAppointment, name='reschedule'),
+    
+    path('schedule/none/<int:date>/', views.scheduleWithNoneTech, name='schedule_none_tech')
 
 ]

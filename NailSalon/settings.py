@@ -52,7 +52,7 @@ INSTALLED_APPS = [
 
 CRONTAB_COMMAND_SUFFIX = '2>&1'
 CRONJOBS = [
-    ('0 9 * * 1-6', 'helper.cron.open_time_job', f">> {os.path.join (BASE_DIR, 'NailSalon/log/helper_job.log')}"),
+    ('0 9 * * 1-6', 'helper.cron.newday_open_job', f">> {os.path.join (BASE_DIR, 'NailSalon/log/helper_job.log')}"),
 ]
 
 MIDDLEWARE = [

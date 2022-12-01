@@ -17,11 +17,11 @@ _WORK_QUEUE = []
 #QUEUE CONTROL FUNCTIONS----------------------------------------------
 # Build fresh queue in every day at open time salon open
 def build_fresh_wait_queue(today_date: date, filedir=FILE_DIR): # change to queue of all tech of the day()
-    timeslots = []
+    timeslots = []                      # NEED CHANGE TODAY DATE
     temp = list(timeSlots.objects.filter(date=today_date).values('tech', 'arrive_time'))
     for t in temp:
         if t['arrive_time'] != None:
-            t['arrive_time'] = a = datetime.combine(date.min, t['arrive_time']) - datetime.min
+            t['arrive_time'] = datetime.combine(date.min, t['arrive_time']) - datetime.min
             timeslots.append(t)
         
     lines = "_WAIT\n"
@@ -30,7 +30,6 @@ def build_fresh_wait_queue(today_date: date, filedir=FILE_DIR): # change to queu
         lines += f"{sl['tech']}:0\n"
     lines += "_WORK\n"
     f = open(filedir, "w")
-    #f = open("/Users/khoatran/Desktop/School/Capstone/NailSalon/helper/temp1", "w")
     f.write(lines)
     f.close()
 
@@ -49,15 +48,6 @@ def clock_tech_after_fresh_build(email):
 
 # Move chosen technician from Wait queue into Work queue
 def wait_to_work(email):
-    '''
-    if len(_WAIT_QUEUE) >=1:
-        a = _WAIT_QUEUE.pop(0)
-        _WORK_QUEUE.append((a[0], a[1]+1))
-        save_queue(_WAIT_QUEUE)
-        return len(_WAIT_QUEUE)
-    else:
-        return 0
-    '''
     read_temp()
     if len(_WAIT_QUEUE) >=1:
         for i in _WAIT_QUEUE:
