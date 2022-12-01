@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from Account.models import Technician, User
 from django.urls import reverse
@@ -135,6 +137,6 @@ class Sale (models.Model):
                                blank=False,
                                default='scheduled')
     
-    start_time = models.TimeField (default=None,
+    start_time = models.TimeField (default=datetime.datetime.now ( ).time ( ),
                                    null=True,
                                    blank=True)
