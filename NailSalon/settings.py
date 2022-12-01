@@ -150,4 +150,3 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'applenailsalon23@gmail.com'
 EMAIL_HOST_PASSWORD = 'shhanovesnoumvov'
-#Password to the email "AppleNail$@lon23"
