@@ -11,19 +11,19 @@ django.setup ( )
 
 cc = ["f@a.com", "g@a.com", "h@a.com","i@a.com", "j@a.com", "k@a.com", "l@a.com", "m@a.com", "n@a.com", "o@a.com", "p@a.com"]
 def get_date():
-
-    bb=[]
+    weekday=[]
+    sunday=[]
     for i in range(30):
         a = (date.today() + datetime.timedelta(days=i))
         #c = a.strftime("%Y,%m,%d")
         b = calendar.day_name[a.weekday()]
         if b != 'Sunday':
-            aa.append(a)
+            weekday.append(a)
         else:
-            bb.append(a)
-    return [aa,bb]
+            sunday.append(a)
+    return [weekday,sunday]
 
-'''
+
 from Account.models import User
 
 a = [
@@ -46,7 +46,7 @@ a = [
     User (email='i@a.com', first_name='Nam', last_name='Dang', street_num=' ', state='Nebraska', zipcode=' ', city=' ',
           phoneNumber='000', bio=' '),
     User (email='k@a.com', first_name='Tu', last_name='Luong', street_num=' ', state='Nebraska', zipcode=' ', city=' ',
-          phoneNumber='000', bio=' '
+          phoneNumber='000', bio=' '),
     User (email='l@a.com', first_name='Vu', last_name='Ho', street_num=' ', state='Nebraska', zipcode=' ', city=' ',
           phoneNumber='000', bio=' '),
     User (email='m@a.com', first_name='Jenny', last_name='Tran', street_num=' ', state='Nebraska', zipcode=' ', city=' ',
@@ -109,7 +109,7 @@ for i in cc:
         saturday_time_Out=datetime.time (17, 0),
         sunday_availability=False,
         sunday_time_In=datetime.time (0, 0),
-        sunday_time_Out=datime.time (0, 0)).save()a
+        sunday_time_Out=datetime.time (0, 0)).save()
 
 print ("Tech_Schedule done!")
 
@@ -230,7 +230,6 @@ for i in a:
     i.save ( )
 print ("Service done!")
 # DELETE FROM Appointments_service;
-'''
 
 
 from Appointments.models import Appointment
@@ -279,7 +278,7 @@ for i in aa:
 print("Calendar entry done!")
 
 
-'''
+
 from Account.models import Technician
 from Appointments.models import Sale, Appointment, Service
 import random
@@ -301,7 +300,7 @@ for j in range(1,8):
     a.services.add(Service.objects.get(id=random.randint(1,20)))
     a.save()
 print("Insert done!")
-'''
+
 
 
 

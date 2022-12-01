@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head %}
+    <meta charset="utf-8"/>
+    <title>{% block title %}Hello, {{ this_user.first_name }}{% endblock %}</title>
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+{% endblock %}
+
+{% block navigation %}
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{% url 'account:home' %}">
+                <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'account:gallery' %}">
+                    Gallery
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:services' %}">
+                    Our Services
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:aboutUs' %}">
+                    About Us
+                </a>
+
+                {% if request.user.is_authenticated %}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link has-text-black">
+                            My Account
+                        </a>
+
+                        <div class="navbar-dropdown" style="color: black;">
+                            <a class="navbar-item">
+                                My Appointment History
+                            </a>
+                            <a class="navbar-item" href="{% url 'account:profile' %}">
+                                My Profile
+                            </a>
+                            <a class="navbar-item" style="color: black;">
+                                My Promotions
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{% url 'account:security' %}">
+                                Security Settings
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link has-text-black">
+                        More
+                    </a>
+
+                    <div class="navbar-dropdown" style="color: black;">
+                        <a class="navbar-item">
+                            Meet the team
+                        </a>
+                        <a class="navbar-item">
+                            Career Opportunities
+                        </a>
+                        <a class="navbar-item" style="color: black;">
+                            Promotions
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Report an issue
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+
+                        <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
+                            <img src="../../static/shopping_bag.png" style=""/>
+                            {% with total_items=cart|length %}
+                                {% if cart|length > 0 %}
+                                    ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
+
+                                {% else %}
+                                    Empty
+                                {% endif %}
+                            {% endwith %}
+                        </a>
+
+                        &nbsp;
+                        &nbsp;
+
+                        <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                            Book Appointment
+                        </a>
+
+                        <a class="button is-light" href="{% url 'account:logout' %}">
+                            Sign Out
+                        </a>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+{% endblock %}
+
+
+{% block mainbody %}
+    <!-- Hero content: will be in the middle -->
+    <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
+        <div class="container has-text-centered">
+            <p class="title has-text-black">
+                Hello {{ this_user.first_name }}
+                <!-- If user has one or more appointments, render a table, otherwise display an image-->
+            </p>
+        </div>
+    </div>
+    <br>
+
+    <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
+        <div class="container has-text-centered">
+            <p class="title has-text-black">
+                Your Upcoming Appointments
+                <div class="box" style="">
+
+                    {% if apptCount == 0 %}
+                        <div class="title has-text-grey is-5">It doesn't like you have any upcoming appointments, see the
+                            link below to book an appointment!
+                            <br>
+                            <br>
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjy3_45HDoLtedaF2WO4zWEmuP6VF4LCZBLg&usqp=CAU"
+                                 alt="nail cartoon">
+                        </div>
+    
+                        <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                            Book Appointment
+                        </a>
+    
+                    {% else %}
+                        <!-- build upcoming appointment table -->
+                        <table class="table is-striped">
+                            <thead>
+                            <tr>
+                                <td>Date</td>
+                                <td>Technician</td>
+                                <td>Sub Total</td>
+                                <td colspan="3">Options</td>
+                            </tr>
+                            </thead>
+                            {% for appointment in my_appointments %}
+                                <tr>
+                                    <td>{{ appointment.date }}</td>
+                                    <td>{{ appointment.technician.user.first_name }} {{ appointment.technician.user.last_name }}</td>
+                                    <td>$ {{ appointment.totalCharge }}</td>
+                                    <td>
+                                        <a class="primary modal-button" data-toggle="modal"
+                                           data-target="#modal-default{{ appointment.id }}">
+                                            <button class="button is-info">View Details</button>
+                                        </a>
+                                        <button class="button is-primary">Re-schedule</button>
+                                        <a class="button is-danger"
+                                           onclick="return confirm('Are you sure you would like to cancel this upcoming appointment?')"
+                                           href="{% url 'appointments:delete' appointment.id %}">
+                                            Cancel
+                                        </a>
+    
+                                    </td>
+                                </tr>
+                                <div class="modal" id="modal-default{{ appointment.id }}">
+                                    <div class="modal-background"></div>
+                                    <div class="modal-card">
+                                        <header class="modal-card-head">
+                                            <button class="modal-close is-large" aria-label="close"></button>
+    
+                                            <p class="modal-card-title">Viewing details for your appointment below.</p>
+                                        </header>
+    
+                                        <section class="modal-card-body has-text-left">
+                                            <div class="content">
+                                                <h3>Date: {{ appointment.date }}</h3>
+                                                <h3>Start Time: {{ appointment.start_time }}</h3>
+                                                <h3>End Time (Estimated): {{ appointment.end_time }}</h3>
+                                                <h3>Working with: {{ appointment.technician.user.first_name }}
+                                                    {{ appointment.technician.user.last_name }}</h3>
+    
+                                                <!-- iterate over the sale items for this appointment -->
+                                                <div class="tabular">
+    
+    
+                                                    {% for sale in sale_items %}
+    
+                                                        {% if sale.appointment.id == appointment.id %}
+    
+                                                            <div class="box">
+                                                                <article class="media">
+                                                                    <div class="media-left">
+                                                                        <figure class="image is-64x64">
+                                                                            <img src="../../static/galleryImages/a.jpg"
+                                                                                 alt="Image">
+                                                                        </figure>
+                                                                    </div>
+                                                                    <div class="media-content">
+                                                                        <div class="content">
+                                                                            <p>
+                                                                                <strong>{{ sale.service.name }}</strong>
+                                                                                <br>
+                                                                                {{ sale.service.description }}
+                                                                                <br>
+                                                                                {{ sale.service.price }}
+                                                                            </p>
+                                                                        </div>
+                                                                        <nav class="level is-mobile">
+                                                                            <div class="level-left">
+                                                                                <a class="level-item" aria-label="reply">
+                                                                                <span class="icon is-small">
+                                                                                <i class="fas fa-search"
+                                                                                   aria-hidden="true"></i>
+                                                                                </span>
+                                                                                </a>
+                                                                                <a class="level-item" aria-label="like">
+                                                                                <span class="icon is-small">
+                                                                                <i class="fas fa-heart"
+                                                                                   aria-hidden="true"></i>
+                                                                                </span>
+                                                                                </a>
+                                                                            </div>
+                                                                        </nav>
+                                                                    </div>
+                                                                </article>
+                                                            </div>
+                                                            <div class="hr"
+                                                                 style="border: 1px solid grey; width: 100%"></div>
+    
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+    
+    
+                                            </div>
+                                        </section>
+                                    </div>
+                                    <button class="modal-close is-large" aria-label="close"></button>
+                                </div>
+    
+    
+    
+                            {% endfor %}
+    
+                        </table>
+                        <script>
+                            $(".modal-button").click(function () {
+                                var target = $(this).data("target");
+                                $("html").addClass("is-clipped");
+                                $(target).addClass("is-active");
+                            });
+    
+                            $(".modal-close").click(function () {
+                                $("html").removeClass("is-clipped");
+                                $(this).parent().removeClass("is-active");
+                            });
+    
+                        </script>
+    
+    
+    
+                    {% endif %}
+                </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
