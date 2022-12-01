@@ -314,6 +314,13 @@ def scheduleWithTech(request, pk, date):
                                                          'evening': eveningTimeSets, "date": dateSelected.date})
 
 
+@never_cache
+@cache_control (no_cache=True, must_revalidate=True, no_store=True)
+@login_required (login_url='/login/')
+def scheduleWithNoneTech(request, pk, date):
+    pass
+
+'''
 def confirmAppointment(request):
     # so in here we need to render a form, where the user will:
     # provide any additional details that they would like to include in their request.
@@ -374,6 +381,68 @@ def confirmAppointment(request):
                  'technician': new_appointment.technician.user.first_name, 'saleItems': saleItems, 'subTotal': subTotal,
                  'grandTotal': float ("{:.2f}".format (grandTotal))})
 
+            text_content = plaintext.render (content)
+            html_content = htmlEmail.render (content)
+            msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon22@gmail.com',
+                                          [request.user.email])
+            msg.attach_alternative (html_content, "text/html")
+            msg.send ( )
+
+            return redirect ('appointments:confirmation')
+
+    # if the user changes their mind, delete the appointment and return to the calendar page with appropriate params.
+    return render (request, "Scheduling/confirmation.html")
+'''
+
+
+def confirmAppointment(request):
+    if request.method == "POST":
+        if "Confirm" in request.POST:
+
+            # clear the cart
+            cart = Cart (request)
+
+            new_appointment = Appointment.objects.create (
+                customer_id=customerID,
+                technician_id=technicianID,
+                start_time=startTimeGlobal,
+                end_time=endTimeGlobal,
+                totalDuration=TotalDurationGlobal,
+                date=DateGlobal,
+                totalCharge=TotalChargeGlobal
+            )
+            # add services from cart into appointment
+            for item in cart:
+                new_appointment.services.add(Service.objects.filter (name__exact=item).get ( ))
+                
+            new_appointment.save()
+            cart.clear ( )
+
+
+            # build a query set for the sale items that were created for this appointment, to display in the e-mail
+            subTotal = TotalChargeGlobal
+            grandTotal = new_appointment.getTotalCharge ( )
+            
+            if new_appointment.technician is not None:
+                # set the appropriate time slots to false
+                timeSlot = timeSlots.objects.get (tech=new_appointment.technician.user.email, date=new_appointment.date)
+                for time in globalVar:
+                    slot = timeSlot.getTimeSlot (time)
+                    setattr (timeSlot, slot, False)
+                timeSlot.save ( )
+                saleItems = Sale.objects.filter (appointment_id=new_appointment.id).all ( )
+                content = (
+                    {'username': request.user.first_name, 'date': new_appointment.date, 'time': new_appointment.start_time,
+                    'technician': new_appointment.technician.user.first_name, 'saleItems': saleItems, 'subTotal': subTotal,
+                    'grandTotal': float ("{:.2f}".format (grandTotal))})
+            else:
+                content = (
+                    {'username': request.user.first_name, 'date': new_appointment.date, 'time': new_appointment.start_time,
+                    'subTotal': subTotal, 'grandTotal': float ("{:.2f}".format (grandTotal))})
+            
+            plaintext = get_template ('Send/confirmationEmail.txt')
+            htmlEmail = get_template ('Send/confirmationEmail.html')
+            
             text_content = plaintext.render (content)
             html_content = htmlEmail.render (content)
             msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon22@gmail.com',
