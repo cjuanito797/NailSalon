@@ -412,9 +412,15 @@ def confirmAppointment(request):
                 totalCharge=TotalChargeGlobal
             )
             # add services from cart into appointment
+
             for item in cart:
-                new_appointment.services.add(Service.objects.filter (name__exact=item).get ( ))
-                
+                # get the service item, using the item name.
+                service = Service.objects.filter (name__exact=item['service']).get ( )
+                new_appointment.services.add(service)
+                # create sale items for each item in the cart
+                Sale.objects.create (service_id=service.id, technician_id=new_appointment.technician.id,
+                                     appointment_id=new_appointment.id, status='scheduled').save ( )
+
             new_appointment.save()
             cart.clear ( )
 
