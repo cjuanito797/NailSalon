@@ -100,7 +100,7 @@ def technicianView(request):
             print(user_obj.id)
             print(this_user.pk)
             # get the future appointments pertaining to the user.
-            my_appointments = Appointment.objects.filter (id=17).all ( )
+            my_appointments = Appointment.objects.filter (id=1).all ( )
             print(my_appointments)
             apptCount = my_appointments.count ( )
 
