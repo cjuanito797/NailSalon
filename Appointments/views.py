@@ -323,10 +323,8 @@ def scheduleWithTech(request, pk, date):
 def scheduleWithNoneTech(request, date):
     calendar = calendarEntry.objects.all ( )
     date = calendarEntry.objects.filter (date=date).get ( )
-
-    print (date.date)
-
-    appointment_queue.get_next_frame_available (datetime.date (2022, 12, 3))
+    
+    times = appointment_queue.get_next_frame_available (date.date)
 
     return render (request, "Scheduling/chooseForMe.html", {'date': date, 'calendar': calendar})
 
