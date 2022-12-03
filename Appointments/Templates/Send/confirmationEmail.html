@@ -15,7 +15,7 @@
     <div class="column">
         <p class="subtitle is-size-4">Hello there {{ username }}. We are just confirming your appointment on {{ date }}
         starting at {{ time }} with {{ technician }} for the following services, please be sure to have your payment ready upon arrival.
-        We have you booked for the following services</p>
+        We have you booked for the following services.</p>
 
         <table class="table">
             <thead>
@@ -35,6 +35,9 @@
 
             {% endfor %}
         </table>
+
+        <br>
+        <p><strong>We ask that you please arrive 10-15 minutes prior to the start of your appointment.</strong></p>
 
         <br>
         Subtotal: ${{ subTotal }}
