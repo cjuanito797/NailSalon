@@ -1,15 +1,19 @@
-<!DOCTYPE html>
-<html>
-    {% load extra_tags %}
-    <head>
-        {% block head %}
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <link rel="stylesheet" href="./Templates/home.css">
-        <title>MANAGER CONTROL</title>
-        {% endblock %}
-    </head>
-    <nav class="navbar if" role="navigation" aria-label="main navigation">
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head %}
+    <title>{% block title %}Management Control{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="./Templates/home.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+{% endblock %}
+
+{% block navigation %}
+    <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" href="{% url 'account:home' %}">
                 <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
@@ -37,73 +41,147 @@
                     About Us
                 </a>
 
-                <a class="navbar-item" href="{% url 'manager:newtech' %}">
-                    New Technician
-                </a>
-                <a class="button is-light" href="{% url 'account:logout' %}">
-                    Sign Out
-                </a>
+                {% if request.user.is_authenticated %}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link has-text-black">
+                            My Account
+                        </a>
 
-                <div class="navbar-end">
-                    <div class="navbar-item">
-                        <a class="button is-success" href="{% url 'account:home' %}">
-                            Book Appointment
+                        <div class="navbar-dropdown" style="color: black;">
+                            <a class="navbar-item">
+                                My Appointment History
+                            </a>
+                            <a class="navbar-item" href="{% url 'account:profile' %}">
+                                My Profile
+                            </a>
+                            <a class="navbar-item" style="color: black;">
+                                My Promotions
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{% url 'account:security' %}">
+                                Security Settings
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link has-text-black">
+                        More
+                    </a>
+
+                    <div class="navbar-dropdown" style="color: black;">
+                        <a class="navbar-item">
+                            Meet the team
+                        </a>
+                        <a class="navbar-item">
+                            Career Opportunities
+                        </a>
+                        <a class="navbar-item" style="color: black;">
+                            Promotions
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Report an issue
                         </a>
                     </div>
                 </div>
 
+
             </div>
 
-        </div>
-    </nav>
-    <body>
-        <h2>MANAGER CONTROL</h2>
-        
-        <!-- Master Control -->
-        {% block content %}
-        <div class="master_control">
-            <div id="ww_5df5291800ffb" style="float: left; " v='1.3' loc='auto' a='{"t":"horizontal","lang":"en","ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"fahrenheit","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>weatherwidget.org <a href="https://weatherwidget.org/it/" id="ww_5df5291800ffb_u" target="_blank">Widget meteo HTML</a> gratuito per sito web</div><script async src="https://app1.weatherwidget.org/js/?id=ww_5df5291800ffb"></script>
-            
-            <div class="master_checkin" style="float: left;">
-                <button type="button" id="attendant">Technician Attendant</button>
-                <div class="checkin_grid"> 
-                    {% for t in packet.scheduled %}
-                    <button type="button" class="checkin_btn" value="{{t.email}}"> <!-- ** SECURITY EXPOSE -->
-                        {{t.name.first_name}} {{t.name.last_name}}
-                        <br><span class="clock" id=""></span>
-                    </button>
-                    {% endfor %}
-                </div>
 
-                <div class="checkin_control">
-                    <button type="button" onclick="resetAttendance()" id="reset_checkin" class="checkin_contr_btn">Reset</button>
-                    <button type="button" id="add_checkin" class="checkin_contr_btn">Add Technician</button>
-                    <button type="button" onclick="postAttendance()" id="submit_checkin" class="checkin_contr_btn">Submit</button>
-                </div>
-                
-                <div id="model_addCheckin">
-                    <div class="addCheckin-content">
-                        <span class="close">&times;</span>
-                        <a>Technician:</a>
-                        <select name="technician_id" id="technician_id">
-                            {% for t in packet.technicians %}
-                            <option value="{{ t.email }}">{{ t.name.first_name }} {{ t.name.last_name }}</option>   <!-- ** SECURITY EXPOSE -->
-                            {% endfor %}
-                        </select>
-                        <br><br>
-                        <button type="button" onclick="addTech()" >Commit Add</button> 
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+
+                        <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                            Hiring Portal
+                        </a>
+
+                        <a class="button is-light" href="{% url 'account:logout' %}">
+                            Sign Out
+                        </a>
+
+
                     </div>
                 </div>
             </div>
-        </div>        
-        
+        </div>
+    </nav>
+
+{% endblock %}
+
+
+{% block mainbody %}
+    <div class="hero is-fullheight has-text-centered">
+
+        <div class="master_control">
+            <div class="column has-text-centered-desktop-only is-fullwidth">
+                <p class="subtitle is-size-4 is-underlined has-text-black">Your Current Attendants</p>
+
+
+                <div class="box" style="float: none; background-color: whitesmoke;">
+                    <button type="button" id="attendant" class="button is-primary">Technician Attendant</button>
+                    <br>
+                    <br>
+                    {% for t in packet.scheduled %}
+                        <button class="" value="{{ t.email }}"
+                                style="height: fit-content; width: 250px; display: inline-block; background-color: white;">
+                            <!-- ** SECURITY EXPOSE -->
+                            {{ t.name.first_name }} {{ t.name.last_name }}
+                            <br>
+                            <br>
+                            <span class="clock" id="" style=""></span>
+                        </button>
+                    {% endfor %}
+
+                    <div class="checkin_control">
+                        <button type="button" onclick="resetAttendance()" id="reset_checkin" class="button is-danger">
+                            Reset
+                        </button>
+                        <button type="button" id="add_checkin" class="button is-primary">Add Technician</button>
+                        <button type="button" onclick="postAttendance()" id="submit_checkin" class="button is-info">
+                            Submit
+                        </button>
+                    </div>
+
+                    <div id="model_addCheckin">
+                        <div class="addCheckin-content">
+                            <span class="close">&times;</span>
+                            <a>Technician:</a>
+                            <select name="technician_id" id="technician_id" class="select">
+                                {% for t in packet.technicians %}
+                                    <option value="{{ t.email }}">{{ t.name.first_name }} {{ t.name.last_name }}</option>
+                                    <!-- ** SECURITY EXPOSE -->
+                                {% endfor %}
+                            </select>
+                            <br><br>
+                            <button type="button" onclick="addTech()" class="button is-primary">Commit Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
                 {% endfor %}
             </ul>
         {% endif %}
+
+    <div id="ww_5df5291800ffb" style="float: none; margin-left: 40%; margin-right: 75%;" v='2.0' loc='auto'
+             a='{"t":"horizontal","lang":"en","ids":[],"font":"Arial","sl_ics":"one_a","sl_sot":"fahrenheit","cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722"}'>
+            weatherwidget.org <a href="https://weatherwidget.org/it/" id="ww_5df5291800ffb_u" target="_blank">Widget
+            meteo HTML</a> gratuito per sito web
+        </div>
+        <script async src="https://app1.weatherwidget.org/js/?id=ww_5df5291800ffb"></script>
+
+    <br>
+
         <!-- Appointment Sort Option -->
         <select name="apt_date" id="apt_date" onchange="sort_appointment()">
             <option value="all" selected>-- Display All Appointments--</option>
@@ -112,110 +190,132 @@
             {% endfor %}
         </select>
 
+
         <!-- Timetable Sort Option -->
-        <select name="timetable_date" id="timetable_date" onchange="sort_timetable()" style="float: right">
+        <select name="timetable_date" id="timetable_date" onchange="sort_timetable()">
             {% for d in packet.timetable_date %}
                 <option value="{{ d }}">{{ d }}</option>
             {% endfor %}
         </select>
 
-        <div class="container">
+
+        <div class="column" style="width: 100%;">
             <!-- Appointment/Sale Control -->
-            <div class="master" id="scroll-container">
+            <div class="master" id="scroll-container" style="width: 50%; display: inline-block;">
+
+                <p class="subtitle is-size-3 is-underlined">Take a look at the appointments.</p>
 
                 {% for a in packet.appointments %}
-                <form class="appointment" method="POST" id="{{ a.date }}">
-                {% csrf_token %}
-                    <button type="button" class="collapsible">
-                    Customer: {{a.customer.first_name}} {{a.customer.last_name}}.<br>
-                    Start time: {{a.start_time}}.<br>
-                    End time: {{a.end_time}}.<br>
-                    Total charge: {{a.totalCharge}}.
-                    </button> 
-                    <div class="a_control">
-                        <input type="hidden" name="appointment_id" value="{{ a.id }}" />
-                        {% if a.sales|length == 0 %}
-                            <button type="submit" name="appointment_btn" class="appointment_btn" value="Initialize" >Initialize</button>
-                            <button type="button" name="appointment_btn" class="appointment_btn" id="a_modify" value="{{ a.id }}" >Modify</button>
-                            <button type="submit" name="appointment_btn" class="appointment_btn" value="Cancel" >Cancel</button>
+                    <form class="appointment" method="POST" id="{{ a.date }}">
+                        {% csrf_token %}
+                        <button type="button" class="collapsible">
+                            Customer: {{ a.customer.first_name }} {{ a.customer.last_name }}.<br>
+                            Start time: {{ a.start_time }}.<br>
+                            End time: {{ a.end_time }}.<br>
+                            Total charge: {{ a.totalCharge }}.
+                        </button>
+                        <div class="a_control">
+                            <input type="hidden" name="appointment_id" value="{{ a.id }}"/>
+                            {% if a.sales|length == 0 %}
+                                <button type="submit" name="appointment_btn" class="appointment_btn" value="Initialize">
+                                    Initialize
+                                </button>
+                                <button type="button" name="appointment_btn" class="appointment_btn" id="a_modify"
+                                        value="{{ a.id }}">Modify
+                                </button>
+                                <button type="submit" name="appointment_btn" class="appointment_btn" value="Cancel">
+                                    Cancel
+                                </button>
                             {% else %}
-                            <button type="button" name="appointment_btn" class="appointment_btn" value="Initialize" disabled>Initialize</button>
-                            <button type="button" name="appointment_btn" class="appointment_btn" id="a_modify" value="{{ a.id }}" >Modify</button>
-                            <button type="submit" name="appointment_btn" class="appointment_btn" value="Cancel" disabled>Cancel</button>
-                        {% endif %} 
-                        
-                    </div>
-                </form>
-                <div class="content" id="{{ a.date }}">
-                    {% if a.sales|length > 0 %}
-                    <form method="POST">
-                    {% csrf_token %}
-                        <div class="master_sale">
-                            {% for s in a.sales %}
-                            <div class="sale">
-                                <input {{ s.check }} type="radio" name="sale_id" value="{{ s.id }}"/>
-                                <a>Technician: {{s.technician.first_name}} {{s.technician.last_name}}.</a><br>
-                                <a>Service: {{s.service}}.</a><br>
-                                <a>Status: {{s.status}}.</a><br>
-                            </div>
-                            
-                            {% endfor %} 
-                        </div>
-                        <div class="s_control">
-                            <input type="hidden" name="appointment_id" value="{{ a.id }}" />
-                            <button type="submit" name="sale_btn" class="sale_btn" value="Trigger">Trigger</button>
-                            <button type="button" name="sale_btn" class="sale_btn" id="s_modify">Modify</button>
-                            <button type="submit" name="sale_btn" class="sale_btn" value="Cancel">Cancel</button>
+                                <button type="button" name="appointment_btn" class="appointment_btn" value="Initialize"
+                                        disabled>Initialize
+                                </button>
+                                <button type="button" name="appointment_btn" class="appointment_btn" id="a_modify"
+                                        value="{{ a.id }}">Modify
+                                </button>
+                                <button type="submit" name="appointment_btn" class="appointment_btn" value="Cancel"
+                                        disabled>Cancel
+                                </button>
+                            {% endif %}
+
                         </div>
                     </form>
-                    {% else %}
-                    <a class="nosale">NO POSTED SALE</a>
-                    {% endif %} 
-                </div>
+                    <div class="content" id="{{ a.date }}">
+                        {% if a.sales|length > 0 %}
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="master_sale">
+                                    {% for s in a.sales %}
+                                        <div class="sale">
+                                            <input {{ s.check }} type="radio" name="sale_id" value="{{ s.id }}"/>
+                                            <a>Technician: {{ s.technician.first_name }} {{ s.technician.last_name }}.</a><br>
+                                            <a>Service: {{ s.service }}.</a><br>
+                                            <a>Status: {{ s.status }}.</a><br>
+                                        </div>
+
+                                    {% endfor %}
+                                </div>
+                                <div class="s_control">
+                                    <input type="hidden" name="appointment_id" value="{{ a.id }}"/>
+                                    <button type="submit" name="sale_btn" class="sale_btn" value="Trigger">Trigger
+                                    </button>
+                                    <button type="button" name="sale_btn" class="sale_btn" id="s_modify">Modify</button>
+                                    <button type="submit" name="sale_btn" class="sale_btn" value="Cancel">Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        {% else %}
+                            <a class="nosale">NO POSTED SALE</a>
+                        {% endif %}
+                    </div>
                 {% endfor %}
 
             </div>
-            
+
             {% for d in packet.timetable_date %}
-            <div class="timetable" id="{{d}}">
-                <table>
-                    <thead>
+                <div class="timetable" id="{{ d }}" style="width: 45%; border: none;">
+                    <p class="subtitle is-size-3 has-text-black is-underlined">See your working technicians below.</p>
+
+                    <table class="table is-fullwidth">
+                        <thead style="background-color: white;">
                         <tr><!--row with technician name-->
-                            <th id="first_cell"></th>
+                            <th id="first_cell" style="background-color: white;"></th>
                             {% for t in packet.timetable_list %}
-                            {% if t.date == d %}
-                            <th class="tech_timetable" id="{{ t.date }}">{{t.tech.first_name}} {{t.tech.last_name}}</th>
-                            {% endif %}
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for key,slot in packet.timeslots.items %}
-                        {% with k=key %}
-                        <tr>
-                            <th>{{slot}}</th>
-                            {% for t in packet.timetable_list %}
-                            {% if t.date == d %}
-                                {% if t|get_item:k == True %}
-                                <td style="background-color: green; border: 1px ridge;"></td>
-                                {% else %}
-                                <td style="background-color: white; border: 1px groove; text-align: center;">BUSY</td>
+                                {% if t.date == d %}
+                                    <th class="tech_timetable" style="background-color: whitesmoke;"
+                                        id="{{ t.date }}">{{ t.tech.first_name }} {{ t.tech.last_name }}</th>
                                 {% endif %}
-                            {% endif %}
                             {% endfor %}
                         </tr>
-                        {% endwith %}
+                        </thead>
+                        <tbody>
+                        {% for key,slot in packet.timeslots.items %}
+                            {% with k=key %}
+                                <tr>
+                                    <th>{{ slot }}</th>
+                                    {% for t in packet.timetable_list %}
+                                        {% if t.date == d %}
+                                            {% if t|get_item:k == True %}
+                                                <td style="background-color: green; border: 1px ridge;"></td>
+                                            {% else %}
+                                                <td style="background-color: white; border: 1px groove; text-align: center;">
+                                                    BUSY
+                                                </td>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            {% endwith %}
                         {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
             {% endfor %}
-            
+
         </div>
-        
-        <!-- Modify Modal -->
+
         <form id="modal" method="POST">
-            <input type="hidden" name="" value="" />
+            <input type="hidden" name="" value=""/>
             {% csrf_token %}
             <!-- Modal content -->
             <div class="modal-content">
@@ -227,13 +327,16 @@
                         <option value="{{ t.id }}">{{ t.name.first_name }} {{ t.name.last_name }}</option>
                     {% endfor %}
                 </select>
-                <button type="button" name="technician_id" id="modal_btn" value="random" style="display: none;">Add Random Option</button>
+                <button type="button" name="technician_id" id="modal_btn" value="random" style="display: none;">Add
+                    Random
+                    Option
+                </button>
                 <br>
                 <div id="div_modal_timeslot">
                     <a>Start Time:</a>
                     <select name="timeslot" id="timeslot">
                         {% for key,slot in packet.timeslots.items %}
-                            <option value="{{ key }}">{{slot}}</option>
+                            <option value="{{ key }}">{{ slot }}</option>
                         {% endfor %}
                     </select>
                     <br><br>
@@ -241,20 +344,26 @@
                 <button type="submit" name="sale_btn" id="modal_btn" value="Modify">Submit Modification</button>
             </div>
         </form>
-        
-        <!-- pass django data to js -->
-        {{ packet.scheduled|json_script:"scheduled" }}
-        {{ packet.technicians|json_script:"technicians" }}
-        <script>
-            var technicians_data = JSON.parse(document.getElementById('technicians').textContent);
-            var scheduled_data = JSON.parse(document.getElementById('scheduled').textContent);
-            //console.log(scheduled_data);
-            //console.log(technicians_data);
-        </script>
-        <script src="./Templates/javascript/data_var.js"></script>
-        <script src="./Templates/javascript/home_collapses.js"></script>
-        <script src="./Templates/javascript/home_modals.js"></script>
-        <script src="./Templates/javascript/home_checkin_control.js"></script>
-        {% endblock %}
-    </body>
-</html>
+
+    <!-- pass django data to js -->
+    {{ packet.scheduled|json_script:"scheduled" }}
+    {{ packet.technicians|json_script:"technicians" }}
+    <script>
+        var technicians_data = JSON.parse(document.getElementById('technicians').textContent);
+        var scheduled_data = JSON.parse(document.getElementById('scheduled').textContent);
+        //console.log(scheduled_data);
+        //console.log(technicians_data);
+    </script>
+    <script src="./Templates/javascript/data_var.js"></script>
+    <script src="./Templates/javascript/home_collapses.js"></script>
+    <script src="./Templates/javascript/home_modals.js"></script>
+    <script src="./Templates/javascript/home_checkin_control.js"></script>
+
+    </div>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}
+
+

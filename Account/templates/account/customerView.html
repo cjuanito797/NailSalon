@@ -186,7 +186,9 @@
                                        data-target="#modal-default{{ appointment.id }}">
                                         <button class="button is-info">View Details</button>
                                     </a>
-                                    <a class="is-primary button" href="{% url 'appointments:reschedule' appointment.id appointment.date %}">Re-schedule</a>
+                                    <a class="is-primary button"
+                                       onclick="return confirm('Please note that currently you may only re-schedule with ,{{ appointment.technician.user.first_name }}.')"
+                                       href="{% url 'appointments:reschedule' appointment.id appointment.date %}">Re-schedule</a>
                                     <a class="button is-danger"
                                        onclick="return confirm('Are you sure you would like to cancel this upcoming appointment?')"
                                        href="{% url 'appointments:delete' appointment.id %}">
