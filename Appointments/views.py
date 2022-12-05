@@ -314,7 +314,7 @@ def scheduleWithTech(request, pk, date):
 
     return render (request, "Scheduling/calendar.html", {"tech": tech, "availableDates": workingDays,
                                                          'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
-                                                         'evening': eveningTimeSets, "date": dateSelected.date})
+                                                   'evening': eveningTimeSets, "date": dateSelected.date})
 
 
 @never_cache
@@ -329,8 +329,6 @@ def scheduleWithNoneTech(request, date):
     appointment_queue.get_next_frame_available (datetime.date (2022, 12, 3))
 
     return render (request, "Scheduling/chooseForMe.html", {'date': date, 'calendar': calendar})
-
-
 '''
 def confirmAppointment(request):
     # so in here we need to render a form, where the user will:
@@ -394,10 +392,13 @@ def confirmAppointment(request):
 
             text_content = plaintext.render (content)
             html_content = htmlEmail.render (content)
-            msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon22@gmail.com',
+            msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon23@gmail.com',
                                           [request.user.email])
             msg.attach_alternative (html_content, "text/html")
-            msg.send ( )
+
+            print("HTML content was attatched to your e-mail preparing to send.")
+            # msg.send()
+
 
             return redirect ('appointments:confirmation')
 
@@ -439,6 +440,7 @@ def confirmAppointment(request):
             subTotal = TotalChargeGlobal
             grandTotal = new_appointment.getTotalCharge ( )
 
+            print("Just finished calculating the totals for your appointment")
             if new_appointment.technician is not None:
                 # set the appropriate time slots to false
                 timeSlot = timeSlots.objects.get (tech=new_appointment.technician.user.email, date=new_appointment.date)
@@ -464,11 +466,15 @@ def confirmAppointment(request):
 
             text_content = plaintext.render (content)
             html_content = htmlEmail.render (content)
-            msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon22@gmail.com',
+            msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon23@gmail.com',
                                           [request.user.email])
+            print("Preparing to add the html content to your e-mail.")
             msg.attach_alternative (html_content, "text/html")
-            msg.send ( )
+            print("HTML content has been attatched, preparing to send your e-mail.")
 
+            msg.send (fail_silently=False)
+
+            print("Message has been sent.")
             return redirect ('appointments:confirmation')
 
     # if the user changes their mind, delete the appointment and return to the calendar page with appropriate params.
@@ -718,7 +724,7 @@ def rescheduleAppointment(request, id, date):
                 html_content = htmlEmail.render (content)
 
                 msg = EmailMultiAlternatives ("Appointment has been re-scheduled", html_content,
-                                              'applenailsalon22@gmail.com',
+                                              'applenailsalon23@gmail.com',
                                               [request.user.email])
 
                 msg.attach_alternative (html_content, "text/html")
@@ -776,7 +782,7 @@ def deleteAppointment(request, id):
 
     text_content = plaintext.render (content)
     html_content = htmlEmail.render (content)
-    msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'applenailsalon22@gmail.com',
+    msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'applenailsalon23@gmail.com',
                                   [request.user.email])
     msg.attach_alternative (html_content, "text/html")
     msg.send ( )
@@ -793,11 +799,15 @@ def deleteAppointment(request, id):
 
     text_content = plaintext.render (content)
     html_content = htmlEmail.render (content)
-    msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'applenailsalon22@gmail.com',
+    msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'applenailsalon23@gmail.com',
                                   [appointment.technician.user.email])
+    print("Added the html content.")
     msg.attach_alternative (html_content, "text/html")
+
+    print("Preparing to send the e-mail.")
     msg.send ( )
 
+    print("The e-mail has been sent.")
     appointment.delete ( )
 
     return redirect ('Account:home')
