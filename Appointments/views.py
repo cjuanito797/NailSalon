@@ -799,13 +799,10 @@ def deleteAppointment(request, id):
     html_content = htmlEmail.render (content)
     msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'applenailsalon23@gmail.com',
                                   [appointment.technician.user.email])
-    print("Added the html content.")
     msg.attach_alternative (html_content, "text/html")
 
-    print("Preparing to send the e-mail.")
     msg.send ( )
 
-    print("The e-mail has been sent.")
     appointment.delete ( )
 
     return redirect ('Account:home')

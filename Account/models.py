@@ -122,3 +122,7 @@ class Customer (models.Model):
 
 class Appointment (models.Model):
     phoneNumber = models.CharField (max_length=10, validators=[MinLengthValidator (10)])
+
+class contactCustomer(models.Model):
+    subject = models.CharField(max_length=50, blank=False)
+    message = models.TextField(max_length=500, blank=False)
