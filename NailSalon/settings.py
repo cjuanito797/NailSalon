@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'Appointments.apps.AppointmentsConfig',
     'cart.apps.CartConfig',
     'Calendar.apps.CalendarConfig',
-    'Manager.apps',
+    'Manager.apps.ManagerConfig',
     
     'django_crontab',
     'django_behave',

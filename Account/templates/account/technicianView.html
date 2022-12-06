@@ -7,7 +7,6 @@
     <title>{% block title %}Hello, {{ this_user.first_name }}{% endblock %}</title>
     <link href="{% static "css/base.css" %}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
-
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
@@ -100,30 +99,17 @@
                 <div class="navbar-item">
                     <div class="buttons">
 
-                        <a href="{% url 'cart:cart_detail' %}" class="has-text-black">
-                            <img src="../../static/shopping_bag.png" style=""/>
-                            {% with total_items=cart|length %}
-                                {% if cart|length > 0 %}
-                                    ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
-
-                                {% else %}
-                                    Empty
-                                {% endif %}
-                            {% endwith %}
+                        <a class="button is-info" href="{% url 'account:aboutUs' %}">
+                            My Schedule
                         </a>
 
-                        &nbsp;
-                        &nbsp;
-
                         <a class="button is-success" href="{% url 'appointments:service_list' %}">
-                            Book Appointment
+                            Create Appointment
                         </a>
 
                         <a class="button is-light" href="{% url 'account:logout' %}">
                             Sign Out
                         </a>
-
-
                     </div>
                 </div>
             </div>
@@ -136,34 +122,30 @@
 {% block mainbody %}
     <!-- Hero content: will be in the middle -->
     <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
-        <div class="container has-text-centered">
+        <div class="column has-text-centered">
             <p class="title has-text-black">
-                Hello {{ this_user.first_name }}
+                Welcome {{ request.user.first_name }}, here is your current appointment outlook.
                 <!-- If user has one or more appointments, render a table, otherwise display an image-->
             </p>
         </div>
-    </div>
-    <br>
 
-    <div class="hero-body is-align-items-stretch" style="display: inline-block; padding: 15px; margin: auto;">
-        <div class="container has-text-centered">
-            <p class="title has-text-black">
-                Your Upcoming Appointments
+        <br>
+        <br>
+        <div class="column" style="display: inline-block; padding: 15px; margin: auto;">
+            <div class="container has-text-centered">
+                <p class="title has-text-black">
+                    Your Upcoming Appointments
                 <div class="box" style="">
 
                     {% if apptCount == 0 %}
-                        <div class="title has-text-grey is-5">It doesn't like you have any upcoming appointments, see the
-                            link below to book an appointment!
-                            <br>
+                        <div class="title has-text-grey is-5">It doesn't like you have any upcoming appointments, enjoy
+                            a refresher.<br>
                             <br>
                             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjy3_45HDoLtedaF2WO4zWEmuP6VF4LCZBLg&usqp=CAU"
                                  alt="nail cartoon">
                         </div>
-    
-                        <a class="button is-success" href="{% url 'appointments:service_list' %}">
-                            Book Appointment
-                        </a>
-    
+
+
                     {% else %}
                         <!-- build upcoming appointment table -->
                         <table class="table is-striped">
@@ -185,13 +167,16 @@
                                            data-target="#modal-default{{ appointment.id }}">
                                             <button class="button is-info">View Details</button>
                                         </a>
-                                        <button class="button is-primary">Re-schedule</button>
+                                        <a class="primary modal-button" data-toggle="modal"
+                                           data-target="#modal_contact{{ appointment.id }}">
+                                            <button class="button is-primary">Contact Customer</button>
+                                        </a>
                                         <a class="button is-danger"
-                                           onclick="return confirm('Are you sure you would like to cancel this upcoming appointment?')"
+                                           onclick="return confirm('An appointment may only be cancelled in the case of a no-call no-show.')"
                                            href="{% url 'appointments:delete' appointment.id %}">
                                             Cancel
                                         </a>
-    
+
                                     </td>
                                 </tr>
                                 <div class="modal" id="modal-default{{ appointment.id }}">
@@ -199,26 +184,26 @@
                                     <div class="modal-card">
                                         <header class="modal-card-head">
                                             <button class="modal-close is-large" aria-label="close"></button>
-    
+
                                             <p class="modal-card-title">Viewing details for your appointment below.</p>
                                         </header>
-    
+
                                         <section class="modal-card-body has-text-left">
                                             <div class="content">
                                                 <h3>Date: {{ appointment.date }}</h3>
                                                 <h3>Start Time: {{ appointment.start_time }}</h3>
                                                 <h3>End Time (Estimated): {{ appointment.end_time }}</h3>
-                                                <h3>Working with: {{ appointment.technician.user.first_name }}
+                                                <h3>Your Guest: {{ appointment.customer.first_name }}
                                                     {{ appointment.technician.user.last_name }}</h3>
-    
+
                                                 <!-- iterate over the sale items for this appointment -->
                                                 <div class="tabular">
-    
-    
+
+
                                                     {% for sale in sale_items %}
-    
+
                                                         {% if sale.appointment.id == appointment.id %}
-    
+
                                                             <div class="box">
                                                                 <article class="media">
                                                                     <div class="media-left">
@@ -239,7 +224,8 @@
                                                                         </div>
                                                                         <nav class="level is-mobile">
                                                                             <div class="level-left">
-                                                                                <a class="level-item" aria-label="reply">
+                                                                                <a class="level-item"
+                                                                                   aria-label="reply">
                                                                                 <span class="icon is-small">
                                                                                 <i class="fas fa-search"
                                                                                    aria-hidden="true"></i>
@@ -258,22 +244,73 @@
                                                             </div>
                                                             <div class="hr"
                                                                  style="border: 1px solid grey; width: 100%"></div>
-    
+
                                                         {% endif %}
                                                     {% endfor %}
                                                 </div>
-    
-    
+
+
                                             </div>
                                         </section>
                                     </div>
                                     <button class="modal-close is-large" aria-label="close"></button>
-                                </div>
-    
-    
-    
+                                </div> <!-- closing div for modal for view details -->
+
+                                <div class="modal" id="modal_contact{{ appointment.id }}">
+                                    <div class="modal-background"></div>
+                                    <div class="modal-card" style="width: 1000px;">
+                                        <header class="modal-card-head">
+                                            <button class="modal-close is-large" aria-label="close"></button>
+
+                                            <p class="modal-card-title is-small">Please indicate the message that you
+                                                have
+                                                for {{ appointment.customer.first_name }} <br>
+                                                regarding their appointment on {{ appointment.date }}.</p>
+                                        </header>
+
+                                        <section class="modal-card-body has-text-left">
+                                            <form
+                                                    method="post">
+                                                {% csrf_token %}
+
+                                                <div class="container" style="width: 50%;">
+
+                                                    <div class="field">
+                                                        <div class="control">
+                                                            <input type="text" class="input is-medium" name="subject"
+                                                                   maxlength="50" placeholder="Enter the subject line."
+                                                                   required id="id_subject">
+                                                        </div>
+                                                    </div>
+
+
+
+                                                    <textarea type="text" class="textarea" placeholder="Enter your message here."
+                                                              rows="10" required id="id_message" name="message"></textarea>
+
+                                                    <br>
+                                                    <button class="button is-primary is-fullwidth" type="submit"
+                                                            value="{{ appointment.id }}"
+                                                            name="Send">Send Now!
+                                                    </button>
+
+
+                                                </div>
+
+
+                                            </form>
+
+                                        </section>
+
+
+                                    </div>
+                                    <button class="modal-close is-large" aria-label="close"></button>
+                                </div> <!-- closing div for modal for view details -->
+
+
+
                             {% endfor %}
-    
+
                         </table>
                         <script>
                             $(".modal-button").click(function () {
@@ -281,18 +318,19 @@
                                 $("html").addClass("is-clipped");
                                 $(target).addClass("is-active");
                             });
-    
+
                             $(".modal-close").click(function () {
                                 $("html").removeClass("is-clipped");
                                 $(this).parent().removeClass("is-active");
                             });
-    
+
                         </script>
-    
-    
-    
+
+
+
                     {% endif %}
                 </div>
+            </div>
         </div>
     </div>
 

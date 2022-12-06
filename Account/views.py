@@ -14,9 +14,11 @@ from django.template import loader
 from django.views.decorators.cache import never_cache
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
-from .forms import EditAddress
+from .forms import EditAddress, messageForm
 from Appointments.models import Appointment, Sale
 from Scheduling.models import TechnicianSchedule
+from django.template.loader import get_template
+from django.core.mail import EmailMultiAlternatives
 
 # Create your views here.
 def home(request):
@@ -24,10 +26,12 @@ def home(request):
         if (request.session.get ('is_signedIn'), True):
             if str(request.user) != 'test@email.com':
                 user_obj=User.objects.get(email=str(request.user))
-                if (user_obj.isTechnician==False):
-                    return redirect  ('account:customerView')
+                if (user_obj.isTechnician==False and user_obj.is_staff == False):
+                    return redirect('account:customerView')
+                elif(user_obj.is_staff):
+                    return redirect('manager:home')
                 else:
-                    return redirect  ('account:technicianView')
+                    return redirect('account:technicianView')
                 
             else:
                 return redirect ('manager/')
@@ -91,36 +95,53 @@ def user_login(request):
         form = LoginForm ( )
     return render (request, 'registration/login.html', {'form': form})
 
+@login_required (login_url='/login/')
 def technicianView(request):
     if request.user.is_authenticated:
-        if (request.session.get ('is_signedIn'), True):
-            username = request.user.email
-            user_obj=User.objects.get(email=username)
-            this_user = User.objects.get (pk=request.user.id)
-            print(user_obj.id)
-            print(this_user.pk)
-            # get the future appointments pertaining to the user.
-            my_appointments = Appointment.objects.filter (id=1).all ( )
-            print(my_appointments)
-            apptCount = my_appointments.count ( )
 
-            # build a query set for all of the sale items in the customers upcoming appointments
-            saleItems = []
-            for x in my_appointments:
-                # get a query set of sale items, for each  appointment.
-                sales = Sale.objects.filter (appointment_id=x.id).all ( )
-                for sale in sales:
-                    saleItems.append (sale)
+        # get all of the appointments pertaining to this user.
+        # get the id of the currently signed in technician
+        tech = Technician.objects.filter(user__email=request.user.email).get()
 
-            return render (request, "account/technicianView.html",
-                           {'this_user': user_obj, 'my_appointments': my_appointments, 'apptCount': apptCount,
-                            'sale_items': saleItems})
+        my_appointments = Appointment.objects.filter(status__exact='active', technician_id=tech.id)
+
+        if request.method == 'POST':
+            if "Send" in request.POST:
+                my_id = request.POST.get('Send')
+                new_message = messageForm(request.POST)
+                print(new_message.errors)
+                if new_message.is_valid():
+                    subject = new_message['subject'].value()
+                    message = new_message['message'].value()
+
+                    appointment = Appointment.objects.filter(pk=my_id).get()
+
+                    # prepare to send e-mail to customer.
+                    plaintext = get_template('Send/contactCustomer.txt')
+                    htmlEmail = get_template('Send/contactCustomer.html')
+
+                    content = {
+                        'customer': appointment.customer.first_name, 'subject': subject,
+                        'message': message, 'technicianEmail': request.user.email
+                    }
+
+                    text_content = plaintext.render(content)
+                    html_content = htmlEmail.render(content)
+
+                    msg = EmailMultiAlternatives ('Question regarding your appointment', html_content,
+                                                  'applenailsalon23@gmail.com',
+                                                  [appointment.customer.email])
+                    msg.attach_alternative (html_content, "text/html")
+                    msg.send ( )
+
+                    return redirect('account:home')
+
         else:
-            print ("User is not signed in!")
-            return redirect ('account:home')
-    else:
-        return redirect ('account:home')
-    return render (request, 'account/technicianView.html')
+            message = messageForm()
+
+        return render (request, "account/technicianView.html",
+                           {'my_appointments': my_appointments, 'message_form': messageForm})
+
 
 
 def gallery(request):
