@@ -161,7 +161,7 @@ def newtech(request):
                     messages.success(request, f"Technician is added successfully!")
                     tmp = dict(request.POST.lists())
                     tech_email = tmp['email'][0]
-                    schedule_days = tmp['scheduled_day']        
+                    schedule_days = tmp['scheduled_day']    
                     user_obj=User.objects.get(email=tech_email)
                     user_obj.isTechnician=True
                     user_obj.save()
@@ -210,7 +210,7 @@ def newtech(request):
                             d.technicians.add(Technician.objects.get(user_id=user_obj.id))
                             d.save()
                     
-
+                
                     
                     return redirect("manager:home")
             messages.error(request, f"Email \"{request.POST['email']}\" is NOT exist!")
