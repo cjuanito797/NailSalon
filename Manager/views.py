@@ -205,8 +205,7 @@ def newtech(request):
                                 two_00_pm = True, two_15pm = True, two_30pm = True, two_45pm = True, three_00_pm = True, three_15pm = True, 
                                 three_30pm = True, three_45pm = True, four_00_pm = True, four_15pm = True, four_30pm = True, four_45pm = True)
                             b.save()
-                            d = calendarEntry(date=i)
-                            d.save()
+                            d = calendarEntry.objects.get(date=i)
                             d.technicians.add(Technician.objects.get(user_id=user_obj.id))
                             d.save()
                     
