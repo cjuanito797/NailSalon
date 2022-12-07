@@ -387,7 +387,7 @@ def scheduleWithNoneTech(request, date):
     for day in availableDates:
         workingDays.append (day)
     calendar = calendarEntry.objects.all ( )
-    #
+    
     if isinstance(date, int) == False:
         date = calendarEntry.objects.filter (date=date).get ( )
         times = appointment_queue.get_next_frame_available (date.date)
@@ -400,8 +400,6 @@ def scheduleWithNoneTech(request, date):
         for i in eveningTimeSets0:
             if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
                     eveningTimeSets.append(i)
-
-        #return render (request, "Scheduling/chooseForMe.html", {'date': date, 'calendar': calendar})
 
         return render (request, "Scheduling/calendar_none.html", {"tech": None, "availableDates": workingDays,
                                                             'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
@@ -456,89 +454,11 @@ def scheduleWithNoneTech(request, date):
         return render (request, "Scheduling/calendar_none.html", {"tech": None, "availableDates": workingDays,
                                                             'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
                                                     'evening': eveningTimeSets, "date": dateSelected.date})
-                                                
-'''
-def confirmAppointment(request):
-    # so in here we need to render a form, where the user will:
-    # provide any additional details that they would like to include in their request.
-    # upload any additional images, that they would like for the technician to
-    # here we need to render the form and when the user confirms we can set the timeslots to false.
-
-    # first delete said appointment but store it elsewhere.
-    if request.method == "POST":
-        if "Confirm" in request.POST:
-
-            # clear the cart
-            cart = Cart (request)
-
-            new_appointment = Appointment.objects.create (
-                customer_id=customerID,
-                technician_id=technicianID,
-
-                # iterate through the cart and add the services
-                # currently there is no way to add the quantity, we could create a ServiceOrderItem
-
-                start_time=startTimeGlobal,
-                end_time=endTimeGlobal,
-                totalDuration=TotalDurationGlobal,
-                date=DateGlobal,
-                totalCharge=TotalChargeGlobal
-            )
-
-            new_appointment.save ( )
-
-            # create sale items for each item within the cart
-            for item in cart:
-                # get the service item, using the item name.
-                service = Service.objects.filter (name__exact=item['service']).get ( )
-                # create sale items for each item in the cart
-                Sale.objects.create (service_id=service.id, technician_id=new_appointment.technician.id,
-                                     appointment_id=new_appointment.id, status='scheduled').save ( )
-
-            cart.clear ( )
-
-            # set the appropriate time slots to false
-            timeSlot = timeSlots.objects.get (tech=new_appointment.technician.user.email, date=new_appointment.date)
-            for time in globalVar:
-                slot = timeSlot.getTimeSlot (time)
-                setattr (timeSlot, slot, False)
-
-            # build a query set for the sale items that were created for this appointment, to display in the e-mail.
-
-            saleItems = Sale.objects.filter (appointment_id=new_appointment.id).all ( )
-            subTotal = TotalChargeGlobal
-            grandTotal = new_appointment.getTotalCharge ( )
-
-            timeSlot.save ( )
-            plaintext = get_template ('Send/confirmationEmail.txt')
-            htmlEmail = get_template ('Send/confirmationEmail.html')
-
-            content = (
-                {'username': request.user.first_name, 'date': new_appointment.date, 'time': new_appointment.start_time,
-                 'technician': new_appointment.technician.user.first_name, 'saleItems': saleItems, 'subTotal': subTotal,
-                 'grandTotal': float ("{:.2f}".format (grandTotal))})
-
-            text_content = plaintext.render (content)
-            html_content = htmlEmail.render (content)
-            msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon23@gmail.com',
-                                          [request.user.email])
-            msg.attach_alternative (html_content, "text/html")
-
-            print("HTML content was attatched to your e-mail preparing to send.")
-            # msg.send()
-
-
-            return redirect ('appointments:confirmation')
-
-    # if the user changes their mind, delete the appointment and return to the calendar page with appropriate params.
-    return render (request, "Scheduling/confirmation.html")
-'''
 
 
 def confirmAppointment(request):
     if request.method == "POST":
         if "Confirm" in request.POST:
-
             # clear the cart
             cart = Cart (request)
             if technicianID is not None:
@@ -710,11 +630,20 @@ def selectCustomer(request):
 
 
 def manager_confirmation(request, id):
-
+    from math import floor
     # once user has clicked on confirm will appointment be created
     customer = False
     if request.method == "POST":
         if "Confirm" in request.POST:
+            
+            starttime = datetime.datetime.now().time()
+            next_slot = floor((starttime.minute + 15)/15)
+            
+            if next_slot > 4:
+                starttime = datetime.time(starttime.hour + 1, 0, 0)
+            else:
+                starttime = datetime.time(starttime.hour, next_slot * 15, 0)
+            
             if id != 0:
                 customer = User.objects.filter (pk=id).get ( )
 
@@ -732,12 +661,14 @@ def manager_confirmation(request, id):
                     # we will need to convert the duration into a raw integer.
                     durationInMin = (duration.seconds / 60) * qty
                     totalDuration += durationInMin
-
+                    
+                temp = datetime.datetime.combine(datetime.date.today(), starttime) + datetime.timedelta (minutes=totalDuration)
+                endtime = temp.time() 
 
                 new_appointment = Appointment.objects.create (
                     customer_id=customer.id,
-                    start_time=None,
-                    end_time=None,
+                    start_time=starttime,
+                    end_time=endtime,
                     totalDuration=totalDuration,
                     date=datetime.datetime.today().date(),
                     totalCharge=cart.get_total_price(),
@@ -760,6 +691,7 @@ def manager_confirmation(request, id):
                 grandTotal = new_appointment.getTotalCharge ( )
 
                 return redirect('account:home')
+            
             elif id == 0:
                 cart = Cart (request)
 
@@ -775,10 +707,13 @@ def manager_confirmation(request, id):
                     # we will need to convert the duration into a raw integer.
                     durationInMin = (duration.seconds / 60) * qty
                     totalDuration += durationInMin
+                    
+                temp = datetime.datetime.combine(datetime.date.today(), starttime) + datetime.timedelta (minutes=totalDuration)
+                endtime = temp.time() 
 
                 new_appointment = Appointment.objects.create (
-                    start_time=None,
-                    end_time=None,
+                    start_time=starttime,
+                    end_time=endtime,
                     totalDuration=totalDuration,
                     date=datetime.datetime.today ( ).date ( ),
                     totalCharge=cart.get_total_price ( ),
@@ -791,9 +726,6 @@ def manager_confirmation(request, id):
                     # get the service item, using the item name.
                     service = Service.objects.filter (name__exact=item['service']).get ( )
                     new_appointment.services.add (service)
-                    # create sale items for each item in the cart
-                    Sale.objects.create (service_id=service.id, technician_id=1,
-                                         appointment_id=new_appointment.id, status='scheduled').save ( )
 
                 new_appointment.save ( )
                 cart.clear ( )

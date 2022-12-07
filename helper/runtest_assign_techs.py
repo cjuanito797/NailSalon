@@ -35,34 +35,18 @@ import helper.appointment_queue as appointment_queue
 import datetime
 
 def main():
-    cart = ["Acrylic Fill In", "Acrylic Full Set",]
+    next = datetime.time(9,17,0)
+    print(datetime.datetime.now().time())
     
-    #service_list = []
+    next_slot = math.floor((next.minute + 15)/15)
     
-    new_appointment = Appointment.objects.create (
-                customer_id=1,
-                technician_id=None,
-
-                # iterate through the cart and add the services
-                # currently there is no way to add the quantity, we could create a ServiceOrderItem
-
-                start_time=datetime.time (10, 30, 00),
-                end_time=datetime.time (11, 30, 00),
-                totalDuration=60,
-                date=datetime.date.today(),
-                totalCharge=50
-            )
-    for item in cart:
-        new_appointment.services.add(Service.objects.filter (name__exact=item).get ( ))
-    new_appointment.save()
     
-    print(new_appointment.technician)
-    '''
-    if new_appointment.id is None:
-        print("None")
+    
+    if next_slot > 4:
+        next = datetime.time(next.hour + 1, 0, 0)
     else:
-        print("not None")
-    '''
+        next = datetime.time(next.hour, next_slot * 15, 0)
+    print(next)
         
     
     
