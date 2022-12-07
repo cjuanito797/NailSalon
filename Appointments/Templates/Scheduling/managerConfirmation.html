@@ -113,12 +113,15 @@
             <p class="title has-text-black">
                 <br>
                 <br>
-                Schedule Confirmed
+                Technician Schedule Confirmed!
             </p>
         </section>
-        {% csrf_token %}
 
-        <input type="submit" class="button is-info" value="Confirm" name="Confirm">
+        <section class="section has-text-left">
+        <a class="button is-info" href="{% url 'manager:home' %}">
+                    Return to Manager Control
+        </a>
+        </section>
 
     </form>
 {% endblock %}
