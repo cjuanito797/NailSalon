@@ -19,6 +19,10 @@ def get_next_frame_available(current_date: datetime.date):
     global _COUNTED_APPOINTMENT
     _read_data()
     
+    if len(Appointment.objects.filter(date=current_date)) == 0:
+        return datetime.time(9,0,0)
+    
+    
     # Query only appointments id that not set in the file, and set flag to resolve later
     if str(current_date) in _COUNTED_APPOINTMENT:
         flag_exist = True
