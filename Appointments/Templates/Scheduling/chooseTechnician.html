@@ -208,51 +208,51 @@
                     Choose from one of our technicians below, or have us choose for you.
                 </p>
                 <br>
-                <a class="button is-info" href="{% url 'account:home' %}">Choose For Me</a>
+                <a onclick="return confirm('You have elected to have us choose for you, this will re-direct you to a page ' +
+                 'where you will select an available date and time that works for you and we will have a  technician ready for you upon arrival.')"
+                   class="button is-info" href="{% url 'appointments:schedule_none_tech' date %}">Choose For Me</a>
             </div>
 
-                    <form method="POST" class="post-form">
-                    {% csrf_token %}
+            <form method="POST" class="post-form">
+                {% csrf_token %}
 
-            <!-- add the cards for displaying each of the unique technicians and render them within a form to get the selected ID-->
-            <div class="p-6 columns is-flex-wrap-wrap has-text-centered" style="margin-left: 15%;">
-
-
-                {% for tech in techs %}
-                    <!-- create a styled box for each of the dates and then render them that way-->
+                <!-- add the cards for displaying each of the unique technicians and render them within a form to get the selected ID-->
+                <div class="p-6 columns is-flex-wrap-wrap has-text-centered" style="margin-left: 15%;">
 
 
-                    <div class="card" style="width: 18rem; margin: 1%; height: 100%;">
-                        <div class="card-image">
-                            <figure class="image is-4by3">
-                                <img {% if tech.profilePicture %}src="{{ tech.profilePicture.url }}"
-                                     {% else %} src="{{ tech.profilePicture.url }}" {% endif %}>
-                            </figure>
-                        </div>
-                        <div class="card-content">
-                            <div class="media">
+                    {% for tech in techs %}
+                        <!-- create a styled box for each of the dates and then render them that way-->
 
-                                <div class="media-content" style="height: 75px; margin: 0;">
-                                    <p class="title is-4 has-text-black">{{ tech.user.first_name }} {{ tech.user.last_name }}</p>
+
+                        <div class="card" style="width: 18rem; margin: 1%; height: 100%;">
+                            <div class="card-image">
+                                <figure class="image is-4by3">
+                                    <img {% if tech.profilePicture %}src="{{ tech.profilePicture.url }}"
+                                         {% else %} src="{{ tech.profilePicture.url }}" {% endif %}>
+                                </figure>
+                            </div>
+                            <div class="card-content">
+                                <div class="media">
+
+                                    <div class="media-content" style="height: 75px; margin: 0;">
+                                        <p class="title is-4 has-text-black">{{ tech.user.first_name }} {{ tech.user.last_name }}</p>
+                                    </div>
+
                                 </div>
 
                             </div>
+                            <footer class="card-footer">
+                                <button class="button is-primary is-fullwidth" type="submit" value="{{ tech.id }}"
+                                        name="technician">Schedule Now!
+                                </button>
 
+                            </footer>
                         </div>
-                        <footer class="card-footer">
-                            <button class="button is-primary is-fullwidth" type="submit" value="{{ tech.id }}" name="technician">Schedule Now!</button>
 
-                        </footer>
-                    </div>
-
-                {% endfor %}
+                    {% endfor %}
             </form>
-            </div>
-
-
+        </div>
 
         </div>
     </section>
-
-
 {% endblock %}

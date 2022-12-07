@@ -1,25 +1,216 @@
-{% extends "home.html" %}
+{% extends "base.html" %}
 {% block head %}
-<link rel="stylesheet" href="./Templates/home.css">
-<title>NEW TECH REGISTER</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="../Templates/main.min.css">
+    <title>NEW TECH REGISTER</title>
+{% endblock %}
+
+{% block navigation %}
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{% url 'account:home' %}">
+                <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'account:gallery' %}">
+                    Gallery
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:services' %}">
+                    Our Services
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:aboutUs' %}">
+                    About Us
+                </a>
+
+                {% if request.user.is_authenticated %}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link has-text-black">
+                            My Account
+                        </a>
+
+                        <div class="navbar-dropdown" style="color: black;">
+                            <a class="navbar-item">
+                                My Appointment History
+                            </a>
+                            <a class="navbar-item" href="{% url 'account:profile' %}">
+                                My Profile
+                            </a>
+                            <a class="navbar-item" style="color: black;">
+                                My Promotions
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{% url 'account:security' %}">
+                                Security Settings
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link has-text-black">
+                        More
+                    </a>
+
+                    <div class="navbar-dropdown" style="color: black;">
+                        <a class="navbar-item">
+                            Meet the team
+                        </a>
+                        <a class="navbar-item">
+                            Career Opportunities
+                        </a>
+                        <a class="navbar-item" style="color: black;">
+                            Promotions
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Report an issue
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+
+                        <a class="button is-info" href="{% url 'manager:newtech' %}">
+                            Hiring Portal
+                        </a>
+
+                        <a class="button is-light" href="{% url 'account:logout' %}">
+                            Sign Out
+                        </a>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
 {% endblock %}
 
 
-{% block content %}
+{% block mainbody %}
 
-  {% if messages %}
-  <ul class="messages">
-      {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-  </ul>
-  {% endif %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <div class="hero is-fullheight has-text-centered">
 
-  <h3>Sign up</h3>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Technician</button>
-  </form>
+
+        <p class="title has-text-black">Create a new technician below.</p>
+        <p class="subtitle is-size-5 has-text-black">Please ensure that this new technician already has an account
+            created with us.</p>
+        <div class="column">
+
+
+            <form method="post">
+                <input type="hidden" name="csrfmiddlewaretoken"
+                       value="SRQ34RC1kEODTzzEIWBZJCA3tn3KF35onOh5iMAj1jY4p7Tr4fV9K0DfRyYEgsgO">
+
+                {% csrf_token %}
+                <div class="container">
+
+
+                    <div class="field">
+                        <div class="control">
+                            <input class="input is-medium" type="email" name="email" maxlength="254" autofocus
+                                   class="form-control"
+                                   placeholder="JohnDoe123@yahoo.com" required id="id_email">
+                        </div>
+                    </div>
+
+                    <p>
+                    <p class="subtitle is-size-4 has-text-black">Please select the dates that this technician will be
+                        working. It will default from 9am - 5pm for each selected date.</p>
+                    <div class="column has-text-left">
+
+
+                        <div class="field">
+                            <label class="b-checkbox checkbox is-large">
+                                <input type="checkbox" value="monday" name="scheduled_day" id="id_scheduled_day_0">
+                                <span class="check"></span>
+                                <span class="control-label">Monday</span>
+                            </label>
+                        </div>
+
+                        <div class="field">
+                            <label class="b-checkbox checkbox is-large">
+                                <input type="checkbox" value="tuesday" name="scheduled_day" id="id_scheduled_day_1">
+                                <span class="check"></span>
+                                <span class="control-label">Tuesday</span>
+                            </label>
+                        </div>
+
+                        <div class="field">
+                            <label class="b-checkbox checkbox is-large">
+                                <input type="checkbox" value="wednesday" name="scheduled_day" id="id_scheduled_day_2">
+                                <span class="check"></span>
+                                <span class="control-label">Wednesday</span>
+                            </label>
+                        </div>
+
+                        <div class="field">
+                            <label class="b-checkbox checkbox is-large">
+                                <input type="checkbox" value="thursday" name="scheduled_day" id="id_scheduled_day_3">
+                                <span class="check"></span>
+                                <span class="control-label">Thursday</span>
+                            </label>
+                        </div>
+
+                        <div class="field">
+                            <label class="b-checkbox checkbox is-large">
+                                <input type="checkbox" value="friday" name="scheduled_day" id="id_scheduled_day_4">
+                                <span class="check"></span>
+                                <span class="control-label">Friday</span>
+                            </label>
+                        </div>
+
+                        <div class="field">
+                            <label class="b-checkbox checkbox is-large">
+                                <input type="checkbox" value="saturday" name="scheduled_day" id="id_scheduled_day_5">
+                                <span class="check"></span>
+                                <span class="control-label">Saturday</span>
+                            </label>
+                        </div>
+
+                        <div class="field">
+                            <label class="b-checkbox checkbox is-large">
+                                <input type="checkbox" value="sunday" name="scheduled_day" id="id_scheduled_day_6">
+                                <span class="check"></span>
+                                <span class="control-label">Sunday</span>
+                            </label>
+                        </div>
+
+                    </div>
+
+                    </p>
+                    <button type="submit" class="button is-primary is-size-4">Add Technician</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 {% endblock %}

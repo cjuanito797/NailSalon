@@ -4,12 +4,12 @@ import json
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
+from datetime import date
 from .forms import NewTechnicianForm
 from Appointments.models import Appointment, Sale, Service
 from Account.models import Technician, User
 from Scheduling.models import TechnicianSchedule, timeSlots
-
+from Calendar.models import calendarEntry
 import helper.timeslot_process as timeslot_process
 from helper.manager_control import C_Appointment, C_Sale, TIME_SLOT
 import helper.techs_queue as queue
@@ -159,15 +159,57 @@ def newtech(request):
             for i in all_email:
                 if request.POST['email'] == i[0]:
                     messages.success(request, f"Technician is added successfully!")
-                    tech_email = request.POST['email']
-                    schedule_days = request.POST['scheduled_day']
+                    tmp = dict(request.POST.lists())
+                    tech_email = tmp['email'][0]
+                    schedule_days = tmp['scheduled_day']    
+                    user_obj=User.objects.get(email=tech_email)
+                    user_obj.isTechnician=True
+                    user_obj.save()
                     
-                    print(request.POST)
+                    a = TechnicianSchedule (tech=tech_email,
+                            monday_availability=False,
+                            monday_time_In=datetime.time (9, 0),
+                            monday_time_Out=datetime.time (17, 0),
+                            tuesday_availability=False,
+                            tuesday_time_In=datetime.time (9, 0),
+                            tuesday_time_Out=datetime.time (17, 0),
+                            wednesday_availability=False,
+                            wednesday_time_In=datetime.time (9, 0),
+                            wednesday_time_Out=datetime.time (17, 0),
+                            thursday_availability=False,
+                            thursday_time_In=datetime.time (9, 0),
+                            thursday_time_Out=datetime.time (17, 0),
+                            friday_availability=False,
+                            friday_time_In=datetime.time (9, 0),
+                            friday_time_Out=datetime.time (17, 0),
+                            saturday_availability=False,
+                            saturday_time_In=datetime.time (9, 0),
+                            saturday_time_Out=datetime.time (17, 0),
+                            sunday_availability=False,
+                            sunday_time_In=datetime.time (0, 0),
+                            sunday_time_Out=datetime.time (0, 0),)
+                    a.save()
+                    tech_schedule_obj=TechnicianSchedule.objects.get(tech=tech_email)
+                    a = Technician(user_id=user_obj.id, bio='', schedule_id=tech_schedule_obj.id, profilePicture=' ')
+                    a.save()
+                    for i in schedule_days:
+                        temp_avai = i+'_availability'
+                        setattr(tech_schedule_obj, temp_avai, True)
+                        tech_schedule_obj.save()
+                        aa = get_date(i)
+                        for i in aa:
+                            b = timeSlots (tech=tech_email, date=i, arrive_time =None, nine_00_am = True, nine_15am = True, nine_30am = True, 
+                                nine_45am = True, ten_00_am = True, ten_15am = True, ten_30am = True, ten_45am = True, eleven_00_am = True, 
+                                eleven_15am = True, eleven_30am = True, eleven_45am = True, twelve_00_pm = True, twelve_15pm = True, 
+                                twelve_30pm = True, twelve_45pm = True, one_00_pm = True, one_15pm = True, one_30pm = True, one_45pm = True, 
+                                two_00_pm = True, two_15pm = True, two_30pm = True, two_45pm = True, three_00_pm = True, three_15pm = True, 
+                                three_30pm = True, three_45pm = True, four_00_pm = True, four_15pm = True, four_30pm = True, four_45pm = True)
+                            b.save()
+                            d = calendarEntry.objects.get(date=i)
+                            d.technicians.add(Technician.objects.get(user_id=user_obj.id))
+                            d.save()
                     
-                    
-                    
-                    
-                    
+                
                     
                     return redirect("manager:home")
             messages.error(request, f"Email \"{request.POST['email']}\" is NOT exist!")
@@ -204,7 +246,7 @@ def appointments_and_dates_query():
         'totalCharge',
         'date',
         'status'
-        )
+        ).exclude(customer=None)
     appointment_list = []
     apt_date_list = []
     for a in appointment_query:
@@ -307,3 +349,14 @@ def _get_scheduled_tech():
         t_list['email'] = t_email[0]
         scheduled_techlist.append(t_list)
     return(scheduled_techlist)
+
+
+
+def get_date(tmp):
+    work=[]
+    for i in range(30):
+        a = (date.today() + datetime.timedelta(days=i))
+        b = calendar.day_name[a.weekday()]
+        if b.lower() == tmp:
+            work.append(a)
+    return work

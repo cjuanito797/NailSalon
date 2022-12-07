@@ -11,17 +11,17 @@ django.setup ( )
 
 cc = ["f@a.com", "g@a.com", "h@a.com","i@a.com", "j@a.com", "k@a.com", "l@a.com", "m@a.com", "n@a.com", "o@a.com", "p@a.com"]
 def get_date():
-    aa=[]
-    bb=[]
+    weekday=[]
+    sunday=[]
     for i in range(30):
         a = (date.today() + datetime.timedelta(days=i))
         #c = a.strftime("%Y,%m,%d")
         b = calendar.day_name[a.weekday()]
         if b != 'Sunday':
-            aa.append(a)
+            weekday.append(a)
         else:
-            bb.append(a)
-    return [aa,bb]
+            sunday.append(a)
+    return [weekday,sunday]
 
 
 from Account.models import User
@@ -230,7 +230,6 @@ for i in a:
     i.save ( )
 print ("Service done!")
 # DELETE FROM Appointments_service;
-
 
 
 from Appointments.models import Appointment

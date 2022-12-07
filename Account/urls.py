@@ -7,6 +7,7 @@ app_name = 'account'
 
 urlpatterns = [
     re_path(r'^customerView/$', views.customerView, name='customerView'),
+    path("technicianView/", views.technicianView, name='technicianView'),
     path("", views.home, name="home"),
     path("login/", auth_views.LoginView.as_view(), name="user_login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
