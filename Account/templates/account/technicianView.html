@@ -99,7 +99,7 @@
                 <div class="navbar-item">
                     <div class="buttons">
 
-                        <a class="button is-info" href="{% url 'account:aboutUs' %}">
+                        <a class="button is-info" href="{% url 'account:techSchedule' %}">
                             My Schedule
                         </a>
 
@@ -194,7 +194,7 @@
                                                 <h3>Start Time: {{ appointment.start_time }}</h3>
                                                 <h3>End Time (Estimated): {{ appointment.end_time }}</h3>
                                                 <h3>Your Guest: {{ appointment.customer.first_name }}
-                                                    {{ appointment.technician.user.last_name }}</h3>
+                                                    {{ appointment.customer.last_name }}</h3>
 
                                                 <!-- iterate over the sale items for this appointment -->
                                                 <div class="tabular">

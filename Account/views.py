@@ -301,3 +301,7 @@ def edit_address(request):
     return render (request, 'account/editAddress.html', {'form': form})
 
 # Begin to add all of the CRUD operations on the Account Side
+
+@login_required
+def techSchedule(request):
+    return render (request, "account/techSchedule.html")

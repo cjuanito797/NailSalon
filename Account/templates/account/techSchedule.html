@@ -1,0 +1,72 @@
+{% extends 'account/customerView.html' %}
+
+{% load static %}
+{% block title %}Your Schedule{% endblock %}
+
+<!DOCTYPE html>
+
+{% block mainbody %}
+
+    <section class="hero is-fullheight">
+
+    <section class="hero-head has-text-centered">
+        <p  class="title has-text-black">
+            <br>
+            <br>
+            Your Schedule For This Week
+        </p>
+    </section>
+    <div class="hero-body" style="display: inline-block; padding: 15px; margin: auto;">
+
+        <select name="timetable_date" id="timetable_date" onchange="sort_timetable()" style="float: right; width:200px">
+        {% for d in packet.timetable_date %}
+            <option value="{{ d }}">{{ d }}</option>
+        {% endfor %}
+
+        </div>
+
+        {% for d in packet.timetable_date %}
+        <div class="timetable" id="{{d}}">
+            <table>
+                <thead>
+                    <tr><!--row with technician name-->
+                        <th id="first_cell"></th>
+                        {% for t in packet.timetable_list %}
+                        {% if t.date == d %}
+                        <th class="tech_timetable" id="{{ t.date }}" style="color: white; text-align:center">{{t.tech.first_name}} {{t.tech.last_name}}</th>
+                        {% endif %}
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key,slot in packet.timeslots.items %}
+                    {% with k=key %}
+                    <tr>
+                        <th>{{slot}}</th>
+                        {% for t in packet.timetable_list %}
+                        {% if t.date == d %}
+                            {% if t|get_item:k == True %}
+                            <td style="background-color: green; border: 1px ridge;"></td>
+                            {% else %}
+                            <td style="background-color: white; border: 1px groove; text-align: center;">BUSY</td>
+                            {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endwith %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+
+    </div>
+    </select>
+
+    </div>
+    </section>
+
+{% endblock %}
+
+
+</html>
