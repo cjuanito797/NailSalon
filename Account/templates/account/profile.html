@@ -137,6 +137,8 @@
         ____________________________________________________
         <br>
         <br>
+        <br>
+        <br>
         First Name: {{ this_user.first_name }}
         <br>
         <br>
@@ -148,12 +150,16 @@
                 </a>
         <br>
         <br>
+        <br>
+        <br>
         Address: {{ this_user.street_num }}, {{ this_user.city }}, {{ this_user.state }} {{ this_user.zipcode }}
         <br>
         <br>
                 <a class="button is-info" href="{% url 'account:edit_address' %}">
                     Edit Address
                 </a>
+        <br>
+        <br>
         <br>
         <br>
         Phone Number: {{ this_user.phoneNumber }}
