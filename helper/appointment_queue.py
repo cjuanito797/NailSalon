@@ -19,6 +19,10 @@ def get_next_frame_available(current_date: datetime.date):
     global _COUNTED_APPOINTMENT
     _read_data()
     
+    if len(Appointment.objects.filter(date=current_date)) == 0:
+        return datetime.time(9,0,0)
+    
+    
     # Query only appointments id that not set in the file, and set flag to resolve later
     if str(current_date) in _COUNTED_APPOINTMENT:
         flag_exist = True
@@ -36,6 +40,7 @@ def get_next_frame_available(current_date: datetime.date):
         if t['end_time'] != None:
             t['end_time'] = datetime.datetime.combine(datetime.datetime.min, t['end_time']) - datetime.datetime.min
         endtime_list.append(t)
+    print(endtime_list)
     # Sort and reset end_time datatype
     next_finish = sorted(endtime_list, key=lambda x: x['end_time'])[0]
     next_finish['end_time'] = (datetime.datetime.min + next_finish['end_time']).time()
@@ -55,7 +60,7 @@ def get_next_frame_available(current_date: datetime.date):
     else:
         _COUNTED_APPOINTMENT[str(current_date)] = [next_finish['id'],]
         
-    _write_data()
+    #_write_data()
     return next_finish['end_time']
         
 def newday_clean_up(filedir=FILE_DIR):

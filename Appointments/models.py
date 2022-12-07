@@ -74,16 +74,19 @@ class Appointment (models.Model):
     customer = models.ForeignKey ("Account.User",
                                   on_delete=models.CASCADE,
                                   default=None,
-                                  null=False)
+                                  null=True,
+                                  blank=True)
     technician = models.ForeignKey ("Account.Technician",
                                     on_delete=models.CASCADE,
                                     default=None,
                                     null=True,
                                     blank=True)
+    guest_first_name = models.CharField(blank=True, null=True, max_length=25)
+    guest_last_name = models.CharField(blank=True, null=True, max_length=25)
     totalDuration = models.IntegerField ( )
     totalCharge = models.FloatField (max_length=10, )
-    start_time = models.TimeField ( )
-    end_time = models.TimeField ( )
+    start_time = models.TimeField (blank=True, null=True )
+    end_time = models.TimeField (blank=True, null=True )
     date = models.DateField ( )
     details = models.TextField (default=True, null=True)
     image = models.ImageField (upload_to='images/',
@@ -119,7 +122,8 @@ class Sale (models.Model):
     technician = models.ForeignKey("Account.Technician",
                             on_delete=models.CASCADE,
                             related_name='technician',
-                            blank=False)
+                            blank=True,
+                            null=True)
 
     appointment = models.ForeignKey (Appointment,
                                      on_delete=models.CASCADE,

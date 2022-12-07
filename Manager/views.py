@@ -136,7 +136,7 @@ def attendance(request):
             milisec = r['clocked']['milisec']
             
             #NEED FIX DATE
-            tech_timeslot = timeSlots.objects.get(tech=r['email'], date=datetime.date(2022,12,1))
+            tech_timeslot = timeSlots.objects.get(tech=r['email'], date=datetime.date.today())
             tech_timeslot.arrive_time = datetime.time(hour, min, sec, milisec)
             tech_timeslot.save()
             
@@ -245,13 +245,18 @@ def appointments_and_dates_query():
         'end_time', 
         'totalCharge',
         'date',
-        'status'
-        )
+        'status',
+        'guest_first_name',
+        'guest_last_name',
+        )#.exclude(customer=None)
     appointment_list = []
     apt_date_list = []
     for a in appointment_query:
         if (a['status'] != 'inactive'):
-            a['customer'] = list(User.objects.filter(id=a['customer']).values("first_name", "last_name"))[0]
+            if a['customer'] is not None:
+                a['customer'] = list(User.objects.filter(id=a['customer']).values("first_name", "last_name"))[0]
+            else:
+                a['customer'] = {"first_name": a['guest_first_name'], "last_name": a['guest_last_name']}
             appointment_list.append(a)
             if a['date'] not in apt_date_list:
                 apt_date_list.append(a['date'])
