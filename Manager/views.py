@@ -246,7 +246,7 @@ def appointments_and_dates_query():
         'totalCharge',
         'date',
         'status'
-        )
+        ).exclude(customer=None)
     appointment_list = []
     apt_date_list = []
     for a in appointment_query:

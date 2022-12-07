@@ -152,6 +152,7 @@
                         <p>Confirm your services</p>
                     </div>
 
+                {% if customer %}
                     <div class="step has-text-centered"
                          style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
                         <iconify-icon icon="bi:person-check-fill" width="50"></iconify-icon>
@@ -164,6 +165,22 @@
                         <iconify-icon icon="akar-icons:calendar" width="50"></iconify-icon>
                         <p>Select Date & Time</p>
                     </div>
+
+                {% elif manager %}
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="bi:person-check-fill" width="50"></iconify-icon>
+                        <p>Select Customer</p>
+
+                    </div>
+
+                    <div class="step has-text-centered"
+                         style="display: inline-block;  padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
+                        <iconify-icon icon="akar-icons:calendar" width="50"></iconify-icon>
+                        <p>Provide Additional Details</p>
+                    </div>
+
+                {% endif %}
 
                     <div class="step has-text-centered"
                          style="display: inline-block; padding: 1%; margin: 0% 2% 0% 3%; width: 15%; opacity: 0.2;">
@@ -205,8 +222,14 @@
                 </div>
             </div>
             <div class='child'>
-                {% if cart|length > 0 %}
+
+                {% if manager and cart|length > 0 %}
+
+                    <a class="button is-primary" href="{% url 'appointments:select_customer' %}">Enter Customer Details</a>
+
+                {% elif customer and cart|length > 0  %}
                     <a class="button is-info" href="{% url 'appointments:appointment_create' %}">Continue</a>
+
                 {% endif %}
             </div>
         </div>
