@@ -54,5 +54,12 @@ def cart_detail(request):
                 'update': True
             }
         )
+
+    if request.user.is_staff:
+        manager = True
+        customer = False
+    else:
+        customer = True
+        manager = False
     
-    return render (request, 'cart/detail.html', {'cart': cart})
+    return render (request, 'cart/detail.html', {'cart': cart, 'manager': manager, 'customer': customer})

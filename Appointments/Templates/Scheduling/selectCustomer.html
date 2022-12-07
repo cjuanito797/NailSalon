@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <meta charset="utf-8"/>
+    <title>{% block title %}Select Customer{% endblock %}</title>
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+{% endblock %}
+
+{% block navigation %}
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{% url 'account:home' %}">
+                <strong class="is is-size-4">Apple Nail Salon & Spa</strong>
+            </a>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+               data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'account:gallery' %}">
+                    Gallery
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:services' %}">
+                    Our Services
+                </a>
+
+                <a class="navbar-item" href="{% url 'account:aboutUs' %}">
+                    About Us
+                </a>
+
+                {% if request.user.is_authenticated %}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link has-text-black">
+                            My Account
+                        </a>
+
+                        <div class="navbar-dropdown" style="color: black;">
+                            <a class="navbar-item">
+                                My Appointment History
+                            </a>
+                            <a class="navbar-item" href="{% url 'account:profile' %}">
+                                My Profile
+                            </a>
+                            <a class="navbar-item" style="color: black;">
+                                My Promotions
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{% url 'account:security' %}">
+                                Security Settings
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link has-text-black">
+                        More
+                    </a>
+
+                    <div class="navbar-dropdown" style="color: black;">
+                        <a class="navbar-item">
+                            Meet the team
+                        </a>
+                        <a class="navbar-item">
+                            Career Opportunities
+                        </a>
+                        <a class="navbar-item" style="color: black;">
+                            Promotions
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                            Report an issue
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+
+                        <a class="button is-info" href="{% url 'manager:newtech' %}">
+                            Hiring Portal
+                        </a>
+
+                        <a class="button is-success" href="{% url 'appointments:service_list' %}">
+                            Create an appointment
+                        </a>
+
+
+                        <a class="button is-light" href="{% url 'account:logout' %}">
+                            Sign Out
+                        </a>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+{% endblock %}
+
+
+{% block mainbody %}
+    <div class="hero is-fullheight has-text-centered">
+        <p class="title is-size-2 has-text-black is-underlined">Please select a user below or add in the details for a
+            guest user.</p>
+
+        <div class="container">
+            <div class="grid-container">
+                <div class="grid-child-categories">
+                    <p class="title is-size-3 has-text-black has-text-centered">Please select from a registered user
+                        below.</p>
+
+                    <form method="post">
+                        <!-- create a select to choose from a registered user -->
+                        {% csrf_token %}
+                        <div class="select is-medium">
+                            <select name="userList">
+                                <!-- render options from query -->
+                                <option value="" disabled selected>Select a registered user.</option>
+
+                                {% for customer in customerList %}
+                                    <option value="{{ customer.user.email }}" name="user">{{ customer.user.email }}</option>
+                                {% endfor %}
+                                <!-- pass in selected value to db-->
+                            </select>
+
+                        </div>
+                        <br>
+                        <br>
+                        <input type="submit" name="registeredUser" value="Submit" class="button is-primary">
+                    </form>
+
+
+                </div>
+
+                <!-- add a vertical divider-->
+                <div class="vl"
+                     style="height: 100%; border-left: 1px solid black; position: absolute; margin-left: 50%;"></div>
+
+
+                <div class="grid-child-services" style="margin-left: 50%;">
+
+                    <p class="title is-size-3 has-text-black has-text-centered">Please enter the details for a guest
+                        below.</p>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="field">
+                            <div class="control">
+                                <input type="text" class="input is-medium" name="guest_first_name" placeholder="First name">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="control">
+                                <input type="text" class="input is-medium" name="guest_last_name" placeholder="Last name">
+                            </div>
+                        </div>
+
+                        <input type="submit" name="guestUser" value="Submit" class="button is-primary">
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

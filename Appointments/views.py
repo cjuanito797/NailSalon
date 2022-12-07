@@ -3,7 +3,7 @@ import time
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Service, Category, Appointment, Sale
 from cart.forms import CartAddServiceForm
-from Account.models import Technician
+from Account.models import Technician, Customer, User
 from django.contrib import messages
 from Calendar.models import calendarEntry
 from django.views.decorators.cache import never_cache
@@ -27,6 +27,8 @@ endTimeGlobal = 0
 startTimeGlobal = 0
 DateGlobal = 0
 TotalChargeGlobal = 0
+firstName = ""
+lastName = ""
 
 
 @never_cache
@@ -314,7 +316,7 @@ def scheduleWithTech(request, pk, date):
 
     return render (request, "Scheduling/calendar.html", {"tech": tech, "availableDates": workingDays,
                                                          'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
-                                                   'evening': eveningTimeSets, "date": dateSelected.date})
+                                                         'evening': eveningTimeSets, "date": dateSelected.date})
 
 
 @never_cache
@@ -323,10 +325,12 @@ def scheduleWithTech(request, pk, date):
 def scheduleWithNoneTech(request, date):
     calendar = calendarEntry.objects.all ( )
     date = calendarEntry.objects.filter (date=date).get ( )
-    
+
     times = appointment_queue.get_next_frame_available (date.date)
 
     return render (request, "Scheduling/chooseForMe.html", {'date': date, 'calendar': calendar})
+
+
 '''
 def confirmAppointment(request):
     # so in here we need to render a form, where the user will:
@@ -438,7 +442,7 @@ def confirmAppointment(request):
             subTotal = TotalChargeGlobal
             grandTotal = new_appointment.getTotalCharge ( )
 
-            print("Just finished calculating the totals for your appointment")
+            print ("Just finished calculating the totals for your appointment")
             if new_appointment.technician is not None:
                 # set the appropriate time slots to false
                 timeSlot = timeSlots.objects.get (tech=new_appointment.technician.user.email, date=new_appointment.date)
@@ -466,13 +470,13 @@ def confirmAppointment(request):
             html_content = htmlEmail.render (content)
             msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon23@gmail.com',
                                           [request.user.email])
-            print("Preparing to add the html content to your e-mail.")
+            print ("Preparing to add the html content to your e-mail.")
             msg.attach_alternative (html_content, "text/html")
-            print("HTML content has been attatched, preparing to send your e-mail.")
+            print ("HTML content has been attatched, preparing to send your e-mail.")
 
             msg.send (fail_silently=False)
 
-            print("Message has been sent.")
+            print ("Message has been sent.")
             return redirect ('appointments:confirmation')
 
     # if the user changes their mind, delete the appointment and return to the calendar page with appropriate params.
@@ -482,6 +486,138 @@ def confirmAppointment(request):
 def index(request):
     return render (request, "Send/confirmation.html")
 
+
+def selectCustomer(request):
+    # pass in a query set of our customers.
+    customers = Customer.objects.all()
+
+    # determine whether attendant selected a registered user or filled out form for a guest user.
+    if request.method == 'POST':
+        if 'registeredUser' in request.POST:
+            user = request.POST.get('userList', None)
+
+            # continue with creation of appointment with the registered user.
+            # by passing in the user to an appointment confirmation page and pass in id of user.
+            customer = User.objects.filter(email__exact=user).get()
+
+            return redirect('appointments:manager_confirmation', customer.id)
+
+        elif 'guestUser' in request.POST:
+            # this indicates that attendant is creating appointment with non-registered user.
+
+            print("So we are doing an appointment for a guest user!")
+            global firstName
+            firstName = request.POST.get('guest_first_name')
+
+            global lastName
+            lastName = request.POST.get('guest_last_name')
+
+
+            # update global variables with first and last name from form.
+
+
+            # since there is no param to send to confirmation, we will send in a 0 which means that there does not exist a user.
+            return redirect('appointments:manager_confirmation', 0)
+
+    return render (request, 'Scheduling/selectCustomer.html', {'customerList': customers})
+
+
+def manager_confirmation(request, id):
+
+    # once user has clicked on confirm will appointment be created
+    customer = False
+    if request.method == "POST":
+        if "Confirm" in request.POST:
+            if id != 0:
+                customer = User.objects.filter (pk=id).get ( )
+
+                cart = Cart (request)
+
+                totalDuration = 0
+
+                for item in cart:
+                    qty = item['quantity']
+                    service = Service.objects.get (name=item['service'])
+
+                    # goal is to multiply the qty by the estimated duration of that service.
+                    duration = service.duration
+
+                    # we will need to convert the duration into a raw integer.
+                    durationInMin = (duration.seconds / 60) * qty
+                    totalDuration += durationInMin
+
+
+                new_appointment = Appointment.objects.create (
+                    customer_id=customer.id,
+                    start_time=None,
+                    end_time=None,
+                    totalDuration=totalDuration,
+                    date=datetime.datetime.today().date(),
+                    totalCharge=cart.get_total_price(),
+                )
+                # add services from cart into appointment
+
+                for item in cart:
+                    # get the service item, using the item name.
+                    service = Service.objects.filter (name__exact=item['service']).get ( )
+                    new_appointment.services.add (service)
+                    # create sale items for each item in the cart
+                    Sale.objects.create (service_id=service.id,technician_id=1,
+                                     appointment_id=new_appointment.id, status='scheduled').save ( )
+
+                new_appointment.save ( )
+                cart.clear ( )
+
+                # build a query set for the sale items that were created for this appointment, to display in the e-mail
+                subTotal = 0
+                grandTotal = new_appointment.getTotalCharge ( )
+
+                return redirect('account:home')
+            elif id == 0:
+                cart = Cart (request)
+
+                totalDuration = 0
+
+                for item in cart:
+                    qty = item['quantity']
+                    service = Service.objects.get (name=item['service'])
+
+                    # goal is to multiply the qty by the estimated duration of that service.
+                    duration = service.duration
+
+                    # we will need to convert the duration into a raw integer.
+                    durationInMin = (duration.seconds / 60) * qty
+                    totalDuration += durationInMin
+
+                new_appointment = Appointment.objects.create (
+                    start_time=None,
+                    end_time=None,
+                    totalDuration=totalDuration,
+                    date=datetime.datetime.today ( ).date ( ),
+                    totalCharge=cart.get_total_price ( ),
+                    guest_first_name=firstName,
+                    guest_last_name=lastName,
+                )
+                # add services from cart into appointment
+
+                for item in cart:
+                    # get the service item, using the item name.
+                    service = Service.objects.filter (name__exact=item['service']).get ( )
+                    new_appointment.services.add (service)
+                    # create sale items for each item in the cart
+                    Sale.objects.create (service_id=service.id, technician_id=1,
+                                         appointment_id=new_appointment.id, status='scheduled').save ( )
+
+                new_appointment.save ( )
+                cart.clear ( )
+
+                # build a query set for the sale items that were created for this appointment, to display in the e-mail
+                subTotal = 0
+                grandTotal = new_appointment.getTotalCharge ( )
+
+                return redirect('account:home')
+
+    return render(request, "Scheduling/managerConfirmation.html", {'customer': customer})
 
 def rescheduleAppointment(request, id, date):
     # get the corresponding appointment, by way of it's id.
