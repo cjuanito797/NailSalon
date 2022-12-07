@@ -323,6 +323,8 @@ def scheduleWithTech(request, pk, date):
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
 @login_required (login_url='/login/')
 def scheduleWithNoneTech(request, date):
+    chooseday = date
+    
     startTimes = []
     startTimesSet = []
     booleanValue = True
@@ -340,7 +342,7 @@ def scheduleWithNoneTech(request, date):
         # we will need to convert the duration into a raw integer.
         durationInMin = (duration.seconds / 60) * qty
         totalDuration += durationInMin
-    day = date
+    
     morningTimeSets = []
     morningTimeSets0 = [
         ['9:00am', '9:15am', '9:30am', '9:45am'],
@@ -406,7 +408,8 @@ def scheduleWithNoneTech(request, date):
                                                     'evening': eveningTimeSets, "date": date.date})
     else:
         dateSelected = calendarEntry.objects.get (pk=date)
-        times = appointment_queue.get_next_frame_available (day.date)
+        
+        times = appointment_queue.get_next_frame_available (dateSelected.date)
         for i in morningTimeSets0:
             if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
                     morningTimeSets.append(i)
