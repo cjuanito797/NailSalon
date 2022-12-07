@@ -55,7 +55,7 @@ def get_next_frame_available(current_date: datetime.date):
     else:
         _COUNTED_APPOINTMENT[str(current_date)] = [next_finish['id'],]
         
-    _write_data()
+    #_write_data()
     return next_finish['end_time']
         
 def newday_clean_up(filedir=FILE_DIR):

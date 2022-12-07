@@ -238,7 +238,7 @@ def scheduleWithTech(request, pk, date):
 
     todaysDate = datetime.datetime.today ( ).date ( )
     current_time = datetime.datetime.strptime (currentTime, format)
-
+    
     for set in startTimesSet:
         datetime_str = datetime.datetime.strptime (set[0], format)
         # only add the times that are logically possible.
@@ -265,7 +265,6 @@ def scheduleWithTech(request, pk, date):
                     afternoonTimeSets.append (set)
             else:
                 eveningTimeSets.append (set)
-
     if request.method == "POST":
         if "start_time" in request.POST:
             if request.user.is_authenticated:
@@ -311,7 +310,8 @@ def scheduleWithTech(request, pk, date):
                 TotalChargeGlobal = cart.get_total_price ( )
 
                 return redirect ('appointments:confirm')
-
+    
+    
     return render (request, "Scheduling/calendar.html", {"tech": tech, "availableDates": workingDays,
                                                          'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
                                                    'evening': eveningTimeSets, "date": dateSelected.date})
@@ -321,12 +321,140 @@ def scheduleWithTech(request, pk, date):
 @cache_control (no_cache=True, must_revalidate=True, no_store=True)
 @login_required (login_url='/login/')
 def scheduleWithNoneTech(request, date):
-    calendar = calendarEntry.objects.all ( )
-    date = calendarEntry.objects.filter (date=date).get ( )
-    
-    times = appointment_queue.get_next_frame_available (date.date)
+    startTimes = []
+    startTimesSet = []
+    booleanValue = True
+    cart = Cart (request)
 
-    return render (request, "Scheduling/chooseForMe.html", {'date': date, 'calendar': calendar})
+    totalDuration = 0
+
+    for item in cart:
+        qty = item['quantity']
+        service = Service.objects.get (name=item['service'])
+
+        # goal is to multiply the qty by the estimated duration of that service.
+        duration = service.duration
+
+        # we will need to convert the duration into a raw integer.
+        durationInMin = (duration.seconds / 60) * qty
+        totalDuration += durationInMin
+    day = date
+    morningTimeSets = []
+    morningTimeSets0 = [
+        ['9:00am', '9:15am', '9:30am', '9:45am'],
+        ['9:15am', '9:30am', '9:45am', '10:00am'],
+        ['9:30am', '9:45am', '10:00am', '10:15am'],
+        ['9:45am', '10:00am', '10:15am', '10:30am'],
+        ['10:00am', '10:15am', '10:30am', '10:45am'],
+        ['10:15am', '10:30am', '10:45am', '11:00am'],
+        ['10:30am', '10:45am', '11:00am', '11:15am'],
+        ['10:45am', '11:00am', '11:15am', '11:30am'],
+        ['11:00am', '11:15am', '11:30am', '11:45am'],
+        ['11:15am', '11:30am', '11:45am', '12:00pm'],
+        ['11:30am', '11:45am', '12:00pm', '12:15pm'],
+        ['11:45am', '12:00pm', '12:15pm', '12:30pm'],
+    ]
+    afternoonTimeSets=[]
+    afternoonTimeSets0 = [
+        ['12:00pm','12:15pm', '12:30pm', '12:45pm'],
+        ['12:15pm', '12:30pm', '12:45pm', '1:00pm'],
+        ['12:30pm', '12:45pm', '1:00pm', '1:15pm'],
+        ['12:45pm', '1:00pm', '1:15pm', '1:30pm'],
+        ['1:00pm', '1:15pm', '1:30pm', '1:45pm'],
+        ['1:15pm', '1:30pm', '1:45pm', '2:00pm'],
+        ['1:30pm', '1:45pm', '2:00pm', '2:15pm'],
+        ['1:45pm', '2:00pm', '2:15pm', '2:30pm'],
+        ['2:00pm', '2:15pm', '2:30pm', '2:45pm'],
+        ['2:15pm', '2:30pm', '2:45pm', '3:00pm'],
+        ['2:30pm', '2:45pm', '3:00pm', '3:15pm'],
+        ['2:45pm', '3:00pm', '3:15pm', '3:30pm'],
+    ]
+    eveningTimeSets=[]
+    eveningTimeSets0 = [
+        ['3:00pm', '3:15pm', '3:30pm', '3:45pm'],
+        ['3:15pm', '3:30pm', '3:45pm', '4:00pm'],
+        ['3:30pm', '3:45pm', '4:00pm', '4:15pm'],
+        ['3:45pm', '4:00pm', '4:15pm', '4:30pm'],
+        ['4:00pm', '4:15pm', '4:30pm', '4:45pm'],
+    ]
+    
+    workingDays = []
+
+    availableDates = calendarEntry.objects.all ( )
+
+    for day in availableDates:
+        workingDays.append (day)
+    calendar = calendarEntry.objects.all ( )
+    #
+    if isinstance(date, int) == False:
+        date = calendarEntry.objects.filter (date=date).get ( )
+        times = appointment_queue.get_next_frame_available (date.date)
+        for i in morningTimeSets0:
+            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                    morningTimeSets.append(i)
+        for i in afternoonTimeSets0:
+            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                    afternoonTimeSets.append(i)
+        for i in eveningTimeSets0:
+            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                    eveningTimeSets.append(i)
+
+        #return render (request, "Scheduling/chooseForMe.html", {'date': date, 'calendar': calendar})
+
+        return render (request, "Scheduling/calendar_none.html", {"tech": None, "availableDates": workingDays,
+                                                            'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
+                                                    'evening': eveningTimeSets, "date": date.date})
+    else:
+        dateSelected = calendarEntry.objects.get (pk=date)
+        times = appointment_queue.get_next_frame_available (day.date)
+        for i in morningTimeSets0:
+            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                    morningTimeSets.append(i)
+        for i in afternoonTimeSets0:
+            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                    afternoonTimeSets.append(i)
+        for i in eveningTimeSets0:
+            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                    eveningTimeSets.append(i)
+        if request.method == "POST":
+            if "start_time" in request.POST:
+                if request.user.is_authenticated:
+                    myVar = request.POST.get ("start_time")
+
+                    startTime = datetime.datetime.strptime (myVar, '%I:%M%p')
+                    endTime = startTime + datetime.timedelta (minutes=totalDuration)
+
+                    # update a global variable with the set of times.
+                    global globalVar
+                    for set in startTimesSet:
+                        if set[0] == myVar:
+                            globalVar = set
+                    global customerID
+                    customerID = request.user.id
+
+                    global technicianID
+                    technicianID = None
+
+                    global startTimeGlobal
+                    startTimeGlobal = startTime.time ( )
+
+                    global endTimeGlobal
+                    endTimeGlobal = endTime.time ( )
+
+                    global TotalDurationGlobal
+                    TotalDurationGlobal = totalDuration
+
+                    global DateGlobal
+                    DateGlobal = dateSelected.date
+
+                    global TotalChargeGlobal
+                    TotalChargeGlobal = cart.get_total_price ( )
+
+                    return redirect ('appointments:confirm')
+        return render (request, "Scheduling/calendar_none.html", {"tech": None, "availableDates": workingDays,
+                                                            'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
+                                                    'evening': eveningTimeSets, "date": dateSelected.date})
+                                                
 '''
 def confirmAppointment(request):
     # so in here we need to render a form, where the user will:
@@ -411,69 +539,130 @@ def confirmAppointment(request):
 
             # clear the cart
             cart = Cart (request)
+            if technicianID is not None:
+                new_appointment = Appointment.objects.create (
+                    customer_id=customerID,
+                    technician_id=technicianID,
+                    start_time=startTimeGlobal,
+                    end_time=endTimeGlobal,
+                    totalDuration=TotalDurationGlobal,
+                    date=DateGlobal,
+                    totalCharge=TotalChargeGlobal
+                )
+                # add services from cart into appointment
 
-            new_appointment = Appointment.objects.create (
-                customer_id=customerID,
-                technician_id=technicianID,
-                start_time=startTimeGlobal,
-                end_time=endTimeGlobal,
-                totalDuration=TotalDurationGlobal,
-                date=DateGlobal,
-                totalCharge=TotalChargeGlobal
-            )
-            # add services from cart into appointment
+                for item in cart:
+                    # get the service item, using the item name.
+                    service = Service.objects.filter (name__exact=item['service']).get ( )
+                    new_appointment.services.add (service)
+                    # create sale items for each item in the cart
+                    Sale.objects.create (service_id=service.id, technician_id=new_appointment.technician.id,
+                                        appointment_id=new_appointment.id, status='scheduled').save ( )
 
-            for item in cart:
-                # get the service item, using the item name.
-                service = Service.objects.filter (name__exact=item['service']).get ( )
-                new_appointment.services.add (service)
-                # create sale items for each item in the cart
-                Sale.objects.create (service_id=service.id, technician_id=new_appointment.technician.id,
-                                     appointment_id=new_appointment.id, status='scheduled').save ( )
+                new_appointment.save ( )
+                cart.clear ( )
 
-            new_appointment.save ( )
-            cart.clear ( )
+                # build a query set for the sale items that were created for this appointment, to display in the e-mail
+                subTotal = TotalChargeGlobal
+                grandTotal = new_appointment.getTotalCharge ( )
 
-            # build a query set for the sale items that were created for this appointment, to display in the e-mail
-            subTotal = TotalChargeGlobal
-            grandTotal = new_appointment.getTotalCharge ( )
+                print("Just finished calculating the totals for your appointment")
+                if new_appointment.technician is not None:
+                    # set the appropriate time slots to false
+                    timeSlot = timeSlots.objects.get (tech=new_appointment.technician.user.email, date=new_appointment.date)
+                    for time in globalVar:
+                        slot = timeSlot.getTimeSlot (time)
+                        setattr (timeSlot, slot, False)
+                    timeSlot.save ( )
+                    saleItems = Sale.objects.filter (appointment_id=new_appointment.id).all ( )
+                    content = (
+                        {'username': request.user.first_name, 'date': new_appointment.date,
+                        'time': new_appointment.start_time,
+                        'technician': new_appointment.technician.user.first_name, 'saleItems': saleItems,
+                        'subTotal': subTotal,
+                        'grandTotal': float ("{:.2f}".format (grandTotal))})
+                else:
+                    content = (
+                        {'username': request.user.first_name, 'date': new_appointment.date,
+                        'time': new_appointment.start_time,
+                        'subTotal': subTotal, 'grandTotal': float ("{:.2f}".format (grandTotal))})
 
-            print("Just finished calculating the totals for your appointment")
-            if new_appointment.technician is not None:
-                # set the appropriate time slots to false
-                timeSlot = timeSlots.objects.get (tech=new_appointment.technician.user.email, date=new_appointment.date)
-                for time in globalVar:
-                    slot = timeSlot.getTimeSlot (time)
-                    setattr (timeSlot, slot, False)
-                timeSlot.save ( )
-                saleItems = Sale.objects.filter (appointment_id=new_appointment.id).all ( )
-                content = (
-                    {'username': request.user.first_name, 'date': new_appointment.date,
-                     'time': new_appointment.start_time,
-                     'technician': new_appointment.technician.user.first_name, 'saleItems': saleItems,
-                     'subTotal': subTotal,
-                     'grandTotal': float ("{:.2f}".format (grandTotal))})
+                plaintext = get_template ('Send/confirmationEmail.txt')
+                htmlEmail = get_template ('Send/confirmationEmail.html')
+
+                text_content = plaintext.render (content)
+                html_content = htmlEmail.render (content)
+                msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon23@gmail.com',
+                                            [request.user.email])
+                print("Preparing to add the html content to your e-mail.")
+                msg.attach_alternative (html_content, "text/html")
+                print("HTML content has been attatched, preparing to send your e-mail.")
+
+                msg.send (fail_silently=False)
+
+                print("Message has been sent.")
+                return redirect ('appointments:confirmation')
             else:
-                content = (
-                    {'username': request.user.first_name, 'date': new_appointment.date,
-                     'time': new_appointment.start_time,
-                     'subTotal': subTotal, 'grandTotal': float ("{:.2f}".format (grandTotal))})
+                new_appointment = Appointment.objects.create (
+                    customer_id=customerID,
+                    technician_id=technicianID,
+                    start_time=startTimeGlobal,
+                    end_time=endTimeGlobal,
+                    totalDuration=TotalDurationGlobal,
+                    date=DateGlobal,
+                    totalCharge=TotalChargeGlobal
+                )
+                # add services from cart into appointment
 
-            plaintext = get_template ('Send/confirmationEmail.txt')
-            htmlEmail = get_template ('Send/confirmationEmail.html')
+                for item in cart:
+                    # get the service item, using the item name.
+                    service = Service.objects.filter (name__exact=item['service']).get ( )
+                    new_appointment.services.add (service)
+                    # create sale items for each item in the cart
+                    
+                new_appointment.save ( )
+                cart.clear ( )
 
-            text_content = plaintext.render (content)
-            html_content = htmlEmail.render (content)
-            msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon23@gmail.com',
-                                          [request.user.email])
-            print("Preparing to add the html content to your e-mail.")
-            msg.attach_alternative (html_content, "text/html")
-            print("HTML content has been attatched, preparing to send your e-mail.")
+                # build a query set for the sale items that were created for this appointment, to display in the e-mail
+                subTotal = TotalChargeGlobal
+                grandTotal = new_appointment.getTotalCharge ( )
 
-            msg.send (fail_silently=False)
+                print("Just finished calculating the totals for your appointment")
+                if new_appointment.technician is not None:
+                    # set the appropriate time slots to false
+                    timeSlot = timeSlots.objects.get (tech=new_appointment.technician.user.email, date=new_appointment.date)
+                    for time in globalVar:
+                        slot = timeSlot.getTimeSlot (time)
+                        setattr (timeSlot, slot, False)
+                    timeSlot.save ( )
+                    saleItems = Sale.objects.filter (appointment_id=new_appointment.id).all ( )
+                    content = (
+                        {'username': request.user.first_name, 'date': new_appointment.date,
+                        'time': new_appointment.start_time,
+                        'technician': new_appointment.technician.user.first_name, 'saleItems': saleItems,
+                        'subTotal': subTotal,
+                        'grandTotal': float ("{:.2f}".format (grandTotal))})
+                else:
+                    content = (
+                        {'username': request.user.first_name, 'date': new_appointment.date,
+                        'time': new_appointment.start_time,
+                        'subTotal': subTotal, 'grandTotal': float ("{:.2f}".format (grandTotal))})
 
-            print("Message has been sent.")
-            return redirect ('appointments:confirmation')
+                plaintext = get_template ('Send/confirmationEmail.txt')
+                htmlEmail = get_template ('Send/confirmationEmail.html')
+
+                text_content = plaintext.render (content)
+                html_content = htmlEmail.render (content)
+                msg = EmailMultiAlternatives ('Your Appointment', html_content, 'applenailsalon23@gmail.com',
+                                            [request.user.email])
+                print("Preparing to add the html content to your e-mail.")
+                msg.attach_alternative (html_content, "text/html")
+                print("HTML content has been attatched, preparing to send your e-mail.")
+
+                msg.send (fail_silently=False)
+
+                print("Message has been sent.")
+                return redirect ('appointments:confirmation')
 
     # if the user changes their mind, delete the appointment and return to the calendar page with appropriate params.
     return render (request, "Scheduling/confirmation.html")
@@ -737,72 +926,101 @@ def rescheduleAppointment(request, id, date):
 
 def deleteAppointment(request, id):
     appointment = Appointment.objects.filter (pk=id).get ( )
-    tech = Technician.objects.filter (pk=appointment.technician.id).get ( )
+    if appointment.technician is not None:
+        tech = Technician.objects.filter (pk=appointment.technician.id).get ( )
 
-    # get the time slot data for that technician.
-    time_slot = timeSlots.objects.filter (tech=tech.user.email, date=appointment.date).get ( )
+        # get the time slot data for that technician.
+        time_slot = timeSlots.objects.filter (tech=tech.user.email, date=appointment.date).get ( )
 
-    # determine the time slots that we need to free up, similarly to how we set them to false.
+        # determine the time slots that we need to free up, similarly to how we set them to false.
 
-    # build a set of the times from the appoointment and convert them to 12-hour.
-    startTime = appointment.start_time
-    startTime = datetime.datetime.strptime (str (startTime), "%H:%M:%S")
-    time = datetime.datetime.strftime (startTime, "%I:%M%p")
-
-    # get the number of time slots required for this appointment
-    timeSlotsRequired = appointment.totalDuration / 15
-
-    i = 0
-    timeToChange = ""
-    for i in range (int (timeSlotsRequired)):
-        # print out the time slots for this appointment in 12 hour format.
-        print (time.lower ( ))
-        timeToChange = time_slot.getTimeSlot (time.lower ( ).lstrip ("0"))
-        print ("We are setting", timeToChange, " back to true")
-        setattr (time_slot, timeToChange, True)
-
-        # will need to use an offset of 15 minutes, recall how we calculated end_time.
-        startTime = startTime + datetime.timedelta (minutes=15)
+        # build a set of the times from the appoointment and convert them to 12-hour.
+        startTime = appointment.start_time
+        startTime = datetime.datetime.strptime (str (startTime), "%H:%M:%S")
         time = datetime.datetime.strftime (startTime, "%I:%M%p")
 
-    time_slot.save ( )
+        # get the number of time slots required for this appointment
+        timeSlotsRequired = appointment.totalDuration / 15
 
-    # notify both of the parties involved, about their cancelled appointment.
+        i = 0
+        timeToChange = ""
+        for i in range (int (timeSlotsRequired)):
+            # print out the time slots for this appointment in 12 hour format.
+            print (time.lower ( ))
+            timeToChange = time_slot.getTimeSlot (time.lower ( ).lstrip ("0"))
+            print ("We are setting", timeToChange, " back to true")
+            setattr (time_slot, timeToChange, True)
 
-    # build a context dictionary, of the information that will be e-mailed to the user.
+            # will need to use an offset of 15 minutes, recall how we calculated end_time.
+            startTime = startTime + datetime.timedelta (minutes=15)
+            time = datetime.datetime.strftime (startTime, "%I:%M%p")
 
-    plaintext = get_template ('Send/userCancellation.txt')
-    htmlEmail = get_template ('Send/userCancellation.html')
+        time_slot.save ( )
 
-    content = (
-        {'username': request.user.first_name, 'date': appointment.date,
-         'technician': appointment.technician.user.first_name, })
+        # notify both of the parties involved, about their cancelled appointment.
 
-    text_content = plaintext.render (content)
-    html_content = htmlEmail.render (content)
-    msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'applenailsalon23@gmail.com',
-                                  [request.user.email])
-    msg.attach_alternative (html_content, "text/html")
-    msg.send ( )
+        # build a context dictionary, of the information that will be e-mailed to the user.
 
-    # send an e-mail to the technician.
-    plaintext = get_template ('Send/technicianCancellation.txt')
-    htmlEmail = get_template ('Send/technicianCancellation.html')
+        plaintext = get_template ('Send/userCancellation.txt')
+        htmlEmail = get_template ('Send/userCancellation.html')
 
-    content = (
-        {
-            'technician': appointment.technician.user.first_name, 'user': request.user.first_name,
-            'start_time': appointment.start_time, 'end_time': appointment.end_time, 'date': appointment.date,
-        })
+        content = (
+            {'username': request.user.first_name, 'date': appointment.date,
+            'technician': appointment.technician.user.first_name, })
 
-    text_content = plaintext.render (content)
-    html_content = htmlEmail.render (content)
-    msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'applenailsalon23@gmail.com',
-                                  [appointment.technician.user.email])
-    msg.attach_alternative (html_content, "text/html")
+        text_content = plaintext.render (content)
+        html_content = htmlEmail.render (content)
+        msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'applenailsalon23@gmail.com',
+                                    [request.user.email])
+        msg.attach_alternative (html_content, "text/html")
+        msg.send ( )
 
-    msg.send ( )
+        # send an e-mail to the technician.
+        plaintext = get_template ('Send/technicianCancellation.txt')
+        htmlEmail = get_template ('Send/technicianCancellation.html')
 
-    appointment.delete ( )
+        content = (
+            {
+                'technician': appointment.technician.user.first_name, 'user': request.user.first_name,
+                'start_time': appointment.start_time, 'end_time': appointment.end_time, 'date': appointment.date,
+            })
 
-    return redirect ('Account:home')
+        text_content = plaintext.render (content)
+        html_content = htmlEmail.render (content)
+        msg = EmailMultiAlternatives ('Appointment has been cancelled!', html_content, 'applenailsalon23@gmail.com',
+                                    [appointment.technician.user.email])
+        msg.attach_alternative (html_content, "text/html")
+
+        msg.send ( )
+
+        appointment.delete ( )
+
+        return redirect ('Account:home')
+    else:
+        
+        plaintext = get_template ('Send/userCancellation.txt')
+        htmlEmail = get_template ('Send/userCancellation.html')
+
+        content = (
+            {'username': request.user.first_name, 'date': appointment.date,
+            'technician': 'None' })
+
+        text_content = plaintext.render (content)
+        html_content = htmlEmail.render (content)
+
+        # send an e-mail to the technician.
+        plaintext = get_template ('Send/technicianCancellation.txt')
+        htmlEmail = get_template ('Send/technicianCancellation.html')
+
+        content = (
+            {
+                'technician': 'None', 'user': request.user.first_name,
+                'start_time': appointment.start_time, 'end_time': appointment.end_time, 'date': appointment.date,
+            })
+
+        text_content = plaintext.render (content)
+        html_content = htmlEmail.render (content)
+
+        appointment.delete ( )
+
+        return redirect ('Account:home')
