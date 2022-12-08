@@ -19,8 +19,11 @@ def get_next_frame_available(current_date: datetime.date):
     global _COUNTED_APPOINTMENT
     _read_data()
     
-    if len(Appointment.objects.filter(date=current_date)) == 0:
+    len_apt = len(Appointment.objects.filter(date=current_date, status='active'))
+    num_tech = len(calendarEntry.objects.get(date=current_date).technicians.all())
+    if (len_apt == 0) or (len_apt < num_tech):
         return datetime.time(9,0,0)
+
     
     
     # Query only appointments id that not set in the file, and set flag to resolve later

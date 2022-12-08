@@ -195,10 +195,12 @@
                                                 <h3>End Time (Estimated): {{ appointment.end_time }}</h3>
                                                 <h3>Your Guest: {{ appointment.customer.first_name }}
                                                     {{ appointment.customer.last_name }}</h3>
-                                                    <div class="media-left">
-                                                        <img src="../{{appointment.image}}"style="width: 40%"
-                                                                 alt="Image">
-                                                    </div>
+                                                    {% if appointment.image %}
+                                                <div class="media-left">
+                                                    <img src="../{{appointment.image}}"style="width: 40%"
+                                                             alt="Image">
+                                                </div>
+                                                {% endif %}
                                                 <!-- iterate over the sale items for this appointment -->
                                                 <div class="tabular">
 
