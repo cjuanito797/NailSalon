@@ -123,18 +123,24 @@
 {% endblock %}
 
 {% block mainbody %}
-<form method="post" class="post-form">
+<form method="post" enctype="multipart/form-data"  class="post-form">
 <section class="hero-head has-text-centered">
         <p  class="title has-text-black">
             <br>
             <br>
             Schedule Confirmed
         </p>
+        
     </section>
     {% csrf_token %}
 
-    <section class="section has-text-left">
-    <input type="submit" class="button is-info" value="Confirm" name="Return to Home">
+    <section class="section has-text-centered">
+        <p>
+            <label class="hero-head has-text-centered">Add image for your design (option): </label><br/>
+            <input type="file" name="example1"/>
+        </p>
+        <input type="submit" class="button is-info" value="Confirm" name="Confirm">
+
     </section>
 
 </form>

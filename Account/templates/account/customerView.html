@@ -211,9 +211,22 @@
                                             <h3>Date: {{ appointment.date }}</h3>
                                             <h3>Start Time: {{ appointment.start_time }}</h3>
                                             <h3>End Time (Estimated): {{ appointment.end_time }}</h3>
+                                            {% if appointment.technician.user.first_name %}
                                             <h3>Working with: {{ appointment.technician.user.first_name }}
                                                 {{ appointment.technician.user.last_name }}</h3>
+                                            {% else %}
+                                            <h3>Working with: T.B.D </h3>
+                                            {% endif %}
+                                            <h3>Customer sample image:(optional)
+                                                <div class="media-left">
+                                                    <img src="../{{appointment.image}}"style="width: 40%"
+                                                             alt="Image">
 
+                                                </div>
+                                                </h3>
+                                                <h3>Service(s):</h3>
+                                                
+                                                
                                             <!-- iterate over the sale items for this appointment -->
                                             <div class="tabular">
 
@@ -224,12 +237,7 @@
 
                                                         <div class="box">
                                                             <article class="media">
-                                                                <div class="media-left">
-                                                                    <figure class="image is-64x64">
-                                                                        <img src="../../static/galleryImages/a.jpg"
-                                                                             alt="Image">
-                                                                    </figure>
-                                                                </div>
+                                                                
                                                                 <div class="media-content">
                                                                     <div class="content">
                                                                         <p>
@@ -257,6 +265,7 @@
                                                                         </div>
                                                                     </nav>
                                                                 </div>
+                                                                
                                                             </article>
                                                         </div>
                                                         <div class="hr"

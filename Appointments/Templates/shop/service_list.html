@@ -341,18 +341,6 @@
                             Send Us Your Design!
                         </a>
                         <hr class="navbar-divider">
-                <form action="" method="post">
-                    {%  csrf_token %}
-                    <label for="detail_field"> Discuss and Submit a Custom Design: </label>
-                    <br>
-                    <input id="detail_field" type="text" name="detail_field" >
-                    <br>
-                    <br>
-                    <input id="image_field" type="file" name="image_field">
-                    <br>
-                    <br>
-                    <input type="submit" value="Submit">
-                </form>
 
                 </div>
 
@@ -379,7 +367,7 @@
                                     <div class="card-image">
                                         <figure class="image is-4by3">
                                             {% load rand_service_pics %}
-                                            <img src="../../Appointments/Templates/shop/imagebank/{% random_int 1 45 %}.jpg" style="object-fit: cover ;">
+                                            <img src="../../../Appointments/Templates/shop/imagebank/{% random_int 1 45 %}.jpg" style="object-fit: cover ;">
                                         </figure>
                                     </div>
                                     <div class="card-content">

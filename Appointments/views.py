@@ -461,7 +461,6 @@ def scheduleWithNoneTech(request, date):
 def confirmAppointment(request):
     if request.method == "POST":
         if "Confirm" in request.POST:
-
             # clear the cart
             cart = Cart (request)
             if technicianID is not None:
@@ -472,7 +471,9 @@ def confirmAppointment(request):
                     end_time=endTimeGlobal,
                     totalDuration=TotalDurationGlobal,
                     date=DateGlobal,
-                    totalCharge=TotalChargeGlobal
+                    totalCharge=TotalChargeGlobal,
+                    image=request.FILES['example1']
+                    
                 )
                 # add services from cart into appointment
 
@@ -481,16 +482,16 @@ def confirmAppointment(request):
                     service = Service.objects.filter (name__exact=item['service']).get ( )
                     new_appointment.services.add (service)
                     # create sale items for each item in the cart
+                    
+                    # add any custom details
+                    # details = request.POST.get('detail_field')
+                    # new_appointment.details = details
+                    # image = request.POST.get('image_field')
+                    # new_appointment.image = image
                     Sale.objects.create (service_id=service.id, technician_id=new_appointment.technician.id,
                                         appointment_id=new_appointment.id, status='scheduled').save ( )
-                    # add any custom details
-                    details = request.POST.get('detail_field')
-                    new_appointment.details = details
-                    image = request.POST.get('image_field')
-                    new_appointment.image = image
                 new_appointment.save ( )
                 cart.clear ( )
-
                 # build a query set for the sale items that were created for this appointment, to display in the e-mail
                 subTotal = TotalChargeGlobal
                 grandTotal = new_appointment.getTotalCharge ( )
@@ -539,7 +540,8 @@ def confirmAppointment(request):
                     end_time=endTimeGlobal,
                     totalDuration=TotalDurationGlobal,
                     date=DateGlobal,
-                    totalCharge=TotalChargeGlobal
+                    totalCharge=TotalChargeGlobal,
+                    image=request.FILES['example1']
                 )
                 # add services from cart into appointment
 
@@ -592,7 +594,7 @@ def confirmAppointment(request):
 
                 print("Message has been sent.")
                 return redirect ('appointments:confirmation')
-
+        
     # if the user changes their mind, delete the appointment and return to the calendar page with appropriate params.
     return render (request, "Scheduling/confirmation.html")
 
@@ -1085,3 +1087,14 @@ def deleteAppointment(request, id):
         appointment.delete ( )
 
         return redirect ('Account:home')
+
+
+def upload_view(request):
+ 
+    if request.method == 'POST':
+        print(request.POST)
+        form = upload_image_form(request.POST, request.FILES)
+ 
+        if form.is_valid():
+            form.save()
+            return redirect('appointments:service_list')

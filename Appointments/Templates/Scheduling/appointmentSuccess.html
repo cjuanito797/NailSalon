@@ -124,17 +124,21 @@
 
 {% block mainbody %}
 <form method="post" class="post-form">
+
 <section class="hero-head has-text-centered">
         <p  class="title has-text-black">
             <br>
             <br>
             Appointment Successful
         </p>
+        
+    
     </section>
     {% csrf_token %}
 
-    <section class="section has-text-left">
-    <input type="submit" class="button is-info" value="Confirm" name="Return to Home">
+    <section class="section has-text-centered">
+    <input type="submit" class="button is-info" value="Confirm" name="Confirm">
+    
     </section>
 
 </form>
