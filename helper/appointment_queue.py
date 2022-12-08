@@ -19,6 +19,10 @@ def get_next_frame_available(current_date: datetime.date):
     global _COUNTED_APPOINTMENT
     _read_data()
     
+    if len(Appointment.objects.filter(date=current_date)) == 0:
+        return datetime.time(9,0,0)
+    
+    
     # Query only appointments id that not set in the file, and set flag to resolve later
     if str(current_date) in _COUNTED_APPOINTMENT:
         flag_exist = True
@@ -29,12 +33,14 @@ def get_next_frame_available(current_date: datetime.date):
         flag_exist = False
         temp = list(Appointment.objects.filter(date=current_date, status='active')
                     .values('id', 'end_time'))
+    
     # Set end_time datatype fit to sort
     endtime_list = []
     for t in temp:
         if t['end_time'] != None:
             t['end_time'] = datetime.datetime.combine(datetime.datetime.min, t['end_time']) - datetime.datetime.min
         endtime_list.append(t)
+    print(endtime_list)
     # Sort and reset end_time datatype
     next_finish = sorted(endtime_list, key=lambda x: x['end_time'])[0]
     next_finish['end_time'] = (datetime.datetime.min + next_finish['end_time']).time()
@@ -44,6 +50,8 @@ def get_next_frame_available(current_date: datetime.date):
         next_finish['end_time'] = datetime.time(next_finish['end_time'].hour + 1, 0, 0)
     else:
         next_finish['end_time'] = datetime.time(next_finish['end_time'].hour, next_slot * 15, 0)
+
+    print(next_finish['end_time'])
     # Continue to resolve if id that not set in the file or not
     # if id already set in the file, add id into that date list
     if flag_exist == True:
@@ -98,5 +106,3 @@ def _read_data(filedir=FILE_DIR):
                 _COUNTED_APPOINTMENT[temp].append(line)
     else:
         _COUNTED_APPOINTMENT = {}
-
-
