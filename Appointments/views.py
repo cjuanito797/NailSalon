@@ -406,8 +406,6 @@ def scheduleWithNoneTech(request, date):
                                                     'evening': eveningTimeSets, "date": date.date})
     else:
         dateSelected = calendarEntry.objects.get (pk=date)
-        print(days)
-        print(type(days))
         times = appointment_queue.get_next_frame_available (dateSelected.date)
         for i in morningTimeSets0:
             if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
