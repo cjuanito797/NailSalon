@@ -218,11 +218,12 @@
                                             <h3>Working with: T.B.D </h3>
                                             {% endif %}
                                             <h3>Customer sample image:(optional)
+                                                {% if appointment.image %}
                                                 <div class="media-left">
                                                     <img src="../{{appointment.image}}"style="width: 40%"
                                                              alt="Image">
-
                                                 </div>
+                                                {% endif %}
                                                 </h3>
                                                 <h3>Service(s):</h3>
                                                 

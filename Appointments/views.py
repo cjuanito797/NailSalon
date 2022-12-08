@@ -461,7 +461,11 @@ def scheduleWithNoneTech(request, date):
 def confirmAppointment(request):
     if request.method == "POST":
         if "Confirm" in request.POST:
-            # clear the cart
+            if request.FILES:
+                img = request.FILES['example1']
+            else:
+                img = None
+
             cart = Cart (request)
             if technicianID is not None:
                 new_appointment = Appointment.objects.create (
@@ -472,7 +476,7 @@ def confirmAppointment(request):
                     totalDuration=TotalDurationGlobal,
                     date=DateGlobal,
                     totalCharge=TotalChargeGlobal,
-                    image=request.FILES['example1']
+                    image=img
                     
                 )
                 # add services from cart into appointment
@@ -541,7 +545,7 @@ def confirmAppointment(request):
                     totalDuration=TotalDurationGlobal,
                     date=DateGlobal,
                     totalCharge=TotalChargeGlobal,
-                    image=request.FILES['example1']
+                    image=img
                 )
                 # add services from cart into appointment
 
@@ -637,7 +641,7 @@ def selectCustomer(request):
 
     return render (request, 'Scheduling/selectCustomer.html', {'customerList': customers})
 
-
+'''
 def manager_confirmation(request, id):
 
     # once user has clicked on confirm will appointment be created
@@ -734,6 +738,117 @@ def manager_confirmation(request, id):
                 return redirect('account:home')
 
     return render(request, "Scheduling/managerConfirmation.html", {'customer': customer})
+'''
+def manager_confirmation(request, id):
+    from math import floor
+    # once user has clicked on confirm will appointment be created
+    customer = False
+    if request.method == "GET":
+        starttime = datetime.datetime.now().time()
+        next_slot = floor((starttime.minute + 15)/15)
+        
+        if next_slot > 4:
+            starttime = datetime.time(starttime.hour + 1, 0, 0)
+        else:
+            starttime = datetime.time(starttime.hour, next_slot * 15, 0)
+        
+        if id != 0:
+            customer = User.objects.filter (pk=id).get ( )
+
+            cart = Cart (request)
+
+            totalDuration = 0
+
+            for item in cart:
+                qty = item['quantity']
+                service = Service.objects.get (name=item['service'])
+
+                # goal is to multiply the qty by the estimated duration of that service.
+                duration = service.duration
+
+                # we will need to convert the duration into a raw integer.
+                durationInMin = (duration.seconds / 60) * qty
+                totalDuration += durationInMin
+                
+            temp = datetime.datetime.combine(datetime.date.today(), starttime) + datetime.timedelta (minutes=totalDuration)
+            endtime = temp.time() 
+
+            new_appointment = Appointment.objects.create (
+                customer_id=customer.id,
+                start_time=starttime,
+                end_time=endtime,
+                totalDuration=totalDuration,
+                date=datetime.datetime.today().date(),
+                totalCharge=cart.get_total_price(),
+            )
+            # add services from cart into appointment
+
+            for item in cart:
+                # get the service item, using the item name.
+                service = Service.objects.filter (name__exact=item['service']).get ( )
+                new_appointment.services.add (service)
+                # create sale items for each item in the cart
+                Sale.objects.create (service_id=service.id,technician_id=1,
+                                    appointment_id=new_appointment.id, status='scheduled').save ( )
+
+            new_appointment.save ( )
+            cart.clear ( )
+
+            # build a query set for the sale items that were created for this appointment, to display in the e-mail
+            subTotal = 0
+            grandTotal = new_appointment.getTotalCharge ( )
+
+            return redirect('account:home')
+        
+        elif id == 0:
+            cart = Cart (request)
+
+            totalDuration = 0
+
+            for item in cart:
+                qty = item['quantity']
+                service = Service.objects.get (name=item['service'])
+
+                # goal is to multiply the qty by the estimated duration of that service.
+                duration = service.duration
+
+                # we will need to convert the duration into a raw integer.
+                durationInMin = (duration.seconds / 60) * qty
+                totalDuration += durationInMin
+                
+            temp = datetime.datetime.combine(datetime.date.today(), starttime) + datetime.timedelta (minutes=totalDuration)
+            endtime = temp.time() 
+
+            new_appointment = Appointment.objects.create (
+                start_time=starttime,
+                end_time=endtime,
+                totalDuration=totalDuration,
+                date=datetime.datetime.today ( ).date ( ),
+                totalCharge=cart.get_total_price ( ),
+                guest_first_name=firstName,
+                guest_last_name=lastName,
+            )
+            # add services from cart into appointment
+
+            for item in cart:
+                # get the service item, using the item name.
+                service = Service.objects.filter (name__exact=item['service']).get ( )
+                new_appointment.services.add (service)
+
+            new_appointment.save ( )
+            cart.clear ( )
+
+            # build a query set for the sale items that were created for this appointment, to display in the e-mail
+            subTotal = 0
+            grandTotal = new_appointment.getTotalCharge ( )
+
+            return redirect('account:home')
+
+    return render(request, "Scheduling/managerConfirmation.html", {'customer': customer})
+
+
+
+
 
 def rescheduleAppointment(request, id, date):
     # get the corresponding appointment, by way of it's id.

@@ -247,15 +247,11 @@ def customerView(request):
             username = request.user.email
             this_user = User.objects.get (pk=request.user.id)
             # get the future appointments pertaining to the user.
-            my_appointments2 = Appointment.objects.filter (customer_id=this_user.id, status__exact='active')
             my_appointments = Appointment.objects.filter (customer_id=this_user.id, status__exact='active').all ( )
             apptCount = my_appointments.count ( )
 
             # build a query set for all of the sale items in the customers upcoming appointments
             saleItems = []
-            serviceItems =[]
-            for z in my_appointments2:
-                print(z.services)
             for x in my_appointments:
                 # get a query set of sale items, for each  appointment.
                 sales = Sale.objects.filter (appointment_id=x.id).all ( )
@@ -264,7 +260,7 @@ def customerView(request):
 
             return render (request, "account/customerView.html",
                            {'this_user': this_user, 'my_appointments': my_appointments, 'apptCount': apptCount,
-                            'sale_items': saleItems, 'service_items': serviceItems})
+                            'sale_items': saleItems})
         else:
             print ("User is not signed in!")
             return redirect ('account:home')
