@@ -35,7 +35,6 @@ def get_next_frame_available(current_date: datetime.date):
         if t['end_time'] != None:
             t['end_time'] = datetime.datetime.combine(datetime.datetime.min, t['end_time']) - datetime.datetime.min
         endtime_list.append(t)
-    print(endtime_list)
     # Sort and reset end_time datatype
     next_finish = sorted(endtime_list, key=lambda x: x['end_time'])[0]
     next_finish['end_time'] = (datetime.datetime.min + next_finish['end_time']).time()
@@ -45,8 +44,6 @@ def get_next_frame_available(current_date: datetime.date):
         next_finish['end_time'] = datetime.time(next_finish['end_time'].hour + 1, 0, 0)
     else:
         next_finish['end_time'] = datetime.time(next_finish['end_time'].hour, next_slot * 15, 0)
-
-    print(next_finish['end_time'])
     # Continue to resolve if id that not set in the file or not
     # if id already set in the file, add id into that date list
     if flag_exist == True:

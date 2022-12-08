@@ -483,7 +483,11 @@ def confirmAppointment(request):
                     # create sale items for each item in the cart
                     Sale.objects.create (service_id=service.id, technician_id=new_appointment.technician.id,
                                         appointment_id=new_appointment.id, status='scheduled').save ( )
-
+                    # add any custom details
+                    details = request.POST.get('detail_field')
+                    new_appointment.details = details
+                    image = request.POST.get('image_field')
+                    new_appointment.image = image
                 new_appointment.save ( )
                 cart.clear ( )
 
