@@ -1,0 +1,2 @@
+Hello {{ user }} I had a couple of questions regarding your upcoming appointment, here is my question.
+{{ message }} you can reach me back at {{ technicianEmail }}.

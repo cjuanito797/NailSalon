@@ -10,11 +10,12 @@ import os.path
 from pathlib import Path
 
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path (__file__).resolve ( ).parent.parent
 AUTH_USER_MODEL = 'Account.User'
 
+# MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = ''
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -44,7 +45,7 @@ INSTALLED_APPS = [
     'Appointments.apps.AppointmentsConfig',
     'cart.apps.CartConfig',
     'Calendar.apps.CalendarConfig',
-    'Manager.apps',
+    'Manager.apps.ManagerConfig',
     
     'django_crontab',
     'django_behave',
@@ -52,7 +53,7 @@ INSTALLED_APPS = [
 
 CRONTAB_COMMAND_SUFFIX = '2>&1'
 CRONJOBS = [
-    ('0 9 * * 1-6', 'helper.cron.open_time_job', f">> {os.path.join (BASE_DIR, 'NailSalon/log/helper_job.log')}"),
+    ('0 9 * * 1-6', 'helper.cron.newday_open_job', f">> {os.path.join (BASE_DIR, 'NailSalon/log/helper_job.log')}"),
 ]
 
 MIDDLEWARE = [
@@ -148,5 +149,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'applenailsalon22@gmail.com'
-EMAIL_HOST_PASSWORD = 'xxwwcggwiyxcwatf'
+EMAIL_HOST_USER = 'applenailsalon23@gmail.com'
+EMAIL_HOST_PASSWORD = 'shhanovesnoumvov'

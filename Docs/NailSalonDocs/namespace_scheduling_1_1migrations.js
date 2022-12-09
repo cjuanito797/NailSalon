@@ -1,0 +1,8 @@
+var namespace_scheduling_1_1migrations =
+[
+    [ "0001_initial", "namespace_scheduling_1_1migrations_1_10001__initial.html", "namespace_scheduling_1_1migrations_1_10001__initial" ],
+    [ "0002_timeslots_arrive_time", "namespace_scheduling_1_1migrations_1_10002__timeslots__arrive__time.html", "namespace_scheduling_1_1migrations_1_10002__timeslots__arrive__time" ],
+    [ "0003_alter_technicianschedule_friday_time_in_and_more", "namespace_scheduling_1_1migrations_1_10003__alter__technicianschedule__friday__time__in__and__more.html", "namespace_scheduling_1_1migrations_1_10003__alter__technicianschedule__friday__time__in__and__more" ],
+    [ "0004_rename_monday_timein_technicianschedule_monday_time_in", "namespace_scheduling_1_1migrations_1_10004__rename__monday__timein__technicianschedule__monday__time__in.html", "namespace_scheduling_1_1migrations_1_10004__rename__monday__timein__technicianschedule__monday__time__in" ],
+    [ "0005_rename_monday_timeout_technicianschedule_monday_time_out", "namespace_scheduling_1_1migrations_1_10005__rename__monday__timeout__technicianschedule__monday__time__out.html", "namespace_scheduling_1_1migrations_1_10005__rename__monday__timeout__technicianschedule__monday__time__out" ]
+];
