@@ -9,7 +9,7 @@ sys.path.append ("../NailSalon")
 os.environ.setdefault ('DJANGO_SETTINGS_MODULE', 'NailSalon.settings')
 django.setup ( )
 from Appointments.models import Appointment
-
+from Calendar.models import calendarEntry
 FILE_DIR = "helper/appointment_queue"
 _COUNTED_APPOINTMENT = []
 
@@ -63,8 +63,17 @@ def get_next_frame_available(current_date: datetime.date):
     else:
         _COUNTED_APPOINTMENT[str(current_date)] = [next_finish['id'],]
         
-    #_write_data()
-    return next_finish['end_time']
+    value = [str(next_finish['end_time']), next_finish['id']]
+    return value
+
+def write_confirmation(current_date: datetime.date, apt_id):
+    if apt_id is not None:
+        if str(current_date) in _COUNTED_APPOINTMENT:
+            _COUNTED_APPOINTMENT[str(current_date)].append(apt_id)
+        else:
+            _COUNTED_APPOINTMENT[str(current_date)] = [apt_id,]
+        _write_data()
+
         
 def newday_clean_up(filedir=FILE_DIR):
     global _COUNTED_APPOINTMENT

@@ -11,7 +11,6 @@ from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from cart.context_processors import Cart
 from Scheduling.models import timeSlots
-import time
 from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
@@ -391,31 +390,54 @@ def scheduleWithNoneTech(request, date):
     if isinstance(date, int) == False:
         date = calendarEntry.objects.filter (date=date).get ( )
         times = appointment_queue.get_next_frame_available (date.date)
-        for i in morningTimeSets0:
-            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
-                    morningTimeSets.append(i)
-        for i in afternoonTimeSets0:
-            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
-                    afternoonTimeSets.append(i)
-        for i in eveningTimeSets0:
-            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
-                    eveningTimeSets.append(i)
-
+        now = datetime.datetime.now().time()
+        if times >= now:
+            for i in morningTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                        morningTimeSets.append(i)
+            for i in afternoonTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                        afternoonTimeSets.append(i)
+            for i in eveningTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                        eveningTimeSets.append(i)
+        else:
+            for i in morningTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= now:
+                        morningTimeSets.append(i)
+            for i in afternoonTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= now:
+                        afternoonTimeSets.append(i)
+            for i in eveningTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= now:
+                        eveningTimeSets.append(i)
         return render (request, "Scheduling/calendar_none.html", {"tech": None, "availableDates": workingDays,
                                                             'morning': morningTimeSets, 'afternoon': afternoonTimeSets,
                                                     'evening': eveningTimeSets, "date": date.date})
     else:
         dateSelected = calendarEntry.objects.get (pk=date)
         times = appointment_queue.get_next_frame_available (dateSelected.date)
-        for i in morningTimeSets0:
-            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
-                    morningTimeSets.append(i)
-        for i in afternoonTimeSets0:
-            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
-                    afternoonTimeSets.append(i)
-        for i in eveningTimeSets0:
-            if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
-                    eveningTimeSets.append(i)
+        now = datetime.datetime.now().time()
+        if times >= now:
+            for i in morningTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                        morningTimeSets.append(i)
+            for i in afternoonTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                        afternoonTimeSets.append(i)
+            for i in eveningTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= times:
+                        eveningTimeSets.append(i)
+        else:
+            for i in morningTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= now:
+                        morningTimeSets.append(i)
+            for i in afternoonTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= now:
+                        afternoonTimeSets.append(i)
+            for i in eveningTimeSets0:
+                if datetime.datetime.strptime(i[0], "%I:%M%p").time() >= now:
+                        eveningTimeSets.append(i)
         if request.method == "POST":
             if "start_time" in request.POST:
                 if request.user.is_authenticated:

@@ -28,26 +28,15 @@ import calendar
 from Scheduling.models import TechnicianSchedule, timeSlots
 from Account.models import Technician, User
 from django.db.models import Q
-from Appointments.models import Appointment, Service
+from Appointments.models import Appointment, Service, Sale
 import helper.appointment_queue as appointment_queue
 
 
 import datetime
 
 def main():
-    next = datetime.time(9,17,0)
-    print(datetime.datetime.now().time())
-    
-    next_slot = math.floor((next.minute + 15)/15)
-    
-    
-    
-    if next_slot > 4:
-        next = datetime.time(next.hour + 1, 0, 0)
-    else:
-        next = datetime.time(next.hour, next_slot * 15, 0)
-    print(next)
-        
+    a = Sale.objects.get(id=12)
+    print(a.appointment.date)
     
     
 
