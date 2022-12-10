@@ -37,4 +37,24 @@ In order to utilize this application, since it is not running on a webserver you
     python manage.py makemigrations
     python manage.py migrate
     python manage.py runserver
+    
+    
+Release Notes
+- The current state of our appliication sees there being a  complete hybrid implementatiion. Currently these are the features that are working. 
+
+Customer End
+- Can schedule an appointment with a technician at a given date and time. 
+- Can re-schedule their appointment
+- Can cancel an appointment
+- Can view details of an upcoming appointment
+- Can schedule an appointment with a technician that will be assigned to them upon arrival. 
+- Can perform CRUD operations on their application such as: changing their e-mail, password, etc. 
+
+Technician End
+- Can manage their upcoming appointments. 
+
+Management End
+- Can manage customers as they walk in.
+- Can create new technicians through a hiring portal
+- Can create an appointment for a registered user or a walk-in client.
 
