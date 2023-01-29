@@ -13,7 +13,6 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path (__file__).resolve ( ).parent.parent
-AUTH_USER_MODEL = 'Account.User'
 
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = ''
@@ -37,6 +36,8 @@ ALLOWED_HOSTS = ['127.0.0.1',
 # Application definition
 
 INSTALLED_APPS = [
+    'Account.apps.AccountConfig',
+
     "django.contrib.auth",
     "django.contrib.admin",
     "django.contrib.contenttypes",
@@ -44,7 +45,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     
-    'Account.apps.AccountConfig',
     'Scheduling.apps.SchedulingConfig',
     'Appointments.apps.AppointmentsConfig',
     'cart.apps.CartConfig',
