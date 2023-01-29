@@ -25,7 +25,7 @@ MEDIA_URL = ''
 SECRET_KEY = "django-insecure-d4!6d0)!)(5!__6li(6b(sc9=d^xrnu*gns$^^6pzf#9s=9p+("
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TIME_INPUT_FORMATS = ('%I:%M %p')
 
