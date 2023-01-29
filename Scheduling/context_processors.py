@@ -155,6 +155,7 @@ def buildSchedules(todaysDate):
 
 
 def getTodaysDate(request):
+
     todaysDate = date.today ( )
     # buildMonthlyDays(todaysDate)
     buildSchedules (todaysDate)
