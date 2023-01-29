@@ -18,6 +18,8 @@ AUTH_USER_MODEL = 'Account.User'
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = ''
 
+AUTH_USER_MODEL = 'Account.User'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
