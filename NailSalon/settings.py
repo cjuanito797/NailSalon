@@ -30,7 +30,7 @@ DEBUG = False
 TIME_INPUT_FORMATS = ('%I:%M %p')
 
 ALLOWED_HOSTS = ['127.0.0.1',
-                 '*']
+                 '.pythonanywhere.com']
 
 # Application definition
 
