@@ -1,7 +1,4 @@
 {% extends "base.html"%}
-
-
-
 {% load static %}
 
 {% block head %}
@@ -101,7 +98,7 @@
                 <div class="buttons">
 
                     <a href="{% url 'cart:cart_detail' %}" class="has-text-black" style="padding-right: 15px;">
-                        <img src="../../../Account/static/shopping_bag.png" style=""/>
+                        <img src="../../static/shopping_bag.png" style=""/>
                         {% with total_items=cart|length %}
                             {% if cart|length > 0 %}
                                 ${{ cart.get_total_price }}&emsp;&emsp;&emsp;
@@ -361,8 +358,7 @@
                                 <div class="card" style="width: 18rem; margin: 1%; height: 100%;">
                                     <div class="card-image">
                                         <figure class="image is-4by3">
-                                            {% load rand_service_pics %}
-                                            <img src="../../../Appointments/Templates/shop/imagebank/{% random_int 1 45 %}.jpg" style="object-fit: cover ;">
+                                            <img src="../../static/imagebank/1.jpg" style="object-fit: cover ;">
                                         </figure>
                                     </div>
                                     <div class="card-content">

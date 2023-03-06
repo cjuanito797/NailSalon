@@ -1,0 +1,47 @@
+.banner {
+    padding: 0;
+    height: 300px;
+    background-image: url('https://t4.ftcdn.net/jpg/03/38/18/47/360_F_338184799_qDtjVptNgJZMDLQpvpRrmzNOCdWfqhzX.jpg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    width: 100%;
+    display: grid;
+}
+
+#ScheduleBanner {
+    padding: 0;
+    height: 300px;
+    background-image: url('https://topnailsmtpleasant.com/uploads/fnail0lsagxak/logo/2019/09/30/thumbnail/x2-w768.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    width: 100%;
+    display: grid;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    grid-gap: 1%;
+
+}
+
+.grid-child-categories {
+    padding: 1%;
+}
+
+.grid-child-services {
+}
+
+.parent {
+    text-align: center;
+}
+
+.child {
+    width: 50%;
+    display: inline-block;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+}
+
