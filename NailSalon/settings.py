@@ -26,12 +26,12 @@ AUTH_USER_MODEL = 'Account.User'
 SECRET_KEY = "django-insecure-d4!6d0)!)(5!__6li(6b(sc9=d^xrnu*gns$^^6pzf#9s=9p+("
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TIME_INPUT_FORMATS = ('%I:%M %p')
 
 ALLOWED_HOSTS = ['127.0.0.1',
-                 '.pythonanywhere.com']
+                 '*']
 
 # Application definition
 
@@ -93,6 +93,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
 
 WSGI_APPLICATION = "NailSalon.wsgi.application"
 
